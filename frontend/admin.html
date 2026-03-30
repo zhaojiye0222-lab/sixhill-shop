@@ -817,6 +817,7 @@
 
         const updateOrderStatus = async (orderId, newStatus) => {
           try {
+            console.log(`Updating order ${orderId} to status: ${newStatus}`);
             const token = localStorage.getItem('adminToken');
             const res = await fetch(`${API_BASE}/orders/${orderId}/status`, {
               method: 'PATCH',
@@ -827,10 +828,14 @@
               body: JSON.stringify({ status: newStatus })
             });
             
-            if (!res.ok) throw new Error('Failed to update status');
+            if (!res.ok) {
+              const errorData = await res.json();
+              throw new Error(errorData.error || 'Failed to update status');
+            }
             // Refresh orders
             fetchAdminData();
           } catch (err) {
+            console.error('Error updating order status:', err);
             alert(err.message);
           }
         };
