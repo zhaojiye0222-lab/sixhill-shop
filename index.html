@@ -951,8 +951,13 @@
         const fetchProductsAndCategories = async () => {
           try {
             // 获取商品
+            console.log(`Fetching products from ${API_BASE}/products...`);
             const resProducts = await fetch(`${API_BASE}/products`);
+            if (!resProducts.ok) {
+              console.error(`Products API failed with status: ${resProducts.status}`);
+            }
             const products = await resProducts.json();
+            console.log('Loaded products:', products.length);
             
             // 确保 products.images 是数组，虽然这已经在后端处理过了，但在前端再防御一下
             const parsedProducts = products.map(p => ({
