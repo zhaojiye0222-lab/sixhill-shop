@@ -317,7 +317,7 @@
                     
                     <!-- Admin Actions -->
                     <div class="flex gap-2">
-                      <button v-if="order.status === 'pending_payment' && order.paymentReceiptUrl" @click="updateOrderStatus((order.id || order.orderId), 'shipped')" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold shadow-sm hover:bg-indigo-700 transition">
+                      <button v-if="order.status === 'pending_payment'" @click="updateOrderStatus((order.id || order.orderId), 'shipped')" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold shadow-sm hover:bg-indigo-700 transition">
                         Confirm Payment & Ship
                       </button>
                       <button v-if="['pending_payment'].includes(order.status)" @click="cancelOrderAdmin((order.id || order.orderId))" class="px-4 py-2 bg-white border border-red-200 text-red-600 rounded-lg text-sm font-bold hover:bg-red-50 transition">
