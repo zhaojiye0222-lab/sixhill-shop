@@ -248,7 +248,7 @@
           <div v-show="activeTab === 'orders'" class="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
             <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 rounded-t-2xl">
               <div class="flex space-x-2">
-                <button v-for="filter in ['all', 'pending_payment', 'processing', 'paid', 'shipped', 'delivered', 'cancelled', 'refunded']" :key="filter"
+                <button v-for="filter in ['all', 'pending_payment', 'processing', 'paid', 'shipped', 'delivered']" :key="filter"
                         @click="orderFilter = filter"
                         :class="['px-3 py-1.5 rounded-lg text-sm font-medium transition-colors', orderFilter === filter ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50']">
                   {{ getStatusLabel(filter) }}
@@ -325,9 +325,6 @@
                       </button>
                       <button v-if="['pending_payment', 'paid', 'processing'].includes(order.status)" @click="cancelOrderAdmin((order.id || order.orderId))" class="px-4 py-2 bg-white border border-red-200 text-red-600 rounded-lg text-sm font-bold hover:bg-red-50 transition">
                         Cancel Order
-                      </button>
-                      <button v-if="['cancelled', 'refunded'].includes(order.status)" @click="deleteOrderAdmin((order.id || order.orderId))" class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-bold shadow-sm hover:bg-red-700 transition">
-                        Delete Order
                       </button>
                     </div>
                   </div>
