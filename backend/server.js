@@ -95,8 +95,9 @@ const authenticate = async (req, res, next) => {
 };
 
 const requireAdmin = (req, res, next) => {
-  // Relax admin requirement to allow testing order flow
-  // In a real production app, you would keep this strictly req.user.role === 'admin'
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Admin access required' });
+  }
   next();
 };
 
@@ -492,7 +493,7 @@ app.patch('/api/orders/:orderId/status', authenticate, async (req, res) => {
     }
 
     // 只有管理员可以随意改状态，普通用户只能确认收货(delivered)或支付成功回调(处理中)
-    if (req.user.role !== 'admin' && !['delivered', 'paid', 'shipped'].includes(status)) {
+    if (req.user.role !== 'admin' && !['delivered'].includes(status)) {
        return res.status(403).json({ error: 'Unauthorized status update' });
     }
 
