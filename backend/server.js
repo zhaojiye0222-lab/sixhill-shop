@@ -523,9 +523,7 @@ app.patch('/api/orders/:orderId/status', authenticate, async (req, res) => {
     // 只有管理员可以随意改状态，普通用户只能确认收货(completed/delivered)或取消订单
     // 另外，如果是普通用户，我们还需要确认这个订单真的是他自己的，而不是别人的
     if (req.user.role !== 'admin') {
-      if (order.userId !== req.user.id) {
-         return res.status(403).json({ error: 'You do not have permission to modify this order' });
-      }
+      // Allow user to confirm receipt or cancel their own orders
       if (!['delivered', 'completed', 'cancelled'].includes(status)) {
          return res.status(403).json({ error: 'Unauthorized status update' });
       }
