@@ -323,8 +323,11 @@
                       <button v-if="['pending_payment', 'processing'].includes(order.status)" @click="cancelOrderAdmin((order.id || order.orderId))" class="px-4 py-2 bg-white border border-red-200 text-red-600 rounded-lg text-sm font-bold hover:bg-red-50 transition">
                         Cancel Order
                       </button>
-                      <button v-if="['shipped', 'delivered'].includes(order.status)" @click="updateOrderStatus((order.id || order.orderId), 'refunded')" class="px-4 py-2 bg-white border border-orange-200 text-orange-600 rounded-lg text-sm font-bold hover:bg-orange-50 transition">
+                      <button v-if="['shipped', 'delivered', 'completed'].includes(order.status)" @click="updateOrderStatus((order.id || order.orderId), 'refunded')" class="px-4 py-2 bg-white border border-orange-200 text-orange-600 rounded-lg text-sm font-bold hover:bg-orange-50 transition">
                         Refund
+                      </button>
+                      <button v-if="['completed', 'delivered', 'review', 'cancelled', 'refunded'].includes(order.status)" @click="deleteOrderAdmin((order.id || order.orderId))" class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-bold shadow-sm hover:bg-red-700 transition flex items-center">
+                        <i class="ph ph-trash mr-1"></i> Delete
                       </button>
                     </div>
                   </div>
@@ -691,8 +694,10 @@
           const map = {
             'all': 'All Orders',
             'pending_payment': 'Pending',
+            'processing': 'Pending', // 按照规范，用户端Processing时，管理端进入Pending并弹出待确认通知
             'shipped': 'Shipped',
             'delivered': 'Completed',
+            'completed': 'Completed',
             'refunded': 'Refunded'
           };
           return map[status] || status;
@@ -701,8 +706,10 @@
         const getStatusClass = (status) => {
           const map = {
             'pending_payment': 'bg-orange-50 text-orange-600 border-orange-200',
+            'processing': 'bg-orange-50 text-orange-600 border-orange-200',
             'shipped': 'bg-blue-50 text-blue-600 border-blue-200',
             'delivered': 'bg-green-50 text-green-600 border-green-200',
+            'completed': 'bg-green-50 text-green-600 border-green-200',
             'refunded': 'bg-red-50 text-red-600 border-red-200'
           };
           return map[status] || 'bg-gray-100 text-gray-800';
@@ -845,8 +852,11 @@
             });
             
             if (!res.ok) throw new Error('Failed to delete order');
-            // Refresh orders
-            fetchAdminData();
+            
+            // 删除成功后立即移除 DOM 节点，更新缓存
+            orders.value = orders.value.filter(o => o.orderId !== orderId && o.id !== orderId);
+            
+            alert('Order deleted successfully');
           } catch (err) {
             alert(err.message);
           }

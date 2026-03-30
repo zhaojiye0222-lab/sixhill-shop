@@ -140,6 +140,7 @@ class OrderService {
         paymentReceiptUrl: order.receipt_url,
         receiptUrl: order.receipt_url,
         status: order.status,
+        isDeleted: !!order.is_deleted,
         createdAt: order.created_at,
         updatedAt: order.updated_at,
         items
@@ -151,7 +152,7 @@ class OrderService {
    * 获取所有订单 (供管理员使用)
    */
   static async getAllOrders() {
-    const [ordersRows] = await pool.query('SELECT * FROM orders ORDER BY created_at DESC');
+    const [ordersRows] = await pool.query('SELECT * FROM orders WHERE is_deleted = FALSE ORDER BY created_at DESC');
     return this._attachItemsToOrders(ordersRows);
   }
 
@@ -159,7 +160,7 @@ class OrderService {
    * 获取用户个人的订单历史，排除被删除的订单
    */
   static async getUserOrders(userId) {
-    const [ordersRows] = await pool.query("SELECT * FROM orders WHERE user_id = ? AND status != 'deleted' ORDER BY created_at DESC", [userId]);
+    const [ordersRows] = await pool.query("SELECT * FROM orders WHERE user_id = ? AND is_deleted = FALSE AND status != 'deleted' ORDER BY created_at DESC", [userId]);
     return this._attachItemsToOrders(ordersRows);
   }
 
@@ -167,7 +168,8 @@ class OrderService {
    * 根据 ID 获取订单
    */
   static async getOrderById(orderId) {
-    const [ordersRows] = await pool.query('SELECT * FROM orders WHERE order_id = ?', [orderId]);
+    const [ordersRows] = await pool.query('SELECT * FROM orders WHERE order_id = ? AND is_deleted = FALSE', [orderId]);
+    if (ordersRows.length === 0) return null;
     const orders = await this._attachItemsToOrders(ordersRows);
     return orders[0] || null;
   }
@@ -176,34 +178,73 @@ class OrderService {
    * 更新订单状态 (发货、退款等)
    */
   static async updateOrderStatus(orderId, newStatus) {
-    const validStatuses = ['pending_payment', 'processing', 'paid', 'shipped', 'delivered', 'refunded', 'cancelled', 'deleted'];
+    const validStatuses = ['pending_payment', 'processing', 'paid', 'shipped', 'delivered', 'completed', 'refunded', 'cancelled', 'deleted'];
     if (!validStatuses.includes(newStatus)) {
       throw new Error('Invalid order status');
-    }
-
-    const order = await this.getOrderById(orderId);
-    if (!order) throw new Error('Order not found');
-
-    if (newStatus === 'cancelled' && (order.status === 'cancelled' || order.status === 'refunded')) {
-      await pool.query("UPDATE orders SET status = 'deleted', updated_at = NOW() WHERE order_id = ?", [orderId]);
-      return { ...order, status: 'deleted' };
     }
 
     const connection = await pool.getConnection();
     await connection.beginTransaction();
 
     try {
+      // FOR UPDATE 加排他锁，保证并发情况下状态流转的一致性
+      const [rows] = await connection.query('SELECT * FROM orders WHERE order_id = ? FOR UPDATE', [orderId]);
+      if (rows.length === 0 || rows[0].is_deleted) {
+        throw new Error('Order not found or deleted');
+      }
+
+      const orderData = rows[0];
+      const currentStatus = orderData.status;
+
+      // 如果状态已经是目标状态，直接返回
+      if (currentStatus === newStatus) {
+        await connection.commit();
+        connection.release();
+        return await this.getOrderById(orderId);
+      }
+
+      if (newStatus === 'cancelled' && (currentStatus === 'cancelled' || currentStatus === 'refunded')) {
+        await connection.query("UPDATE orders SET status = 'deleted', is_deleted = TRUE, updated_at = NOW() WHERE order_id = ?", [orderId]);
+        await connection.commit();
+        connection.release();
+        return { orderId, status: 'deleted', isDeleted: true };
+      }
+
+      // 获取 items 准备处理库存
+      const [itemRows] = await connection.query('SELECT * FROM order_items WHERE order_id = ?', [orderId]);
+
       if ((newStatus === 'refunded' || newStatus === 'cancelled') && 
-          !['refunded', 'cancelled', 'deleted'].includes(order.status)) {
-        for (const item of order.items) {
-          await connection.query('UPDATE products SET stock = stock + ? WHERE id = ?', [item.quantity, item.productId]);
+          !['refunded', 'cancelled', 'deleted'].includes(currentStatus)) {
+        for (const item of itemRows) {
+          await connection.query('UPDATE products SET stock = stock + ? WHERE id = ?', [item.quantity, item.product_id]);
         }
       }
 
       await connection.query('UPDATE orders SET status = ?, updated_at = NOW() WHERE order_id = ?', [newStatus, orderId]);
       await connection.commit();
-      
-      return { ...order, status: newStatus };
+      connection.release();
+
+      return await this.getOrderById(orderId);
+    } catch (err) {
+      await connection.rollback();
+      connection.release();
+      throw err;
+    }
+  }
+
+  /**
+   * 软删除订单
+   */
+  static async deleteOrder(orderId) {
+    const connection = await pool.getConnection();
+    await connection.beginTransaction();
+    try {
+      const [rows] = await connection.query('SELECT * FROM orders WHERE order_id = ? FOR UPDATE', [orderId]);
+      if (rows.length === 0) throw new Error('Order not found');
+
+      await connection.query('UPDATE orders SET is_deleted = TRUE, updated_at = NOW() WHERE order_id = ?', [orderId]);
+      await connection.commit();
+      return true;
     } catch (err) {
       await connection.rollback();
       throw err;
