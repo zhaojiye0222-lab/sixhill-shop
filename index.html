@@ -1048,10 +1048,11 @@
           const identifier = product.id || product.sku;
           if (!identifier) return;
           
-          // Simplified routing: Just use the relative path.
-          // Vercel routes `/frontend/(.*)` to `/frontend/$1` and `/(.*)` to `/$1`
-          // Both local Express and Vercel will resolve this correctly from the root
-          window.location.href = `/frontend/product.html?id=${identifier}`;
+          // Debug check
+          console.log('Navigating to product:', identifier);
+          
+          // Use window.location.assign for a more reliable hard navigation
+          window.location.assign(`/frontend/product.html?id=${identifier}`);
         };
 
         const goToCategory = (catId) => {
