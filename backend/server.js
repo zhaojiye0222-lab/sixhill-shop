@@ -493,7 +493,7 @@ app.patch('/api/orders/:orderId/status', authenticate, async (req, res) => {
     }
 
     // 只有管理员可以随意改状态，普通用户只能确认收货(delivered)或支付成功回调(处理中)
-    if (req.user.role !== 'admin' && !['delivered', 'paid'].includes(status)) {
+    if (req.user.role !== 'admin' && !['delivered', 'paid', 'shipped'].includes(status)) {
        return res.status(403).json({ error: 'Unauthorized status update' });
     }
 
