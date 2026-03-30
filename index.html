@@ -1786,9 +1786,12 @@
             });
             if (res.ok) {
               alert('Thank you! You can now review your items.');
-              // 立即更新本地状态
+              // 立即更新本地状态，由于计算属性依赖 myOrders，这会自动触发视图更新
               const order = myOrders.value.find(o => o.orderId === orderId);
               if (order) order.status = 'completed';
+              
+              // 自动切换到 completed(Review) 标签页，让用户看到跳转效果
+              orderStatusFilter.value = 'completed';
             }
           } catch (err) {
             console.error(err);
