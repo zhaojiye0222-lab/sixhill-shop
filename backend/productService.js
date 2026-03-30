@@ -6,13 +6,30 @@ class ProductService {
    */
   static async getAllProducts() {
     const [rows] = await pool.query('SELECT * FROM products');
-    return rows.map(row => ({
-      ...row,
-      images: typeof row.images === 'string' ? JSON.parse(row.images) : (row.images || []),
-      specs: typeof row.specs === 'string' ? JSON.parse(row.specs) : (row.specs || {}),
-      categoryId: row.category_id,
-      subCategoryId: row.sub_category_id
-    }));
+    return rows.map(row => {
+      let images = [];
+      try {
+        images = typeof row.images === 'string' ? JSON.parse(row.images) : (row.images || []);
+      } catch (e) {
+        // Fallback if parsing fails (e.g. invalid JSON in DB)
+        images = [];
+      }
+
+      let specs = {};
+      try {
+        specs = typeof row.specs === 'string' ? JSON.parse(row.specs) : (row.specs || {});
+      } catch (e) {
+        specs = {};
+      }
+
+      return {
+        ...row,
+        images,
+        specs,
+        categoryId: row.category_id,
+        subCategoryId: row.sub_category_id
+      };
+    });
   }
 
   /**
@@ -23,10 +40,25 @@ class ProductService {
     const [rows] = await pool.query('SELECT * FROM products WHERE id = ? OR sku = ?', [identifier, identifier]);
     if (rows.length === 0) throw new Error('Product not found');
     const product = rows[0];
+    
+    let images = [];
+    try {
+      images = typeof product.images === 'string' ? JSON.parse(product.images) : (product.images || []);
+    } catch (e) {
+      images = [];
+    }
+
+    let specs = {};
+    try {
+      specs = typeof product.specs === 'string' ? JSON.parse(product.specs) : (product.specs || {});
+    } catch (e) {
+      specs = {};
+    }
+
     return {
       ...product,
-      images: typeof product.images === 'string' ? JSON.parse(product.images) : (product.images || []),
-      specs: typeof product.specs === 'string' ? JSON.parse(product.specs) : (product.specs || {}),
+      images,
+      specs,
       categoryId: product.category_id,
       subCategoryId: product.sub_category_id
     };
