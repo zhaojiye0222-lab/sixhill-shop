@@ -10,7 +10,7 @@ const db = require('./database');
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' })); // Increased limit for Base64 image strings
 
 // Serve static files from uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -37,23 +37,10 @@ try {
   console.warn('Could not create uploads directory:', err.message);
 }
 
-// Configure multer storage
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    try {
-      if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-      }
-    } catch (e) {
-      // Ignore EROFS
-    }
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
+// In serverless environments like Vercel, we can't reliably serve local files
+// So we use memory storage and convert images to Base64 data URIs
+const storage = multer.memoryStorage();
+
 // Configure multer storage
 const upload = multer({ 
   storage: storage,
@@ -561,8 +548,10 @@ app.post('/api/upload', authenticate, upload.single('image'), (req, res) => {
     return res.status(400).json({ error: 'No image uploaded' });
   }
   
-  // Return the URL path to the uploaded file
-  const imageUrl = `/uploads/${req.file.filename}`;
+  // Convert buffer to Base64 Data URI so we don't need to store files on Vercel
+  const base64String = req.file.buffer.toString('base64');
+  const imageUrl = `data:${req.file.mimetype};base64,${base64String}`;
+  
   res.json({ url: imageUrl });
 });
 

@@ -857,9 +857,12 @@
         };
 
         const viewReceipt = (url) => {
-          // If the url is relative, prepend the base
-          if (url.startsWith('/')) {
-             receiptUrlToView.value = `http://192.168.1.31:3000${url}`;
+          // Check if it's a Base64 data URI
+          if (url.startsWith('data:image')) {
+             receiptUrlToView.value = url;
+          } else if (url.startsWith('/')) {
+             // For legacy local uploads
+             receiptUrlToView.value = `${window.location.origin}${url}`;
           } else {
              receiptUrlToView.value = url;
           }
