@@ -1836,19 +1836,23 @@
           // Only add fallback UI if it hasn't been added yet
           if (!img.nextElementSibling || !img.nextElementSibling.classList.contains('img-fallback-bg')) {
             const fallbackDiv = document.createElement('div');
-            fallbackDiv.className = 'img-fallback-bg';
+            fallbackDiv.className = 'img-fallback-bg flex flex-col items-center justify-center w-full h-full bg-gray-100 text-gray-400 absolute inset-0';
             
             const icon = document.createElement('i');
-            icon.className = 'ph ph-package text-3xl text-gray-300';
+            icon.className = 'ph ph-image-broken text-3xl mb-1';
             
             const text = document.createElement('span');
-            text.className = 'img-fallback-text';
-            text.innerText = productName || 'Product';
+            text.className = 'text-[10px] text-center px-1 truncate w-full';
+            text.innerText = (productName && typeof productName === 'string') ? productName : 'No Image';
             
             fallbackDiv.appendChild(icon);
-            if (productName) fallbackDiv.appendChild(text);
+            fallbackDiv.appendChild(text);
             
-            img.parentNode.classList.add('img-wrapper');
+            // 确保父容器是相对定位
+            if (getComputedStyle(img.parentNode).position === 'static') {
+              img.parentNode.style.position = 'relative';
+            }
+            img.style.opacity = '0'; // 隐藏破图图标
             img.parentNode.appendChild(fallbackDiv);
           }
         };
