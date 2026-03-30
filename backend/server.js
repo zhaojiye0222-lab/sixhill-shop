@@ -557,9 +557,14 @@ app.post('/api/upload', authenticate, requireAdmin, upload.single('image'), (req
   res.json({ url: imageUrl });
 });
 
-// Catch-all for undefined routes
+// Catch-all for undefined API routes
+app.use('/api', (req, res) => {
+  res.status(404).json({ error: 'API Endpoint not found' });
+});
+
+// Fallback for frontend routes (Single Page App behavior)
 app.use((req, res) => {
-  res.status(404).json({ error: 'Endpoint not found' });
+  res.sendFile(path.join(__dirname, '../index.html'));
 });
 
 // Error handling middleware
