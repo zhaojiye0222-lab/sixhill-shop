@@ -879,9 +879,10 @@
 
         // Login State
         // Base API URL config
-        // In production, we can use empty string '' to use the same host, or hardcode the production domain
-        const isLocal = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.');
-        const API_BASE = isLocal ? `http://${window.location.hostname}:3000/api` : '/api';
+        // Using explicit paths that Vercel routes will catch correctly
+        const API_BASE = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.') 
+          ? `http://${window.location.hostname}:3000/api` 
+          : '/api';
         
         const showLoginModal = ref(false);
         const isLoggingIn = ref(false);
