@@ -26,12 +26,26 @@ if (process.env.NODE_ENV === 'production') {
 
 const fs = require('fs');
 
+// Create uploads directory if it doesn't exist to prevent crash on startup
+const isVercel = process.env.VERCEL || process.env.NODE_ENV === 'production';
+const uploadDir = isVercel ? '/tmp/uploads' : path.join(__dirname, 'uploads');
+try {
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+} catch (err) {
+  console.warn('Could not create uploads directory:', err.message);
+}
+
 // Configure multer storage
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadDir = path.join(__dirname, 'uploads');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
+    try {
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+    } catch (e) {
+      // Ignore EROFS
     }
     cb(null, uploadDir);
   },
@@ -40,6 +54,7 @@ const storage = multer.diskStorage({
     cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
   }
 });
+// Configure multer storage
 const upload = multer({ 
   storage: storage,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
@@ -51,12 +66,6 @@ const upload = multer({
     }
   }
 });
-
-// Create uploads directory if it doesn't exist to prevent crash on startup
-const uploadDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
 
 // Ensure dummy placeholder images exist so the demo works
 const ensureDummyImages = () => {
@@ -561,8 +570,8 @@ app.post('/api/upload', authenticate, requireAdmin, upload.single('image'), (req
 app.use(express.static(path.join(__dirname, '../')));
 
 // Fallback for missing frontend HTML files (e.g., if someone hits /frontend/product.html directly and static middleware misses)
-app.get('/frontend/*', (req, res) => {
-  const filePath = path.join(__dirname, '..', req.path);
+app.get('/frontend/:file', (req, res) => {
+  const filePath = path.join(__dirname, '..', 'frontend', req.params.file);
   res.sendFile(filePath, err => {
     if (err) res.status(404).send('Frontend file not found');
   });
