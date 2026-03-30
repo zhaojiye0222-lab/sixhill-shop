@@ -557,6 +557,17 @@ app.post('/api/upload', authenticate, requireAdmin, upload.single('image'), (req
   res.json({ url: imageUrl });
 });
 
+// Serve static files from the project root (so /frontend and /index.html work locally)
+app.use(express.static(path.join(__dirname, '../')));
+
+// Fallback for missing frontend HTML files (e.g., if someone hits /frontend/product.html directly and static middleware misses)
+app.get('/frontend/*', (req, res) => {
+  const filePath = path.join(__dirname, '..', req.path);
+  res.sendFile(filePath, err => {
+    if (err) res.status(404).send('Frontend file not found');
+  });
+});
+
 // Catch-all for undefined API routes
 app.use('/api', (req, res) => {
   res.status(404).json({ error: 'API Endpoint not found' });
