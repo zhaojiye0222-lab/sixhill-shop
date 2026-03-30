@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://unpkg.com/vue@3.3.4/dist/vue.global.prod.js"></script>
+</head>
+<body>
+  <div id="app">
+    <header>Header</header>
+    <main>
+      <div v-if="tab === 'home'">Home</div>
+      <div v-if="tab === 'profile'">
+        Profile: {{ causeError() }}
+      </div>
+    </main>
+    <nav>
+      <button @click="tab = 'home'">Home</button>
+      <button @click="tab = 'profile'" id="btn-profile">Profile</button>
+    </nav>
+  </div>
+  <script>
+    Vue.createApp({
+      data() { return { tab: 'home' } },
+      methods: {
+        causeError() {
+          if (this.tab === 'profile') {
+            throw new Error('Boom');
+          }
+          return 'OK';
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>

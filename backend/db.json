@@ -1,0 +1,447 @@
+{
+  "products": [
+    [
+      "p_1001",
+      {
+        "id": "p_1001",
+        "sku": "SIX-H1-PRO",
+        "name": "Sixhill H1 Pro Heating Device",
+        "description": "Advanced Heat-Not-Burn device with conductive heating technology. Long-lasting battery.",
+        "images": [
+          "http://192.168.1.31:3000/uploads/sixhill-h1-pro.png"
+        ],
+        "specs": {
+          "color": "Obsidian Black",
+          "battery": "3200mAh",
+          "heatingTime": "15s"
+        },
+        "price": 900000,
+        "stock": 100,
+        "categoryId": "cat_devices",
+        "subCategoryId": null,
+        "version": 1,
+        "status": "active"
+      }
+    ],
+    [
+      "p_1002",
+      {
+        "id": "p_1002",
+        "sku": "SIX-H2-LITE",
+        "name": "Sixhill H2 Lite",
+        "description": "Compact Induction Tech",
+        "images": [
+          "http://192.168.1.31:3000/uploads/sixhill-h2-lite.png"
+        ],
+        "specs": {
+          "color": "Silver",
+          "battery": "2000mAh",
+          "heatingTime": "20s"
+        },
+        "price": 650000,
+        "stock": 350,
+        "categoryId": "cat_devices",
+        "subCategoryId": null,
+        "version": 1,
+        "status": "active"
+      }
+    ],
+    [
+      "p_kz_01",
+      {
+        "id": "p_kz_01",
+        "sku": "STK-KZ-ORANGE",
+        "name": "Orange Red (陈皮)",
+        "description": "Citrus infused flavor",
+        "images": [
+          "http://192.168.1.31:3000/uploads/orange-red.png"
+        ],
+        "specs": {
+          "pack": "20 sticks/pack",
+          "nicotine": "2%",
+          "specImage": "http://192.168.1.31:3000/uploads/spec-image.png"
+        },
+        "price": 32000,
+        "stock": 1000,
+        "categoryId": "cat_sticks",
+        "subCategoryId": "cat_kuanzhai",
+        "version": 1,
+        "status": "active"
+      }
+    ],
+    [
+      "p_kz_02",
+      {
+        "id": "p_kz_02",
+        "sku": "STK-KZ-APPLE",
+        "name": "Apple Ice (苹果冰)",
+        "description": "Crisp apple with cooling effect",
+        "images": [
+          "http://192.168.1.31:3000/uploads/apple-ice.png"
+        ],
+        "specs": {
+          "pack": "20 sticks/pack",
+          "nicotine": "2%",
+          "specImage": "http://192.168.1.31:3000/uploads/spec-image.png"
+        },
+        "price": 32000,
+        "stock": 1000,
+        "categoryId": "cat_sticks",
+        "subCategoryId": "cat_kuanzhai",
+        "version": 1,
+        "status": "active"
+      }
+    ],
+    [
+      "p_kz_03",
+      {
+        "id": "p_kz_03",
+        "sku": "STK-KZ-BERRY",
+        "name": "Berry Mix (混合浆果)",
+        "description": "Sweet and sour berry blend",
+        "images": [
+          "http://192.168.1.31:3000/uploads/berry-mix.png"
+        ],
+        "specs": {
+          "pack": "20 sticks/pack",
+          "nicotine": "2%",
+          "specImage": "http://192.168.1.31:3000/uploads/spec-image.png"
+        },
+        "price": 32000,
+        "stock": 1000,
+        "categoryId": "cat_sticks",
+        "subCategoryId": "cat_kuanzhai",
+        "version": 1,
+        "status": "active"
+      }
+    ],
+    [
+      "p_kz_04",
+      {
+        "id": "p_kz_04",
+        "sku": "STK-KZ-CLASSIC",
+        "name": "Classic Tobacco (经典原味)",
+        "description": "Rich & Bold flavor for traditional smokers.",
+        "images": [
+          "http://192.168.1.31:3000/uploads/classic-tobacco.png"
+        ],
+        "specs": {
+          "pack": "20 sticks/pack",
+          "nicotine": "2%",
+          "specImage": "http://192.168.1.31:3000/uploads/spec-image.png"
+        },
+        "price": 32000,
+        "stock": 1000,
+        "categoryId": "cat_sticks",
+        "subCategoryId": "cat_kuanzhai",
+        "version": 1,
+        "status": "active"
+      }
+    ],
+    [
+      "p_kz_05",
+      {
+        "id": "p_kz_05",
+        "sku": "STK-KZ-GRAPE",
+        "name": "Grape Ice (葡萄冰)",
+        "description": "Juicy grape with menthol",
+        "images": [
+          "http://192.168.1.31:3000/uploads/grape-ice.png"
+        ],
+        "specs": {
+          "pack": "20 sticks/pack",
+          "nicotine": "2%",
+          "specImage": "http://192.168.1.31:3000/uploads/spec-image.png"
+        },
+        "price": 32000,
+        "stock": 1000,
+        "categoryId": "cat_sticks",
+        "subCategoryId": "cat_kuanzhai",
+        "version": 1,
+        "status": "active"
+      }
+    ],
+    [
+      "p_kz_06",
+      {
+        "id": "p_kz_06",
+        "sku": "STK-KZ-LEMON",
+        "name": "Lemon Mint (柠檬薄荷)",
+        "description": "Zesty lemon with refreshing mint",
+        "images": [
+          "http://192.168.1.31:3000/uploads/lemon-mint.png"
+        ],
+        "specs": {
+          "pack": "20 sticks/pack",
+          "nicotine": "2%",
+          "specImage": "http://192.168.1.31:3000/uploads/spec-image.png"
+        },
+        "price": 32000,
+        "stock": 1000,
+        "categoryId": "cat_sticks",
+        "subCategoryId": "cat_kuanzhai",
+        "version": 1,
+        "status": "active"
+      }
+    ],
+    [
+      "p_kz_07",
+      {
+        "id": "p_kz_07",
+        "sku": "STK-KZ-MANGO",
+        "name": "Mango Tango (芒果)",
+        "description": "Tropical sweet mango",
+        "images": [
+          "http://192.168.1.31:3000/uploads/mango-tango.png"
+        ],
+        "specs": {
+          "pack": "20 sticks/pack",
+          "nicotine": "2%",
+          "specImage": "http://192.168.1.31:3000/uploads/spec-image.png"
+        },
+        "price": 32000,
+        "stock": 1000,
+        "categoryId": "cat_sticks",
+        "subCategoryId": "cat_kuanzhai",
+        "version": 1,
+        "status": "active"
+      }
+    ],
+    [
+      "p_kz_08",
+      {
+        "id": "p_kz_08",
+        "sku": "STK-KZ-MINT",
+        "name": "Mint Breeze (清凉薄荷)",
+        "description": "Pure refreshing mint",
+        "images": [
+          "http://192.168.1.31:3000/uploads/mint-breeze.png"
+        ],
+        "specs": {
+          "pack": "20 sticks/pack",
+          "nicotine": "2%",
+          "specImage": "http://192.168.1.31:3000/uploads/spec-image.png"
+        },
+        "price": 32000,
+        "stock": 1000,
+        "categoryId": "cat_sticks",
+        "subCategoryId": "cat_kuanzhai",
+        "version": 1,
+        "status": "active"
+      }
+    ],
+    [
+      "p_kz_09",
+      {
+        "id": "p_kz_09",
+        "sku": "STK-KZ-PEACH",
+        "name": "Peach Ice (蜜桃冰)",
+        "description": "Sweet peach with ice finish",
+        "images": [
+          "http://192.168.1.31:3000/uploads/peach-ice.png"
+        ],
+        "specs": {
+          "pack": "20 sticks/pack",
+          "nicotine": "2%",
+          "specImage": "http://192.168.1.31:3000/uploads/spec-image.png"
+        },
+        "price": 32000,
+        "stock": 1000,
+        "categoryId": "cat_sticks",
+        "subCategoryId": "cat_kuanzhai",
+        "version": 1,
+        "status": "active"
+      }
+    ],
+    [
+      "p_kz_10",
+      {
+        "id": "p_kz_10",
+        "sku": "STK-KZ-WATERMELON",
+        "name": "Watermelon Splash (西瓜)",
+        "description": "Summer watermelon flavor",
+        "images": [
+          "http://192.168.1.31:3000/uploads/watermelon-splash.png"
+        ],
+        "specs": {
+          "pack": "20 sticks/pack",
+          "nicotine": "2%",
+          "specImage": "http://192.168.1.31:3000/uploads/spec-image.png"
+        },
+        "price": 32000,
+        "stock": 1000,
+        "categoryId": "cat_sticks",
+        "subCategoryId": "cat_kuanzhai",
+        "version": 1,
+        "status": "active"
+      }
+    ],
+    [
+      "p_ns_01",
+      {
+        "id": "p_ns_01",
+        "sku": "STK-NS-CORAL",
+        "name": "Coral Pink (草莓)",
+        "description": "Sweet strawberry flavor",
+        "images": [
+          "http://192.168.1.31:3000/uploads/coral-pink.png"
+        ],
+        "specs": {
+          "pack": "20 sticks/pack"
+        },
+        "price": 30000,
+        "stock": 1000,
+        "categoryId": "cat_sticks",
+        "subCategoryId": "cat_nise",
+        "version": 1,
+        "status": "active"
+      }
+    ],
+    [
+      "p_ns_02",
+      {
+        "id": "p_ns_02",
+        "sku": "STK-NS-BLUE",
+        "name": "Blue Ocean (蓝莓)",
+        "description": "Deep blueberry flavor",
+        "images": [
+          "http://192.168.1.31:3000/uploads/blue-ocean.png"
+        ],
+        "specs": {
+          "pack": "20 sticks/pack"
+        },
+        "price": 30000,
+        "stock": 1000,
+        "categoryId": "cat_sticks",
+        "subCategoryId": "cat_nise",
+        "version": 1,
+        "status": "active"
+      }
+    ],
+    [
+      "p_ns_03",
+      {
+        "id": "p_ns_03",
+        "sku": "STK-NS-GREEN",
+        "name": "Green Leaf (绿茶)",
+        "description": "Refreshing green tea",
+        "images": [
+          "http://192.168.1.31:3000/uploads/green-leaf.png"
+        ],
+        "specs": {
+          "pack": "20 sticks/pack"
+        },
+        "price": 30000,
+        "stock": 1000,
+        "categoryId": "cat_sticks",
+        "subCategoryId": "cat_nise",
+        "version": 1,
+        "status": "active"
+      }
+    ]
+  ],
+  "priceLogs": [],
+  "operationLogs": [],
+  "orders": [],
+  "users": [
+    [
+      "u1001",
+      {
+        "id": "u1001",
+        "name": "Normal User",
+        "role": "user"
+      }
+    ],
+    [
+      "a9999",
+      {
+        "id": "a9999",
+        "name": "Admin Jake",
+        "role": "admin"
+      }
+    ]
+  ],
+  "reviews": [],
+  "categories": [
+    [
+      "cat_sticks",
+      {
+        "id": "cat_sticks",
+        "name": "Tobacco sticks",
+        "description": "Main category for sticks",
+        "parentId": null,
+        "sortOrder": 1
+      }
+    ],
+    [
+      "cat_kuanzhai",
+      {
+        "id": "cat_kuanzhai",
+        "name": "kuaizhai sticks",
+        "description": "kuaizhai brand",
+        "parentId": "cat_sticks",
+        "sortOrder": 1
+      }
+    ],
+    [
+      "cat_nise",
+      {
+        "id": "cat_nise",
+        "name": "Nise sticks",
+        "description": "Nise brand",
+        "parentId": "cat_sticks",
+        "sortOrder": 2
+      }
+    ],
+    [
+      "cat_devices",
+      {
+        "id": "cat_devices",
+        "name": "HNB Devices",
+        "description": "Heating devices",
+        "parentId": null,
+        "sortOrder": 2
+      }
+    ],
+    [
+      "cat_terea",
+      {
+        "id": "cat_terea",
+        "name": "TEREA Device",
+        "description": "TEREA heating devices",
+        "parentId": "cat_devices",
+        "sortOrder": 1
+      }
+    ],
+    [
+      "cat_heated",
+      {
+        "id": "cat_heated",
+        "name": "HEATED Device",
+        "description": "HEATED devices",
+        "parentId": "cat_devices",
+        "sortOrder": 2
+      }
+    ],
+    [
+      "cat_acc",
+      {
+        "id": "cat_acc",
+        "name": "Accessories",
+        "description": "Cases, chargers, etc.",
+        "parentId": null,
+        "sortOrder": 3
+      }
+    ],
+    [
+      "cat_bundle",
+      {
+        "id": "cat_bundle",
+        "name": "Bundle",
+        "description": "Bundle products",
+        "parentId": null,
+        "sortOrder": 4
+      }
+    ]
+  ]
+}

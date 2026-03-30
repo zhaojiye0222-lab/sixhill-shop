@@ -1,0 +1,21 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=Content-Type content="text/x-ms-odc; charset=utf-8">
+<meta name=ProgId content=ODC.Excel>
+<meta name=SourceType content=OLEDB>
+<xml id=doc>
+ <o:OfficeDataConnection>
+  <o:ConnectionFolder>Sixhill_Connections</o:ConnectionFolder>
+  <o:Connection>
+   <o:ConnectionString>Provider=Microsoft.ACE.OLEDB.12.0;Data Source=Sixhill_Weekly_Master.xlsx;Extended Properties="HDR=YES;";</o:ConnectionString>
+   <o:CommandType>Table</o:CommandType>
+   <o:CommandText>上周业绩汇总$</o:CommandText>
+  </o:Connection>
+ </o:OfficeDataConnection>
+</xml>
+</head>
+<body>
+This is a Sixhill Power Query / ODC connection file.
+</body>
+</html>

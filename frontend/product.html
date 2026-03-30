@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sixhill - Product Detail</title>
+  <!-- 恢复官方 Tailwind CDN，它能实时编译任意工具类 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Vue 3 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.3.4/vue.global.prod.min.js"></script>
+  <!-- Phosphor Icons fallback -->
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/regular/style.css">
+  <style>
+    body {
+      background-color: #f3f4f6;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .pb-safe {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    /* Robust Image Fallback */
+    img.fallback-active {
+      display: none !important;
+    }
+    .img-wrapper {
+      position: relative;
+    }
+    .img-fallback-bg {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #f3f4f6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+      padding: 8px;
+      text-align: center;
+    }
+    .img-fallback-text {
+      font-size: 10px;
+      color: #9ca3af;
+      margin-top: 4px;
+      line-height: 1.2;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 antialiased">
+  <div id="app" class="max-w-screen-md mx-auto bg-white min-h-screen relative shadow-lg">
+    
+    <!-- Navbar -->
+    <header class="flex items-center justify-between p-4 sticky top-0 bg-white/90 backdrop-blur-md z-50 border-b border-gray-100">
+      <i class="ph ph-arrow-left text-2xl text-gray-800 cursor-pointer" onclick="history.back()"></i>
+      <h1 class="text-lg font-bold">Product Details</h1>
+      <div class="relative cursor-pointer" @click="goToCart">
+        <i class="ph ph-shopping-cart text-2xl text-gray-800"></i>
+        <span v-if="cart.length" class="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">{{ cart.length }}</span>
+      </div>
+    </header>
+
+    <div v-if="loading" class="flex justify-center items-center h-64">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+    </div>
+
+    <div v-else-if="error" class="p-8 text-center text-red-500">
+      <i class="ph ph-warning-circle text-4xl mb-2"></i>
+      <p>{{ error }}</p>
+    </div>
+
+    <!-- Product Content -->
+    <main v-else class="pb-24">
+      <!-- Image Gallery (Carousel) -->
+      <div class="w-full bg-gray-100 aspect-square relative overflow-hidden group">
+        <!-- Images -->
+        <div class="flex transition-transform duration-300 ease-out h-full" :style="{ transform: `translateX(-${currentImageIndex * 100}%)` }">
+          <div v-for="(img, idx) in product.images" :key="idx" class="w-full h-full flex-shrink-0 flex items-center justify-center bg-white relative img-wrapper">
+            <img v-if="!img.includes('placeholder')" :src="img" alt="Product" class="w-full h-full object-contain mix-blend-multiply" @error="handleImageError($event, product.name)">
+            <i v-else class="ph ph-package text-6xl text-gray-300"></i>
+          </div>
+        </div>
+        
+        <!-- Navigation Arrows (visible if > 1 image) -->
+        <button v-if="product.images.length > 1" @click="prevImage" class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center shadow-sm text-gray-800 hover:bg-white transition z-10">
+          <i class="ph ph-caret-left"></i>
+        </button>
+        <button v-if="product.images.length > 1" @click="nextImage" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/80 rounded-full flex items-center justify-center shadow-sm text-gray-800 hover:bg-white transition z-10">
+          <i class="ph ph-caret-right"></i>
+        </button>
+
+        <!-- Dots Indicators -->
+        <div v-if="product.images.length > 1" class="absolute bottom-4 w-full flex justify-center space-x-1.5 z-10">
+          <div v-for="(_, idx) in product.images" :key="idx" 
+               @click="currentImageIndex = idx"
+               :class="['w-2 h-2 rounded-full cursor-pointer transition-colors', currentImageIndex === idx ? 'bg-indigo-600' : 'bg-gray-300/80']">
+          </div>
+        </div>
+      </div>
+
+      <!-- Basic Info -->
+      <div class="p-4 bg-white">
+        <div class="flex justify-between items-start mb-2">
+          <h2 class="text-2xl font-bold text-gray-900 leading-tight">{{ product.name }}</h2>
+        </div>
+        <div class="flex items-baseline space-x-2 mb-2">
+          <span class="text-3xl font-extrabold text-red-600">Rp {{ formatPrice(product.price) }}</span>
+          <span v-if="product.stock < 10" class="text-xs font-semibold text-orange-500 bg-orange-100 px-2 py-1 rounded">Only {{ product.stock }} left</span>
+          <span v-else class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">In Stock</span>
+        </div>
+        <p class="text-sm text-gray-500">SKU: {{ product.sku }}</p>
+      </div>
+
+      <!-- Colors Selection -->
+      <div v-if="productColors && productColors.length > 0" class="mt-2 bg-white p-4">
+        <h3 class="font-bold text-gray-800 mb-3 text-sm">Select Color</h3>
+        <div class="flex flex-wrap gap-3">
+          <div v-for="color in productColors" :key="color" 
+               @click="selectedColor = color"
+               :class="['border rounded-lg px-4 py-2 text-sm transition cursor-pointer relative overflow-hidden font-medium', 
+                        selectedColor === color ? 'border-indigo-600 text-indigo-600 bg-indigo-50 shadow-sm' : 'border-gray-200 text-gray-600 hover:border-gray-400 hover:bg-gray-50']">
+            {{ color }}
+            <template v-if="selectedColor === color">
+              <div class="absolute -right-3 -top-3 w-6 h-6 bg-indigo-600 rotate-45"></div>
+              <i class="ph-bold ph-check absolute top-0.5 right-0.5 text-[8px] text-white"></i>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flavors / Variants Selection -->
+      <div v-if="product.allFlavors && product.allFlavors.length > 0" class="mt-2 bg-white p-4">
+        <h3 class="font-bold text-gray-800 mb-3 text-sm">Select Flavor / Variant</h3>
+        
+        <div v-if="isBundle" class="space-y-3">
+          <div v-for="flavor in product.allFlavors" :key="flavor.id" class="flex justify-between items-center p-3 border border-gray-200 rounded-lg hover:border-indigo-300 transition">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded overflow-hidden flex-shrink-0 flex items-center justify-center border border-gray-100 img-wrapper">
+                <img v-if="flavor.images && flavor.images[0]" :src="flavor.images[0]" class="w-full h-full object-cover" @error="handleImageError($event, flavor.name)" />
+                <i v-else class="ph ph-cigarettes text-2xl text-gray-400"></i>
+              </div>
+              <div class="text-sm font-medium text-gray-800">{{ flavor.name }}</div>
+            </div>
+            <div class="flex items-center space-x-3">
+              <button @click="decreaseBundleFlavor(flavor.id)" class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50"><i class="ph ph-minus"></i></button>
+              <span class="text-sm font-bold w-4 text-center">{{ bundleFlavors[flavor.id] || 0 }}</span>
+              <button @click="increaseBundleFlavor(flavor.id)" class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50"><i class="ph ph-plus"></i></button>
+            </div>
+          </div>
+        </div>
+        
+        <div v-else class="flex flex-wrap gap-3">
+          <div v-for="flavor in product.allFlavors" :key="flavor.id" 
+               @click="switchFlavor(flavor.id)"
+               :class="['border rounded-lg px-3 py-2 text-sm transition cursor-pointer relative overflow-hidden', 
+                        flavor.id === product.id ? 'border-indigo-600 font-bold text-indigo-600 bg-indigo-50' : 'border-gray-200 text-gray-600 hover:border-gray-400']">
+            {{ flavor.name }}
+            <template v-if="flavor.id === product.id">
+              <div class="absolute -right-3 -top-3 w-6 h-6 bg-indigo-600 rotate-45"></div>
+              <i class="ph-bold ph-check absolute top-0.5 right-0.5 text-[8px] text-white"></i>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quantity Selection -->
+      <div class="mt-2 bg-white p-4">
+        <h3 class="font-bold text-gray-800 mb-3 text-sm">Quantity</h3>
+        <div class="flex items-center space-x-4">
+          <button @click="quantity > 1 ? quantity-- : null" class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50 transition">
+            <i class="ph ph-minus"></i>
+          </button>
+          <span class="text-lg font-bold w-8 text-center">{{ quantity }}</span>
+          <button @click="quantity++" class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50 transition">
+            <i class="ph ph-plus"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Description & Specs -->
+      <div class="mt-2 bg-white p-4">
+        <h3 class="font-bold text-lg mb-3">Description</h3>
+        <p class="text-gray-600 text-sm leading-relaxed mb-6">{{ product.description }}</p>
+
+        <div v-if="product.specs && Object.keys(product.specs).length > 0">
+          <h3 class="font-bold text-lg mb-3">Specifications</h3>
+          
+          <!-- Specifications Image (if any) -->
+          <div v-if="product.specs.specImage" class="mb-4">
+            <img :src="product.specs.specImage" alt="Specifications" class="w-full rounded-lg shadow-sm">
+          </div>
+
+          <ul class="text-sm text-gray-600 space-y-2">
+            <template v-for="(value, key) in product.specs" :key="key">
+              <li v-if="key !== 'specImage' && value" class="flex justify-between py-2 border-b border-gray-50">
+                <span class="text-gray-400 capitalize">{{ key }}</span>
+                <span class="font-medium text-gray-800">{{ value }}</span>
+              </li>
+            </template>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Reviews Section -->
+      <div class="mt-2 bg-white p-4">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="font-bold text-lg">Reviews ({{ reviews.length }})</h3>
+          <button @click="showReviewModal = true" class="text-xs text-indigo-600 font-bold px-3 py-1 bg-indigo-50 rounded-full">Write a Review</button>
+        </div>
+
+        <div v-if="reviews.length === 0" class="text-center text-sm text-gray-400 py-4">
+          No reviews yet. Be the first to review!
+        </div>
+        
+        <div class="space-y-4">
+          <div v-for="(review, idx) in reviews" :key="idx" class="border-b border-gray-50 pb-4 last:border-0">
+            <div class="flex justify-between items-start mb-1">
+              <span class="font-bold text-sm">{{ review.userName }}</span>
+              <span class="text-xs text-gray-400">{{ new Date(review.date).toLocaleDateString() }}</span>
+            </div>
+            <div class="flex text-yellow-400 text-xs mb-2">
+              <i v-for="n in 5" :key="n" :class="n <= review.rating ? 'ph-fill ph-star' : 'ph ph-star'"></i>
+            </div>
+            <p class="text-sm text-gray-600">{{ review.comment }}</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Bottom Action Bar -->
+    <div v-if="!loading && !error" class="fixed bottom-0 w-full max-w-screen-md bg-white border-t border-gray-200 p-3 flex space-x-3 z-50 pb-safe">
+      <button @click="addToCart" class="flex-1 py-3 bg-indigo-50 text-indigo-600 rounded-full font-bold text-sm">
+        Add to Cart
+      </button>
+      <button @click="buyNow" class="flex-1 py-3 bg-indigo-600 text-white rounded-full font-bold text-sm shadow-md shadow-indigo-200">
+        Buy Now
+      </button>
+    </div>
+
+    <!-- Order Modal -->
+    <div v-if="showOrderModal" class="fixed inset-0 bg-black/50 z-[60] flex items-end sm:items-center justify-center">
+      <div class="bg-white w-full max-w-md rounded-t-2xl sm:rounded-2xl p-5 transform transition-transform">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="font-bold text-lg">Confirm Order</h3>
+          <i @click="showOrderModal = false" class="ph ph-x text-xl cursor-pointer"></i>
+        </div>
+        
+        <div class="flex items-center space-x-4 mb-6 p-3 bg-gray-50 rounded-xl">
+          <div class="w-16 h-16 rounded-md bg-white border border-gray-200 flex-shrink-0 flex items-center justify-center overflow-hidden img-wrapper">
+            <img v-if="product.images && product.images[0] && !product.images[0].includes('placeholder')" :src="product.images[0]" class="w-full h-full object-cover" @error="handleImageError($event, product.name)">
+            <i v-else class="ph ph-package text-3xl text-gray-400"></i>
+          </div>
+          <div>
+            <h4 class="font-semibold text-sm">{{ product.name }}</h4>
+            <p v-if="selectedColor" class="text-xs text-gray-500 mt-0.5">Color: {{ selectedColor }}</p>
+            <p class="text-red-600 font-bold mt-1">Rp {{ formatPrice(product.price) }} x {{ quantity }}</p>
+          </div>
+        </div>
+
+        <div class="border-t border-gray-100 pt-4 mb-6">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-gray-600 text-sm">Total Amount</span>
+              <span class="font-bold text-lg text-red-600">Rp {{ formatPrice(product.price * quantity) }}</span>
+            </div>
+            
+            <div class="bg-blue-50 rounded-lg p-3 mt-4 border border-blue-100">
+              <h5 class="text-xs font-bold text-blue-800 mb-1 flex items-center"><i class="ph ph-bank mr-1"></i> Payment Information</h5>
+              <p class="text-xs text-blue-600 mb-1">Please transfer the total amount to:</p>
+              <div class="bg-white p-2 rounded flex justify-between items-center mb-1">
+                <span class="text-xs font-mono font-bold text-gray-800">BCA - 1234567890</span>
+                <i class="ph ph-copy text-gray-400 cursor-pointer hover:text-indigo-600"></i>
+              </div>
+              <p class="text-[10px] text-blue-500 mt-1">* Your order will be processed after payment confirmation.</p>
+            </div>
+
+            <div class="mt-4">
+              <label class="block text-xs font-bold text-gray-700 mb-2">Upload Payment Receipt</label>
+              <div class="flex items-center space-x-3">
+                <input type="file" @change="handleReceiptUpload" accept="image/*" class="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer transition">
+              </div>
+              <div v-if="receiptPreview" class="mt-2 relative inline-block">
+                <img :src="receiptPreview" class="h-20 w-auto object-cover rounded border border-gray-200 shadow-sm">
+                <button @click="receiptPreview = null" class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-[10px] shadow-sm">
+                  <i class="ph ph-x"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex space-x-3 mt-6">
+            <button @click="payLater" :disabled="submitting" class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-full font-bold shadow-sm flex justify-center items-center hover:bg-gray-300 transition">
+              Pay Later
+            </button>
+            <button @click="submitOrder" :disabled="submitting" class="flex-[2] bg-indigo-600 text-white py-3 rounded-full font-bold flex justify-center items-center transition">
+              <span v-if="submitting" class="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full mr-2"></span>
+              {{ submitting ? 'Processing...' : 'Confirm & Upload' }}
+            </button>
+          </div>
+      </div>
+    </div>
+
+    <!-- Review Modal -->
+    <div v-if="showReviewModal" class="fixed inset-0 bg-black/50 z-[60] flex items-end sm:items-center justify-center">
+      <div class="bg-white w-full max-w-md rounded-t-2xl sm:rounded-2xl p-5">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="font-bold text-lg">Write a Review</h3>
+          <i @click="showReviewModal = false" class="ph ph-x text-xl cursor-pointer"></i>
+        </div>
+        
+        <div class="mb-4">
+          <label class="block text-sm font-bold mb-2">Rating</label>
+          <div class="flex space-x-2 text-2xl text-yellow-400">
+            <i v-for="n in 5" :key="n" @click="newReview.rating = n" :class="n <= newReview.rating ? 'ph-fill ph-star' : 'ph ph-star'" class="cursor-pointer"></i>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-sm font-bold mb-2">Comment</label>
+          <textarea v-model="newReview.comment" rows="3" class="w-full border rounded-lg p-3 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="Share your experience..."></textarea>
+        </div>
+
+        <button @click="submitReview" class="w-full py-3 bg-indigo-600 text-white rounded-full font-bold">Submit Review</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const { createApp, ref, onMounted, watch, computed } = Vue;
+
+    createApp({
+      setup() {
+        const product = ref(null);
+        const loading = ref(true);
+        const error = ref(null);
+        // 为了跨页面共享购物车，我们使用 localStorage 简单实现
+        const cart = ref(JSON.parse(localStorage.getItem('cart') || '[]'));
+        
+        // 监听 cart 变化，保存到 localStorage
+        watch(cart, (newCart) => {
+          localStorage.setItem('cart', JSON.stringify(newCart));
+        }, { deep: true });
+        const showOrderModal = ref(false);
+        const submitting = ref(false);
+        const currentImageIndex = ref(0);
+        const receiptPreview = ref(null);
+        const receiptFile = ref(null);
+
+        const handleReceiptUpload = (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            receiptFile.value = file;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              receiptPreview.value = e.target.result;
+            };
+            reader.readAsDataURL(file);
+          }
+        };
+        
+        // 颜色相关状态
+        const productColors = ref([]);
+        const selectedColor = ref(null);
+        const quantity = ref(1);
+
+        // Bundle Flavors
+        const bundleFlavors = ref({});
+        const isBundle = computed(() => {
+          return product.value && (product.value.categoryId === 'Bundle' || product.value.categoryId === 'cat_bundle');
+        });
+
+        const increaseBundleFlavor = (id) => {
+          bundleFlavors.value[id] = (bundleFlavors.value[id] || 0) + 1;
+        };
+
+        const decreaseBundleFlavor = (id) => {
+          if (bundleFlavors.value[id] && bundleFlavors.value[id] > 0) {
+            bundleFlavors.value[id]--;
+          }
+        };
+
+        // 评价相关状态
+        const reviews = ref([]);
+        const showReviewModal = ref(false);
+        const newReview = ref({ rating: 5, comment: '' });
+
+        // 真实 API 请求获取商品详情
+        const fetchProduct = async (skuParam) => {
+          try {
+            loading.value = true;
+            // 从 URL 参数获取 SKU 或 ID
+            const urlParams = new URLSearchParams(window.location.search);
+            const identifier = skuParam || urlParams.get('id') || urlParams.get('sku');
+
+            if (!identifier) {
+               throw new Error('No product specified');
+            }
+
+            // 调用真实的本地接口
+            const response = await fetch(`http://192.168.1.31:3000/api/products/${identifier}`);
+            if (!response.ok) throw new Error('Product not found');
+            
+            const data = await response.json();
+            product.value = data;
+            
+            // Fix images array if it's somehow undefined or missing
+            if (!product.value.images || product.value.images.length === 0) {
+              product.value.images = ['https://via.placeholder.com/400x400'];
+            }
+            
+            currentImageIndex.value = 0; // 重置轮播图索引
+
+            // 解析颜色
+            if (data.specs && data.specs.color) {
+              // 支持英文逗号和中文全角逗号分割，甚至支持空格加逗号的情况
+              productColors.value = data.specs.color.split(/[,，]/).map(c => c.trim()).filter(c => c);
+              if (productColors.value.length > 0) {
+                selectedColor.value = productColors.value[0]; // 默认选中第一个颜色
+              }
+            } else {
+              productColors.value = [];
+              selectedColor.value = null;
+            }
+
+            loading.value = false;
+            
+            // 获取评价列表
+            fetchReviews(data.id);
+          } catch (err) {
+            error.value = "Failed to load product from server.";
+            loading.value = false;
+          }
+        };
+
+        const switchFlavor = async (identifier) => {
+          // 不刷新页面，仅更新数据
+          await fetchProduct(identifier);
+          
+          // 更新浏览器 URL，保持链接可分享，但不触发页面刷新
+          const newUrl = new URL(window.location);
+          newUrl.searchParams.set('id', identifier);
+          // 为了兼容也移除 sku 避免混淆
+          newUrl.searchParams.delete('sku');
+          window.history.pushState({}, '', newUrl);
+        };
+
+        const fetchReviews = async (productId) => {
+          try {
+            const res = await fetch(`http://192.168.1.31:3000/api/products/${productId}/reviews`);
+            reviews.value = await res.json();
+          } catch(err) {
+            console.error('Failed to load reviews');
+          }
+        };
+
+        // 图片轮播控制
+        const nextImage = () => {
+          if (product.value && product.value.images) {
+            currentImageIndex.value = (currentImageIndex.value + 1) % product.value.images.length;
+          }
+        };
+
+        const prevImage = () => {
+          if (product.value && product.value.images) {
+            currentImageIndex.value = (currentImageIndex.value - 1 + product.value.images.length) % product.value.images.length;
+          }
+        };
+
+        const addToCart = () => {
+          if (productColors.value.length > 0 && !selectedColor.value) {
+            alert('Please select a color.');
+            return;
+          }
+
+          let selectedBundleFlavors = null;
+          if (isBundle.value) {
+            const flavors = [];
+            let totalQty = 0;
+            for (const [fid, qty] of Object.entries(bundleFlavors.value)) {
+              if (qty > 0) {
+                const f = product.value.allFlavors.find(x => x.id === fid);
+                if (f) {
+                  flavors.push({ id: f.id, name: f.name, sku: f.sku, qty });
+                  totalQty += qty;
+                }
+              }
+            }
+            if (totalQty === 0) {
+              alert('Please select at least one flavor for your bundle.');
+              return;
+            }
+            selectedBundleFlavors = flavors;
+          }
+
+          // Check if existing in cart with exact same configurations
+          const existing = cart.value.find(item => 
+            item.id === product.value.id && 
+            item.selectedColor === selectedColor.value &&
+            JSON.stringify(item.bundleFlavors) === JSON.stringify(selectedBundleFlavors)
+          );
+
+          if (existing) {
+            existing.qty += quantity.value;
+          } else {
+            cart.value.push({
+              cartItemId: Date.now().toString(),
+              ...product.value, 
+              qty: quantity.value, 
+              selectedColor: selectedColor.value,
+              bundleFlavors: selectedBundleFlavors
+            });
+          }
+          alert(`Added ${quantity.value}x ${product.value.name} to cart successfully!`);
+        };
+
+        const getSelectedBundleFlavors = () => {
+          if (!isBundle.value) return null;
+          const flavors = [];
+          for (const [fid, qty] of Object.entries(bundleFlavors.value)) {
+            if (qty > 0) {
+              const f = product.value.allFlavors.find(x => x.id === fid);
+              if (f) flavors.push({ id: f.id, name: f.name, sku: f.sku, qty });
+            }
+          }
+          return flavors;
+        };
+
+        const buyNow = () => {
+          if (productColors.value.length > 0 && !selectedColor.value) {
+            alert('Please select a color.');
+            return;
+          }
+          if (isBundle.value) {
+            const flavors = getSelectedBundleFlavors();
+            const totalQty = flavors.reduce((sum, f) => sum + f.qty, 0);
+            if (totalQty === 0) {
+              alert('Please select at least one flavor for your bundle.');
+              return;
+            }
+          }
+          showOrderModal.value = true;
+        };
+
+        const submitOrder = async () => {
+          if (!receiptFile.value) {
+            alert('Please upload your payment receipt first.');
+            return;
+          }
+
+          submitting.value = true;
+
+          try {
+            // 1. 获取 Token
+            let token = localStorage.getItem('userToken');
+            if (!token) {
+              const loginRes = await fetch('http://192.168.1.31:3000/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: 'user', password: 'user123' })
+              });
+              const data = await loginRes.json();
+              token = data.token;
+              localStorage.setItem('userToken', token);
+              localStorage.setItem('currentUser', JSON.stringify(data.user));
+            }
+
+            // 2. 上传截图
+            const formData = new FormData();
+            formData.append('image', receiptFile.value);
+            const uploadRes = await fetch('http://192.168.1.31:3000/api/upload', {
+              method: 'POST',
+              headers: { 'Authorization': `Bearer ${token}` },
+              body: formData
+            });
+            const uploadData = await uploadRes.json();
+            if (!uploadRes.ok) throw new Error(uploadData.error || 'Failed to upload receipt');
+            const receiptUrl = uploadData.url;
+
+            // 3. 发起下单请求
+            const orderItem = { productId: product.value.id, quantity: quantity.value };
+            if (selectedColor.value) orderItem.color = selectedColor.value;
+            if (isBundle.value) orderItem.bundleFlavors = getSelectedBundleFlavors();
+
+            const orderRes = await fetch('http://192.168.1.31:3000/api/orders', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify({
+                items: [orderItem],
+                paymentMethod: 'bank_transfer'
+              })
+            });
+
+            const orderData = await orderRes.json();
+            if (!orderRes.ok) {
+              throw new Error(orderData.error || 'Checkout failed');
+            }
+
+            // 4. 提交支付截图关联到订单
+            const paymentRes = await fetch(`http://192.168.1.31:3000/api/orders/${orderData.orderId || orderData.id}/payment`, {
+              method: 'POST',
+              headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify({ receiptUrl })
+            });
+
+            if (!paymentRes.ok) {
+              throw new Error('Order created, but failed to link receipt.');
+            }
+
+            submitting.value = false;
+            showOrderModal.value = false;
+            alert(`Success! \nOrder ID: ${orderData.orderId || orderData.id}\nTotal: Rp ${formatPrice(orderData.totalAmount)}`);
+
+            window.location.href = '/?tab=profile';
+
+          } catch (err) {
+            submitting.value = false;
+            alert(`Error: ${err.message}`);
+          }
+        };
+
+        const payLater = async () => {
+          submitting.value = true;
+
+          try {
+            // 1. 首先需要登录获取 Token
+            const loginRes = await fetch('http://192.168.1.31:3000/api/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ username: 'user', password: 'user123' })
+            });
+            const { token } = await loginRes.json();
+
+            // 2. 带着 Token 发起真实下单请求
+            const orderItem = { productId: product.value.id, quantity: quantity.value };
+            if (selectedColor.value) orderItem.color = selectedColor.value;
+            if (isBundle.value) orderItem.bundleFlavors = getSelectedBundleFlavors();
+
+            const orderRes = await fetch('http://192.168.1.31:3000/api/orders', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify({
+                items: [orderItem],
+                paymentMethod: 'bank_transfer'
+              })
+            });
+
+            const orderData = await orderRes.json();
+
+            if (!orderRes.ok) {
+              throw new Error(orderData.error || 'Checkout failed');
+            }
+
+            submitting.value = false;
+            showOrderModal.value = false;
+            alert('Order saved as Pending. You can pay later in your Profile.');
+
+            // 跳转回首页查看订单
+            window.location.href = '/?tab=profile';
+
+          } catch (err) {
+            submitting.value = false;
+            alert(`Error: ${err.message}`);
+          }
+        };
+
+          const formatPrice = (price) => {
+            return Number(price).toLocaleString('id-ID');
+          };
+
+          const submitReview = async () => {
+            try {
+              // 需要先登录获取 Token 才能评价 (简化处理，每次都重新获取测试用)
+              const loginRes = await fetch('http://192.168.1.31:3000/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: 'user', password: 'user123' })
+              });
+              const { token } = await loginRes.json();
+
+              const res = await fetch(`http://192.168.1.31:3000/api/products/${product.value.id}/reviews`, {
+                method: 'POST',
+                headers: { 
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(newReview.value)
+              });
+
+              if (!res.ok) throw new Error('Failed to submit review');
+              
+              alert('Review submitted successfully!');
+              showReviewModal.value = false;
+              newReview.value.comment = ''; // 清空评论
+              fetchReviews(product.value.id); // 刷新评价列表
+
+            } catch (err) {
+              alert(err.message);
+            }
+          };
+  
+          const goToCart = () => {
+          // 由于购物车数据在首页维护，详情页跳转时可以直接跳回首页并打开购物车
+          // 这里我们简单地返回首页，并在 URL 中带上参数让首页打开购物车
+          window.location.href = '/?openCart=true';
+        };
+
+        const goBack = () => {
+          window.history.back();
+        };
+
+        onMounted(() => {
+            fetchProduct();
+          });
+  
+          // Add a global image error handler to state
+        const handleImageError = (event, productName) => {
+          const img = event.target;
+          img.classList.add('fallback-active');
+          
+          // Only add fallback UI if it hasn't been added yet
+          if (!img.nextElementSibling || !img.nextElementSibling.classList.contains('img-fallback-bg')) {
+            const fallbackDiv = document.createElement('div');
+            fallbackDiv.className = 'img-fallback-bg';
+            
+            const icon = document.createElement('i');
+            icon.className = 'ph ph-package text-3xl text-gray-300';
+            
+            const text = document.createElement('span');
+            text.className = 'img-fallback-text';
+            text.innerText = productName || 'Product';
+            
+            fallbackDiv.appendChild(icon);
+            if (productName) fallbackDiv.appendChild(text);
+            
+            img.parentNode.classList.add('img-wrapper');
+            img.parentNode.appendChild(fallbackDiv);
+          }
+        };
+
+        return {
+            product, loading, error, showOrderModal, submitting, receiptPreview, handleReceiptUpload, payLater,
+            cart, showReviewModal, reviews, newReview,
+            currentImageIndex, nextImage, prevImage,
+            productColors, selectedColor, quantity,
+            isBundle, bundleFlavors, increaseBundleFlavor, decreaseBundleFlavor,
+            addToCart, buyNow, submitOrder, formatPrice, submitReview, switchFlavor, goToCart, goBack,
+            handleImageError
+          }
+        }
+      }).mount('#app');
+    </script>
+  </body>
+  </html>

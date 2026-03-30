@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Register - Jake</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8f9fa; }
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #e5e7eb; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div id="app" class="max-w-md mx-auto min-h-screen bg-white shadow-lg relative flex flex-col">
+    <!-- Header -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 px-4 py-3 flex items-center">
+      <button @click="goBack" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 text-gray-700 hover:bg-gray-100 transition">
+        <i class="ph ph-arrow-left text-lg"></i>
+      </button>
+      <h1 class="flex-1 text-center font-bold text-lg mr-8">Create Account</h1>
+    </header>
+
+    <!-- Content -->
+    <main class="flex-1 overflow-y-auto p-6">
+      <div class="mb-8 text-center">
+        <div class="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-200">
+          <i class="ph-bold ph-user-plus text-3xl text-white"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-800">Welcome to Jake</h2>
+        <p class="text-sm text-gray-500 mt-1">Please fill in your details to register</p>
+      </div>
+
+      <form @submit.prevent="handleRegister" class="space-y-4">
+        
+        <!-- Login Info -->
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Username (for login)</label>
+            <div class="relative">
+              <i class="ph ph-at absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></i>
+              <input v-model="form.username" type="text" required placeholder="Choose a username" 
+                     class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition bg-gray-50 focus:bg-white">
+            </div>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <div class="relative">
+              <i class="ph ph-lock absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></i>
+              <input v-model="form.password" type="password" required placeholder="Create a password" 
+                     class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition bg-gray-50 focus:bg-white">
+            </div>
+          </div>
+        </div>
+
+        <div class="border-t border-gray-100 my-6"></div>
+
+        <!-- Personal Info -->
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Full Name <span class="text-xs text-gray-400 font-normal">(Real name not strictly required)</span></label>
+            <div class="relative">
+              <i class="ph ph-user absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></i>
+              <input v-model="form.name" type="text" required placeholder="e.g. John Doe" 
+                     class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition bg-gray-50 focus:bg-white">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Contact Information</label>
+            <div class="relative">
+              <i class="ph ph-phone absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></i>
+              <input v-model="form.phone" type="tel" required placeholder="Phone number or Email" 
+                     class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition bg-gray-50 focus:bg-white">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Delivery Address</label>
+            <div class="relative">
+              <i class="ph ph-map-pin absolute left-3 top-3 text-gray-400 text-lg"></i>
+              <textarea v-model="form.address" required placeholder="Enter your full delivery address" rows="3"
+                        class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition bg-gray-50 focus:bg-white resize-none"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Age Verification -->
+        <div class="mt-6 p-4 bg-orange-50 border border-orange-100 rounded-xl flex items-start space-x-3">
+          <div class="flex items-center h-5 mt-0.5">
+            <input id="age_verify" v-model="form.ageConfirmed" type="checkbox" required
+                   class="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+          </div>
+          <div class="text-sm">
+            <label for="age_verify" class="font-medium text-gray-800">I confirm that I am 21 years of age or older.</label>
+            <p class="text-gray-500 mt-1">This product contains nicotine. You must be of legal smoking age to purchase.</p>
+          </div>
+        </div>
+
+        <!-- Error Message -->
+        <div v-if="error" class="text-red-500 text-sm text-center bg-red-50 py-2 rounded-lg mt-4">
+          {{ error }}
+        </div>
+
+        <!-- Submit Button -->
+        <div class="pt-6 pb-8">
+          <button type="submit" :disabled="loading" 
+                  class="w-full bg-indigo-600 text-white py-3.5 rounded-xl font-bold shadow-md shadow-indigo-200 hover:bg-indigo-700 hover:shadow-lg transition flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed">
+            <i v-if="loading" class="ph ph-spinner animate-spin text-xl mr-2"></i>
+            {{ loading ? 'Creating Account...' : 'Register' }}
+          </button>
+          
+          <p class="text-center text-sm text-gray-500 mt-6">
+            Already have an account? 
+            <a href="#" @click.prevent="goToLogin" class="text-indigo-600 font-bold hover:underline">Log in</a>
+          </p>
+        </div>
+      </form>
+    </main>
+  </div>
+
+  <script>
+    const { createApp, ref, reactive } = Vue;
+
+    createApp({
+      setup() {
+        const API_BASE = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.')
+          ? `http://${window.location.hostname}:3000/api`
+          : '/api';
+
+        const loading = ref(false);
+        const error = ref('');
+        
+        const form = reactive({
+          username: '',
+          password: '',
+          name: '',
+          phone: '',
+          address: '',
+          ageConfirmed: false
+        });
+
+        const goBack = () => {
+          window.location.href = '/index.html';
+        };
+
+        const goToLogin = () => {
+          // Pass a parameter to open the login modal directly
+          window.location.href = '/index.html?tab=profile&action=login';
+        };
+
+        const handleRegister = async () => {
+          if (!form.ageConfirmed) {
+            error.value = 'You must confirm you are 21+ to register.';
+            return;
+          }
+
+          loading.value = true;
+          error.value = '';
+
+          try {
+            const response = await fetch(`${API_BASE}/register`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(form)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+              throw new Error(data.error || 'Registration failed');
+            }
+
+            // Registration and auto-login successful
+            localStorage.setItem('userToken', data.token);
+            localStorage.setItem('currentUser', JSON.stringify(data.user));
+            
+            // Redirect to home/profile
+            alert('Registration successful! Welcome to Jake.');
+            window.location.href = '/index.html?tab=profile';
+
+          } catch (err) {
+            error.value = err.message;
+          } finally {
+            loading.value = false;
+          }
+        };
+
+        return {
+          form,
+          loading,
+          error,
+          goBack,
+          goToLogin,
+          handleRegister
+        };
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>

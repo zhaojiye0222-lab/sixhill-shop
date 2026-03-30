@@ -1,0 +1,29 @@
+{
+  "name": "jake",
+  "version": "1.0.0",
+  "description": "这是一个完整的产品管理系统原型，包含了产品详情展示、高安全性价格修改、以及支持高并发的订单处理系统。",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.1.1",
+    "mysql2": "^3.20.0",
+    "puppeteer": "^24.40.0"
+  },
+  "devDependencies": {
+    "jest": "^30.3.0"
+  }
+}

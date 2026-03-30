@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://unpkg.com/vue@3.3.4/dist/vue.global.prod.js"></script>
+</head>
+<body>
+  <div id="app">
+    <header>Header</header>
+    <main>
+      Home
+    </main>
+    <nav>Nav</nav>
+  </div>
+  <script>
+    Vue.createApp({
+      setup() {
+        JSON.parse("undefined"); // Throws error
+        return {};
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>

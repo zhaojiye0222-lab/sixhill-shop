@@ -1,0 +1,32 @@
+{
+  "name": "miniprogram",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev:mp-weixin": "uni -p mp-weixin",
+    "build:mp-weixin": "uni build -p mp-weixin",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@dcloudio/uni-app": "^3.0.0-3090820231124001",
+    "@dcloudio/uni-cli-shared": "^3.0.0-3090820231124001",
+    "@dcloudio/uni-components": "^3.0.0-3090820231124001",
+    "@dcloudio/uni-mp-weixin": "^3.0.0-3090820231124001",
+    "@dcloudio/vite-plugin-uni": "^3.0.0-3090820231124001",
+    "vue": "^3.2.47"
+  },
+  "devDependencies": {
+    "@dcloudio/uni-cli-i18n": "^2.0.2-5000520260324002",
+    "@dcloudio/uni-i18n": "^2.0.2-5000520260324002",
+    "@vue/compiler-sfc": "^3.2.47",
+    "sass": "^1.98.0",
+    "sass-loader": "^16.0.7",
+    "vite": "^4.5.2",
+    "webpack": "^5.105.4"
+  }
+}

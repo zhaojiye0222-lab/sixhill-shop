@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sixhill Admin Dashboard</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <!-- Vue 3 -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <style>
+    body {
+      background-color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    .fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
+    .fade-enter-from, .fade-leave-to { opacity: 0; }
+    
+    /* Custom Scrollbar for a cleaner look */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="text-gray-800">
+  <div id="admin-app" class="flex h-screen overflow-hidden">
+    
+    <!-- Login Screen for Admin -->
+    <div v-if="!isAdminLoggedIn" class="fixed inset-0 bg-gray-50 flex items-center justify-center z-50">
+      <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
+        <div class="text-center mb-8">
+          <div class="w-16 h-16 bg-indigo-600 text-white rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+            <i class="ph ph-shield-check text-3xl"></i>
+          </div>
+          <h1 class="text-2xl font-black text-gray-900">Sixhill Admin</h1>
+          <p class="text-gray-500 mt-1">Please sign in to access the dashboard</p>
+        </div>
+        
+        <form @submit.prevent="handleLogin" class="space-y-5">
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-1">Username</label>
+            <div class="relative">
+              <i class="ph ph-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <input v-model="loginForm.username" type="text" required class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-10 pr-4 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors" placeholder="admin">
+            </div>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-1">Password</label>
+            <div class="relative">
+              <i class="ph ph-lock-key absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <input v-model="loginForm.password" type="password" required class="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-10 pr-4 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors" placeholder="admin123">
+            </div>
+          </div>
+
+          <div v-if="loginError" class="text-sm text-red-500 bg-red-50 p-3 rounded-lg flex items-center">
+            <i class="ph ph-warning-circle mr-2 text-lg"></i> {{ loginError }}
+          </div>
+
+          <button type="submit" :disabled="isLoggingIn" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold shadow-md hover:bg-indigo-700 disabled:opacity-70 transition flex justify-center items-center">
+            <i v-if="isLoggingIn" class="ph ph-spinner animate-spin mr-2"></i>
+            {{ isLoggingIn ? 'Authenticating...' : 'Sign In' }}
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <template v-else>
+      <!-- Sidebar -->
+      <aside class="w-64 bg-slate-900 text-white flex flex-col transition-all duration-300 z-20 shadow-xl">
+        <div class="h-16 flex items-center px-6 border-b border-slate-800">
+          <h1 class="text-xl font-black tracking-tight">Sixhill<span class="text-indigo-400">.</span> <span class="text-xs font-normal text-slate-400 ml-1">Admin</span></h1>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-4">
+          <ul class="space-y-1 px-3">
+            <li>
+              <a href="#" @click.prevent="activeTab = 'dashboard'" :class="['flex items-center px-3 py-2.5 rounded-lg transition-colors', activeTab === 'dashboard' ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white']">
+                <i class="ph ph-squares-four text-xl mr-3"></i>
+                <span class="font-medium">Dashboard</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" @click.prevent="activeTab = 'orders'" :class="['flex items-center px-3 py-2.5 rounded-lg transition-colors', activeTab === 'orders' ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white']">
+                <i class="ph ph-shopping-bag text-xl mr-3"></i>
+                <span class="font-medium">Orders</span>
+                <span v-if="pendingOrdersCount > 0" class="ml-auto bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">{{ pendingOrdersCount }}</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" @click.prevent="activeTab = 'products'" :class="['flex items-center px-3 py-2.5 rounded-lg transition-colors', activeTab === 'products' ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white']">
+                <i class="ph ph-package text-xl mr-3"></i>
+                <span class="font-medium">Products</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" @click.prevent="activeTab = 'categories'" :class="['flex items-center px-3 py-2.5 rounded-lg transition-colors', activeTab === 'categories' ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white']">
+                <i class="ph ph-folder text-xl mr-3"></i>
+                <span class="font-medium">Categories</span>
+              </a>
+            </li>
+            <li>
+              <a href="#" @click.prevent="activeTab = 'users'" :class="['flex items-center px-3 py-2.5 rounded-lg transition-colors', activeTab === 'users' ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white']">
+                <i class="ph ph-users text-xl mr-3"></i>
+                <span class="font-medium">Customers</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        
+        <div class="p-4 border-t border-slate-800">
+          <div class="flex items-center mb-4 px-2">
+            <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center mr-3">
+              <i class="ph ph-user text-slate-300"></i>
+            </div>
+            <div>
+              <p class="text-sm font-medium">{{ currentUser?.username || 'Admin' }}</p>
+              <p class="text-xs text-slate-400">Administrator</p>
+            </div>
+          </div>
+          <button @click="doLogout" class="w-full flex items-center justify-center px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg transition-colors text-sm font-medium">
+            <i class="ph ph-sign-out mr-2"></i> Log Out
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="flex-1 flex flex-col bg-slate-50 relative min-w-0 overflow-hidden">
+        <!-- Top Header -->
+        <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 z-10 flex-shrink-0">
+          <h2 class="text-xl font-bold text-gray-800 capitalize">{{ activeTab }}</h2>
+          <div class="flex items-center space-x-4">
+            <button class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200 transition">
+              <i class="ph ph-bell text-lg"></i>
+            </button>
+          </div>
+        </header>
+
+        <!-- Content Views -->
+        <div class="flex-1 overflow-auto p-6">
+          
+          <!-- Overview / Dashboard Tab -->
+          <div v-show="activeTab === 'dashboard'" class="space-y-6">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <p class="text-sm font-medium text-gray-500 mb-1">Total Revenue</p>
+                    <h3 class="text-2xl font-bold text-gray-900">Rp {{ formatPrice(stats.totalRevenue) }}</h3>
+                  </div>
+                  <div class="w-10 h-10 rounded-lg bg-green-50 text-green-600 flex items-center justify-center">
+                    <i class="ph ph-currency-circle-dollar text-xl"></i>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <p class="text-sm font-medium text-gray-500 mb-1">Total Orders</p>
+                    <h3 class="text-2xl font-bold text-gray-900">{{ stats.totalOrders }}</h3>
+                  </div>
+                  <div class="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                    <i class="ph ph-shopping-bag text-xl"></i>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <p class="text-sm font-medium text-gray-500 mb-1">Pending Orders</p>
+                    <h3 class="text-2xl font-bold text-gray-900">{{ pendingOrdersCount }}</h3>
+                  </div>
+                  <div class="w-10 h-10 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center">
+                    <i class="ph ph-clock text-xl"></i>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <p class="text-sm font-medium text-gray-500 mb-1">Total Products</p>
+                    <h3 class="text-2xl font-bold text-gray-900">{{ products.length }}</h3>
+                  </div>
+                  <div class="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                    <i class="ph ph-package text-xl"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Orders Preview -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                <h3 class="font-bold text-gray-800">Recent Orders</h3>
+                <button @click="activeTab = 'orders'" class="text-sm text-indigo-600 font-medium hover:text-indigo-800">View All</button>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                  <thead class="bg-gray-50 text-gray-500">
+                    <tr>
+                      <th class="px-6 py-3 font-medium">Order ID</th>
+                      <th class="px-6 py-3 font-medium">Customer</th>
+                      <th class="px-6 py-3 font-medium">Date</th>
+                      <th class="px-6 py-3 font-medium">Status</th>
+                      <th class="px-6 py-3 font-medium">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-100">
+                    <tr v-for="order in recentOrders" :key="(order.id || order.orderId)" class="hover:bg-gray-50 transition-colors">
+                      <td class="px-6 py-4 font-medium text-gray-900">#{{ (order.id || order.orderId).slice(0,8) }}</td>
+                      <td class="px-6 py-4">{{ order.userId }}</td>
+                      <td class="px-6 py-4 text-gray-500">{{ new Date(order.createdAt).toLocaleDateString() }}</td>
+                      <td class="px-6 py-4">
+                        <span :class="getStatusClass(order.status)" class="px-2.5 py-1 rounded-full text-xs font-bold inline-flex items-center">
+                          {{ getStatusLabel(order.status) }}
+                        </span>
+                      </td>
+                      <td class="px-6 py-4 font-bold text-gray-900">Rp {{ formatPrice(order.totalAmount) }}</td>
+                    </tr>
+                    <tr v-if="recentOrders.length === 0">
+                      <td colspan="5" class="px-6 py-8 text-center text-gray-400">No orders found.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Orders Management Tab -->
+          <div v-show="activeTab === 'orders'" class="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
+            <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 rounded-t-2xl">
+              <div class="flex space-x-2">
+                <button v-for="filter in ['all', 'pending_payment', 'processing', 'paid', 'shipped', 'delivered', 'cancelled', 'refunded']" :key="filter"
+                        @click="orderFilter = filter"
+                        :class="['px-3 py-1.5 rounded-lg text-sm font-medium transition-colors', orderFilter === filter ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50']">
+                  {{ getStatusLabel(filter) }}
+                </button>
+              </div>
+              <button @click="fetchAdminData" class="w-8 h-8 rounded-lg bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50" title="Refresh">
+                <i class="ph ph-arrows-clockwise"></i>
+              </button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto p-4">
+              <div v-if="filteredOrders.length === 0" class="flex flex-col items-center justify-center h-64 text-gray-400">
+                <i class="ph ph-receipt text-5xl mb-3 text-gray-300"></i>
+                <p>No orders match the selected filter.</p>
+              </div>
+              
+              <div class="grid grid-cols-1 gap-4">
+                <div v-for="order in filteredOrders" :key="(order.id || order.orderId)" class="bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                  <div class="flex justify-between items-start mb-4">
+                    <div>
+                      <div class="flex items-center gap-3 mb-1">
+                        <h3 class="font-bold text-gray-900 text-lg">#{{ (order.id || order.orderId) }}</h3>
+                        <span :class="getStatusClass(order.status)" class="px-2.5 py-1 rounded-full text-xs font-bold border">
+                          {{ getStatusLabel(order.status) }}
+                        </span>
+                      </div>
+                      <p class="text-sm text-gray-500">
+                        <i class="ph ph-calendar-blank mr-1"></i> {{ new Date(order.createdAt).toLocaleString() }}
+                        <span class="mx-2">|</span>
+                        <i class="ph ph-user mr-1"></i> {{ order.userId }}
+                      </p>
+                    </div>
+                    <div class="text-right">
+                      <p class="text-sm text-gray-500 mb-1">Total Amount</p>
+                      <p class="text-xl font-black text-red-600">Rp {{ formatPrice(order.totalAmount) }}</p>
+                    </div>
+                  </div>
+                  
+                  <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                    <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Order Items</h4>
+                    <div class="space-y-3">
+                      <div v-for="(item, idx) in order.items" :key="idx" class="flex items-center justify-between text-sm">
+                        <div class="flex items-center gap-3">
+                          <div class="w-10 h-10 bg-white rounded border border-gray-200 flex items-center justify-center">
+                            <i class="ph ph-package text-gray-400"></i>
+                          </div>
+                          <div>
+                            <p class="font-medium text-gray-800">{{ getProductName(item.productId) }}</p>
+                            <p class="text-xs text-gray-500" v-if="item.color">Color: {{ item.color }}</p>
+                          </div>
+                        </div>
+                        <div class="font-medium text-gray-700">x{{ item.quantity }}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="flex justify-between items-center pt-2 border-t border-gray-100">
+                    <div class="flex items-center gap-2">
+                      <button v-if="order.paymentReceiptUrl" @click="viewReceipt(order.paymentReceiptUrl)" class="text-sm text-indigo-600 font-medium hover:underline flex items-center">
+                        <i class="ph ph-image mr-1"></i> View Receipt
+                      </button>
+                      <span v-else-if="order.paymentMethod === 'bank_transfer'" class="text-sm text-orange-500 flex items-center">
+                        <i class="ph ph-clock mr-1"></i> Awaiting Receipt
+                      </span>
+                    </div>
+                    
+                    <!-- Admin Actions -->
+                    <div class="flex gap-2">
+                      <button v-if="order.status === 'pending_payment' && order.paymentReceiptUrl" @click="updateOrderStatus((order.id || order.orderId), 'paid')" class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-bold shadow-sm hover:bg-green-700 transition">
+                        Confirm Payment
+                      </button>
+                      <button v-if="['paid', 'processing'].includes(order.status)" @click="updateOrderStatus((order.id || order.orderId), 'shipped')" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold shadow-sm hover:bg-indigo-700 transition">
+                        Mark as Shipped
+                      </button>
+                      <button v-if="['pending_payment', 'paid', 'processing'].includes(order.status)" @click="cancelOrderAdmin((order.id || order.orderId))" class="px-4 py-2 bg-white border border-red-200 text-red-600 rounded-lg text-sm font-bold hover:bg-red-50 transition">
+                        Cancel Order
+                      </button>
+                      <button v-if="['cancelled', 'refunded'].includes(order.status)" @click="deleteOrderAdmin((order.id || order.orderId))" class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-bold shadow-sm hover:bg-red-700 transition">
+                        Delete Order
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Products Management Tab -->
+          <div v-show="activeTab === 'products'" class="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
+            <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 rounded-t-2xl">
+              <h3 class="font-bold text-gray-800">Product Catalog</h3>
+              <button @click="openProductModal()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold shadow-sm hover:bg-indigo-700 transition flex items-center">
+                <i class="ph ph-plus mr-2"></i> Add Product
+              </button>
+            </div>
+            
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-sm">
+                <thead class="bg-gray-50 text-gray-500">
+                  <tr>
+                    <th class="px-6 py-3 font-medium w-16">Image</th>
+                    <th class="px-6 py-3 font-medium">Name & SKU</th>
+                    <th class="px-6 py-3 font-medium">Category</th>
+                    <th class="px-6 py-3 font-medium">Price</th>
+                    <th class="px-6 py-3 font-medium">Stock</th>
+                    <th class="px-6 py-3 font-medium">Status</th>
+                    <th class="px-6 py-3 font-medium text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                  <tr v-for="product in products" :key="product.id" class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-3">
+                      <div class="w-10 h-10 bg-white border border-gray-200 rounded flex items-center justify-center overflow-hidden">
+                        <img v-if="product.images && product.images[0] && !product.images[0].includes('placeholder')" :src="product.images[0]" class="w-full h-full object-cover">
+                        <i v-else class="ph ph-package text-gray-300 text-xl"></i>
+                      </div>
+                    </td>
+                    <td class="px-6 py-3">
+                      <div class="font-bold text-gray-900">{{ product.name }}</div>
+                      <div class="text-xs text-gray-500">{{ product.sku }}</div>
+                    </td>
+                    <td class="px-6 py-3">
+                      <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs">{{ getCategoryName(product.categoryId) }}</span>
+                    </td>
+                    <td class="px-6 py-3 font-medium text-gray-900">Rp {{ formatPrice(product.price) }}</td>
+                    <td class="px-6 py-3">
+                      <span :class="product.stock > 10 ? 'text-green-600' : 'text-red-600 font-bold'">{{ product.stock }}</span>
+                    </td>
+                    <td class="px-6 py-3">
+                      <span :class="product.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'" class="px-2 py-1 rounded text-xs font-medium">
+                        {{ product.status === 'active' ? 'Active' : 'Inactive' }}
+                      </span>
+                    </td>
+                    <td class="px-6 py-3 text-right">
+                      <button @click="openProductModal(product)" class="w-8 h-8 rounded bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-colors inline-flex items-center justify-center mr-2">
+                        <i class="ph ph-pencil-simple text-lg"></i>
+                      </button>
+                      <button @click="deleteProduct(product.id)" class="w-8 h-8 rounded bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-colors inline-flex items-center justify-center">
+                        <i class="ph ph-trash text-lg"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Users Management Tab -->
+          <div v-show="activeTab === 'users'" class="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full items-center justify-center">
+             <i class="ph ph-users-three text-6xl text-gray-300 mb-4"></i>
+             <h3 class="text-xl font-bold text-gray-800 mb-2">User Management</h3>
+             <p class="text-gray-500">This feature is coming in the next update.</p>
+          </div>
+
+          <!-- Categories Management Tab -->
+          <div v-show="activeTab === 'categories'" class="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
+            <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 rounded-t-2xl">
+              <h3 class="font-bold text-gray-800">Category Catalog</h3>
+              <button @click="openCategoryModal()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold shadow-sm hover:bg-indigo-700 transition flex items-center">
+                <i class="ph ph-plus mr-2"></i> Add Category
+              </button>
+            </div>
+            
+            <div class="overflow-x-auto p-4">
+              <div class="space-y-4">
+                <div v-for="mainCat in mainCategories" :key="mainCat.id" class="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm">
+                  <!-- Main Category Row -->
+                  <div class="flex items-center justify-between p-4 bg-gray-50/50 border-b border-gray-100">
+                    <div class="flex items-center">
+                      <div class="w-8 h-8 rounded bg-indigo-100 text-indigo-600 flex items-center justify-center mr-3 font-bold">
+                        <i class="ph ph-folder-open text-lg"></i>
+                      </div>
+                      <div>
+                        <h4 class="font-bold text-gray-900">{{ mainCat.name }}</h4>
+                        <p class="text-xs text-gray-500">ID: {{ mainCat.id }}</p>
+                      </div>
+                    </div>
+                    <div class="flex space-x-2">
+                      <button @click="openCategoryModal(mainCat.id)" class="px-3 py-1.5 bg-white border border-indigo-200 text-indigo-600 rounded-lg text-xs font-bold hover:bg-indigo-50 transition flex items-center">
+                        <i class="ph ph-plus mr-1"></i> Sub-category
+                      </button>
+                      <button @click="deleteCategory(mainCat.id)" class="w-8 h-8 rounded bg-white border border-red-200 text-red-600 hover:bg-red-50 transition-colors flex items-center justify-center">
+                        <i class="ph ph-trash text-lg"></i>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <!-- Sub Categories List -->
+                  <div class="bg-white">
+                    <div v-if="categories.filter(c => c.parentId === mainCat.id).length === 0" class="p-4 text-sm text-gray-400 text-center">
+                      No sub-categories.
+                    </div>
+                    <ul class="divide-y divide-gray-50">
+                      <li v-for="subCat in categories.filter(c => c.parentId === mainCat.id)" :key="subCat.id" class="flex items-center justify-between p-3 pl-14 hover:bg-gray-50 transition-colors">
+                        <div class="flex items-center">
+                          <i class="ph ph-arrow-elbow-down-right text-gray-400 mr-3"></i>
+                          <div>
+                            <span class="font-medium text-gray-800">{{ subCat.name }}</span>
+                            <span class="text-xs text-gray-400 ml-2">({{ subCat.id }})</span>
+                          </div>
+                        </div>
+                        <button @click="deleteCategory(subCat.id)" class="w-7 h-7 rounded text-gray-400 hover:bg-red-50 hover:text-red-600 transition-colors flex items-center justify-center">
+                          <i class="ph ph-trash"></i>
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </main>
+    </template>
+
+    <!-- Receipt Image Modal -->
+    <div v-if="showReceiptModal" class="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4" @click="showReceiptModal = false">
+      <div class="relative max-w-3xl max-h-full">
+        <button class="absolute -top-10 right-0 text-white hover:text-gray-300">
+          <i class="ph ph-x text-3xl"></i>
+        </button>
+        <img :src="receiptUrlToView" class="max-w-full max-h-[80vh] object-contain rounded-lg">
+      </div>
+    </div>
+
+    <!-- Add/Edit Product Modal -->
+    <div v-if="showProductModal" class="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 overflow-y-auto">
+      <div class="bg-white w-full max-w-2xl rounded-2xl shadow-xl flex flex-col max-h-[90vh]">
+        <!-- Modal Header -->
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white rounded-t-2xl z-10">
+          <h3 class="text-xl font-bold text-gray-900">{{ editingProduct ? 'Edit Product' : 'Add New Product' }}</h3>
+          <button @click="closeProductModal" class="text-gray-400 hover:text-gray-600 transition-colors">
+            <i class="ph ph-x text-2xl"></i>
+          </button>
+        </div>
+        
+        <!-- Modal Body -->
+        <div class="p-6 overflow-y-auto flex-1">
+          <form @submit.prevent="saveProduct" class="space-y-6">
+            
+            <!-- Basic Info -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-bold text-gray-700 mb-1">Product Name *</label>
+                <input v-model="productForm.name" type="text" required class="w-full border border-gray-200 rounded-lg py-2 px-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+              </div>
+              <div>
+                <label class="block text-sm font-bold text-gray-700 mb-1">SKU *</label>
+                <input v-model="productForm.sku" type="text" required class="w-full border border-gray-200 rounded-lg py-2 px-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" placeholder="e.g. STK-KZ-MINT">
+              </div>
+            </div>
+
+            <!-- Pricing & Stock -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-bold text-gray-700 mb-1">Price (Rp) *</label>
+                <input v-model.number="productForm.price" type="number" required min="0" class="w-full border border-gray-200 rounded-lg py-2 px-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+              </div>
+              <div>
+                <label class="block text-sm font-bold text-gray-700 mb-1">Stock Quantity *</label>
+                <input v-model.number="productForm.stock" type="number" required min="0" class="w-full border border-gray-200 rounded-lg py-2 px-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+              </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-bold text-gray-700 mb-1">Main Category *</label>
+                <select v-model="productForm.categoryId" @change="onCategoryChange" required class="w-full border border-gray-200 rounded-lg py-2 px-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 bg-white">
+                  <option value="" disabled>Select Category</option>
+                  <option v-for="cat in mainCategories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-bold text-gray-700 mb-1">Sub Category</label>
+                <select v-model="productForm.subCategoryId" class="w-full border border-gray-200 rounded-lg py-2 px-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 bg-white" :disabled="!availableSubCategories.length">
+                  <option value="">None</option>
+                  <option v-for="sub in availableSubCategories" :key="sub.id" :value="sub.id">{{ sub.name }}</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div>
+              <label class="block text-sm font-bold text-gray-700 mb-1">Description</label>
+              <textarea v-model="productForm.description" rows="3" class="w-full border border-gray-200 rounded-lg py-2 px-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"></textarea>
+            </div>
+
+            <!-- Image URL -->
+            <div>
+              <label class="block text-sm font-bold text-gray-700 mb-1">Image URL</label>
+              <div class="flex space-x-2">
+                <input v-model="productForm.imageUrl" type="text" placeholder="http://.../image.png" class="flex-1 border border-gray-200 rounded-lg py-2 px-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+              </div>
+              <p class="text-xs text-gray-500 mt-1">Provide a valid image URL. If left blank, a placeholder will be used.</p>
+              
+              <!-- Image Preview -->
+              <div v-if="productForm.imageUrl" class="mt-3 w-24 h-24 border border-gray-200 rounded-lg overflow-hidden bg-gray-50">
+                <img :src="productForm.imageUrl" class="w-full h-full object-cover" @error="$event.target.src='https://via.placeholder.com/150?text=Invalid+URL'">
+              </div>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 rounded-b-2xl flex justify-end space-x-3 sticky bottom-0 z-10">
+          <button @click="closeProductModal" class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-xl font-bold hover:bg-gray-50 transition">
+            Cancel
+          </button>
+          <button @click="saveProduct" :disabled="isSavingProduct" class="px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-bold shadow-md hover:bg-indigo-700 transition flex items-center disabled:opacity-70">
+            <i v-if="isSavingProduct" class="ph ph-spinner animate-spin mr-2"></i>
+            {{ isSavingProduct ? 'Saving...' : 'Save Product' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add/Edit Category Modal -->
+    <div v-if="showCategoryModal" class="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4">
+      <div class="bg-white w-full max-w-md rounded-2xl shadow-xl flex flex-col">
+        <!-- Modal Header -->
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white rounded-t-2xl">
+          <h3 class="text-xl font-bold text-gray-900">{{ categoryForm.parentId ? 'Add Sub-category' : 'Add Main Category' }}</h3>
+          <button @click="showCategoryModal = false" class="text-gray-400 hover:text-gray-600 transition-colors">
+            <i class="ph ph-x text-2xl"></i>
+          </button>
+        </div>
+        
+        <!-- Modal Body -->
+        <div class="p-6">
+          <form @submit.prevent="saveCategory" class="space-y-6">
+            <div v-if="categoryForm.parentId" class="bg-indigo-50 text-indigo-700 p-3 rounded-lg text-sm mb-4">
+              Adding sub-category under: <strong>{{ getCategoryName(categoryForm.parentId) }}</strong>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-bold text-gray-700 mb-1">Category Name *</label>
+              <input v-model="categoryForm.name" type="text" required class="w-full border border-gray-200 rounded-lg py-2 px-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" placeholder="e.g. New Devices">
+            </div>
+          </form>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 rounded-b-2xl flex justify-end space-x-3">
+          <button @click="showCategoryModal = false" class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-xl font-bold hover:bg-gray-50 transition">
+            Cancel
+          </button>
+          <button @click="saveCategory" :disabled="isSavingCategory" class="px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-bold shadow-md hover:bg-indigo-700 transition flex items-center disabled:opacity-70">
+            <i v-if="isSavingCategory" class="ph ph-spinner animate-spin mr-2"></i>
+            {{ isSavingCategory ? 'Saving...' : 'Save Category' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const { createApp, ref, computed, onMounted } = Vue;
+
+    // We will use the same local IP so it works across devices during testing
+    const API_BASE = 'http://192.168.1.31:3000/api';
+
+    createApp({
+      setup() {
+        // Auth State
+        const isAdminLoggedIn = ref(!!localStorage.getItem('adminToken'));
+        const currentUser = ref(JSON.parse(localStorage.getItem('adminUser') || 'null'));
+        const loginForm = ref({ username: '', password: '' });
+        const isLoggingIn = ref(false);
+        const loginError = ref('');
+
+        // Dashboard State
+        const activeTab = ref('dashboard');
+        const orders = ref([]);
+        const products = ref([]);
+        const categories = ref([]);
+        const orderFilter = ref('all');
+        const showReceiptModal = ref(false);
+        const receiptUrlToView = ref('');
+
+        // Product Modal State
+        const showProductModal = ref(false);
+        const editingProduct = ref(null);
+        const isSavingProduct = ref(false);
+        const productForm = ref({
+          name: '',
+          sku: '',
+          price: 0,
+          stock: 0,
+          categoryId: '',
+          subCategoryId: '',
+          description: '',
+          imageUrl: ''
+        });
+
+        // Category Modal State
+        const showCategoryModal = ref(false);
+        const isSavingCategory = ref(false);
+        const categoryForm = ref({
+          name: '',
+          parentId: null
+        });
+
+        // Computed Stats
+        const stats = computed(() => {
+          const totalOrders = orders.value.length;
+          // Calculate revenue only for paid/shipped/delivered orders
+          const totalRevenue = orders.value
+            .filter(o => ['paid', 'shipped', 'delivered'].includes(o.status))
+            .reduce((sum, order) => sum + Number(order.totalAmount || 0), 0);
+          
+          const totalProducts = products.value.length;
+          return { totalOrders, totalRevenue, totalProducts };
+        });
+
+        const pendingOrdersCount = computed(() => {
+          return orders.value.filter(o => o.status === 'pending_payment' && o.paymentReceiptUrl).length;
+        });
+
+        const recentOrders = computed(() => {
+          return [...orders.value].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5);
+        });
+
+        const filteredOrders = computed(() => {
+          let result = [...orders.value].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          if (orderFilter.value !== 'all') {
+            result = result.filter(o => o.status === orderFilter.value);
+          }
+          return result;
+        });
+
+        // Helpers
+        const formatPrice = (price) => {
+          return Number(price).toLocaleString('id-ID');
+        };
+
+        const getStatusLabel = (status) => {
+          const map = {
+            'all': 'All Orders',
+            'pending_payment': 'Pending Payment',
+            'processing': 'Processing',
+            'paid': 'Paid / To Ship',
+            'shipped': 'Shipped',
+            'delivered': 'Completed',
+            'cancelled': 'Cancelled',
+            'refunded': 'Refunded'
+          };
+          return map[status] || status;
+        };
+
+        const getStatusClass = (status) => {
+          const map = {
+            'pending_payment': 'bg-orange-50 text-orange-600 border-orange-200',
+            'processing': 'bg-yellow-50 text-yellow-600 border-yellow-200',
+            'paid': 'bg-indigo-50 text-indigo-600 border-indigo-200',
+            'shipped': 'bg-blue-50 text-blue-600 border-blue-200',
+            'delivered': 'bg-green-50 text-green-600 border-green-200',
+            'cancelled': 'bg-gray-100 text-gray-500 border-gray-200',
+            'refunded': 'bg-red-50 text-red-600 border-red-200'
+          };
+          return map[status] || 'bg-gray-100 text-gray-800';
+        };
+
+        const getProductName = (id) => {
+          const p = products.value.find(p => p.id === id);
+          return p ? p.name : id;
+        };
+
+        const getCategoryName = (id) => {
+          const c = categories.value.find(c => c.id === id);
+          return c ? c.name : id;
+        };
+
+        const mainCategories = computed(() => {
+          return categories.value.filter(c => !c.parentId);
+        });
+
+        const availableSubCategories = computed(() => {
+          if (!productForm.value.categoryId) return [];
+          return categories.value.filter(c => c.parentId === productForm.value.categoryId);
+        });
+
+        const onCategoryChange = () => {
+          productForm.value.subCategoryId = ''; // Reset sub-category when main changes
+        };
+
+        // Actions
+        const handleLogin = async () => {
+          isLoggingIn.value = true;
+          loginError.value = '';
+          try {
+            const res = await fetch(`${API_BASE}/login`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(loginForm.value)
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Login failed');
+            
+            // Check if user is admin
+            if (data.user.role !== 'admin') {
+              throw new Error('Access denied. Admin privileges required.');
+            }
+
+            localStorage.setItem('adminToken', data.token);
+            localStorage.setItem('adminUser', JSON.stringify(data.user));
+            isAdminLoggedIn.value = true;
+            currentUser.value = data.user;
+            
+            // Fetch data after login
+            fetchAdminData();
+          } catch (err) {
+            loginError.value = err.message;
+          } finally {
+            isLoggingIn.value = false;
+          }
+        };
+
+        const doLogout = () => {
+          localStorage.removeItem('adminToken');
+          localStorage.removeItem('adminUser');
+          isAdminLoggedIn.value = false;
+          currentUser.value = null;
+          loginForm.value = { username: '', password: '' };
+        };
+
+        const fetchAdminData = async () => {
+          if (!isAdminLoggedIn.value) return;
+          const token = localStorage.getItem('adminToken');
+          const headers = { 'Authorization': `Bearer ${token}` };
+
+          try {
+            // Fetch all orders (admin endpoint)
+            const resOrders = await fetch(`${API_BASE}/admin/orders`, { headers });
+            if (resOrders.ok) orders.value = await resOrders.json();
+
+            // Fetch products
+            const resProducts = await fetch(`${API_BASE}/products`);
+            if (resProducts.ok) {
+              const rawProducts = await resProducts.json();
+              products.value = rawProducts.map(p => ({
+                ...p,
+                images: Array.isArray(p.images) ? p.images : (typeof p.images === 'string' ? JSON.parse(p.images) : [])
+              }));
+            }
+
+            // Fetch categories
+            const resCategories = await fetch(`${API_BASE}/categories`);
+            if (resCategories.ok) categories.value = await resCategories.json();
+            
+          } catch (err) {
+            console.error('Error fetching admin data:', err);
+            if (err.message.includes('401') || err.message.includes('403')) {
+              doLogout();
+            }
+          }
+        };
+
+        const updateOrderStatus = async (orderId, newStatus) => {
+          try {
+            const token = localStorage.getItem('adminToken');
+            const res = await fetch(`${API_BASE}/orders/${orderId}/status`, {
+              method: 'PATCH',
+              headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify({ status: newStatus })
+            });
+            
+            if (!res.ok) throw new Error('Failed to update status');
+            // Refresh orders
+            fetchAdminData();
+          } catch (err) {
+            alert(err.message);
+          }
+        };
+
+        const cancelOrderAdmin = async (orderId) => {
+          if (!confirm('Are you sure you want to cancel this order?')) return;
+          updateOrderStatus(orderId, 'cancelled');
+        };
+
+        const deleteOrderAdmin = async (orderId) => {
+          if (!confirm('Are you sure you want to completely delete this order? This action cannot be undone.')) return;
+          try {
+            const token = localStorage.getItem('adminToken');
+            const res = await fetch(`${API_BASE}/orders/${orderId}`, {
+              method: 'DELETE',
+              headers: { 
+                'Authorization': `Bearer ${token}`
+              }
+            });
+            
+            if (!res.ok) throw new Error('Failed to delete order');
+            // Refresh orders
+            fetchAdminData();
+          } catch (err) {
+            alert(err.message);
+          }
+        };
+
+        const viewReceipt = (url) => {
+          // If the url is relative, prepend the base
+          if (url.startsWith('/')) {
+             receiptUrlToView.value = `http://192.168.1.31:3000${url}`;
+          } else {
+             receiptUrlToView.value = url;
+          }
+          showReceiptModal.value = true;
+        };
+
+        // Product Management
+        const openProductModal = (product = null) => {
+          if (product) {
+            editingProduct.value = product;
+            productForm.value = {
+              name: product.name,
+              sku: product.sku,
+              price: product.price,
+              stock: product.stock,
+              categoryId: product.categoryId,
+              subCategoryId: product.subCategoryId || '',
+              description: product.description || '',
+              imageUrl: (product.images && product.images.length > 0) ? product.images[0] : ''
+            };
+          } else {
+            editingProduct.value = null;
+            productForm.value = {
+              name: '', sku: '', price: 0, stock: 0, categoryId: '', subCategoryId: '', description: '', imageUrl: ''
+            };
+          }
+          showProductModal.value = true;
+        };
+        
+        const closeProductModal = () => {
+          showProductModal.value = false;
+          editingProduct.value = null;
+        };
+
+        const saveProduct = async () => {
+          isSavingProduct.value = true;
+          try {
+            const token = localStorage.getItem('adminToken');
+            const url = editingProduct.value 
+              ? `${API_BASE}/products/${editingProduct.value.id}` 
+              : `${API_BASE}/products`;
+            const method = editingProduct.value ? 'PUT' : 'POST';
+            
+            const payload = { ...productForm.value };
+            if (payload.imageUrl) {
+               payload.images = [payload.imageUrl];
+            } else {
+               payload.images = [];
+            }
+            delete payload.imageUrl;
+
+            const res = await fetch(url, {
+              method,
+              headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify(payload)
+            });
+            
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Failed to save product');
+            
+            closeProductModal();
+            fetchAdminData(); // Refresh list
+          } catch (err) {
+            alert(err.message);
+          } finally {
+            isSavingProduct.value = false;
+          }
+        };
+        
+        const deleteProduct = async (id) => {
+          if (!confirm('Are you sure you want to delete this product? This action cannot be undone.')) return;
+          try {
+            const token = localStorage.getItem('adminToken');
+            const res = await fetch(`${API_BASE}/products/${id}`, {
+              method: 'DELETE',
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (!res.ok) throw new Error('Failed to delete product');
+            fetchAdminData();
+          } catch (err) {
+            alert(err.message);
+          }
+        };
+
+        // Category Management
+        const openCategoryModal = (parentId = null) => {
+          categoryForm.value = { name: '', parentId };
+          showCategoryModal.value = true;
+        };
+
+        const saveCategory = async () => {
+          isSavingCategory.value = true;
+          try {
+            const token = localStorage.getItem('adminToken');
+            const res = await fetch(`${API_BASE}/categories`, {
+              method: 'POST',
+              headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify(categoryForm.value)
+            });
+            
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Failed to save category');
+            
+            showCategoryModal.value = false;
+            fetchAdminData(); // Refresh list
+          } catch (err) {
+            alert(err.message);
+          } finally {
+            isSavingCategory.value = false;
+          }
+        };
+
+        const deleteCategory = async (id) => {
+          if (!confirm('Are you sure you want to delete this category? Sub-categories and products must be deleted or reassigned first.')) return;
+          try {
+            const token = localStorage.getItem('adminToken');
+            const res = await fetch(`${API_BASE}/categories/${id}`, {
+              method: 'DELETE',
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Failed to delete category');
+            
+            fetchAdminData();
+          } catch (err) {
+            alert(err.message);
+          }
+        };
+
+        // Lifecycle
+        onMounted(() => {
+          if (isAdminLoggedIn.value) {
+            fetchAdminData();
+          }
+        });
+
+        return {
+          isAdminLoggedIn, currentUser, loginForm, isLoggingIn, loginError, handleLogin, doLogout,
+          activeTab, orders, products, categories, orderFilter, stats, pendingOrdersCount, recentOrders, filteredOrders,
+          formatPrice, getStatusLabel, getStatusClass, getProductName, getCategoryName,
+          fetchAdminData, updateOrderStatus, cancelOrderAdmin, deleteOrderAdmin,
+          showReceiptModal, receiptUrlToView, viewReceipt,
+          showProductModal, productForm, editingProduct, isSavingProduct, openProductModal, closeProductModal, saveProduct, deleteProduct,
+          mainCategories, availableSubCategories, onCategoryChange,
+          showCategoryModal, isSavingCategory, categoryForm, openCategoryModal, saveCategory, deleteCategory
+        }
+      }
+    }).mount('#admin-app');
+  </script>
+</body>
+</html>

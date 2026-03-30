@@ -1,0 +1,1553 @@
+{
+  "products": [
+    [
+      "p_1774601399543",
+      {
+        "id": "p_1774601399543",
+        "sku": "Tobacco-KZ-Green",
+        "name": "Kuanzhai Green",
+        "description": "The faint aroma of tobacco and cold and refreshing herbal mint, with smooth, delicate, and bright smoke, collides with the fragrance of tobacco, Asian pepper mint, and spearmint. It is like a cool stream in the hot summer, bringing a fresh and natural comfortable experience together. It is cool and sweet, making people feel relaxed and happy, and doubling their spirit.",
+        "categoryId": "cat_sticks",
+        "subCategoryId": "Kuanzhai Sticks",
+        "images": [
+          "http://localhost:3000/uploads/image-1774601391428-152368867.jpg"
+        ],
+        "specs": {
+          "specImage": "http://localhost:3000/uploads/image-1774601398424-258661629.png"
+        },
+        "price": 32000,
+        "stock": 99,
+        "version": 1,
+        "status": "active"
+      }
+    ],
+    [
+      "p_1774601517970",
+      {
+        "id": "p_1774601517970",
+        "sku": "Tobacco-KZ-Orange Red",
+        "name": "Kuanzhai Orange Red",
+        "description": "A burst of citrus in every puff! This flavor brings vibrant, tangy sweetness that's refreshing and exhilarating. Whether it's a sunny day or a simple craving, this flavor offers a smooth, energizing twist that's pure citrus joy.",
+        "categoryId": "cat_sticks",
+        "subCategoryId": "Kuanzhai Sticks",
+        "images": [
+          "http://localhost:3000/uploads/image-1774601508507-18212812.jpg"
+        ],
+        "specs": {
+          "specImage": "http://localhost:3000/uploads/image-1774601516589-6824294.png"
+        },
+        "price": 32000,
+        "stock": 100,
+        "version": 1,
+        "status": "active"
+      }
+    ],
+    [
+      "p_1774601657078",
+      {
+        "id": "p_1774601657078",
+        "sku": "Tobacco-NI-Coral Pink",
+        "name": "Nise Coral Pink",
+        "description": "The rich flavor of strawberry brings a fresh sweetness, just like freshly picked strawberries covered in morning dew. Each puff is filled with natural fruit fragrance, refreshing and full of vitality.",
+        "categoryId": "cat_sticks",
+        "subCategoryId": "cat_nise",
+        "images": [
+          "http://localhost:3000/uploads/image-1774601590919-233167015.jpg"
+        ],
+        "specs": {
+          "specImage": "http://localhost:3000/uploads/image-1774601656456-924943240.png"
+        },
+        "price": 29000,
+        "stock": 96,
+        "version": 1,
+        "status": "active"
+      }
+    ],
+    [
+      "p_1774601728319",
+      {
+        "id": "p_1774601728319",
+        "sku": "Tobacco-NI-Mellow Red",
+        "name": "Nise Mellow Red",
+        "description": "The refreshing taste of watermelon transports you to a cool summer world. With its sweet fruit aroma and fresh, light taste, it offers a delightful experience that feels like biting into fresh fruit.",
+        "categoryId": "cat_sticks",
+        "subCategoryId": "cat_nise",
+        "images": [
+          "http://localhost:3000/uploads/image-1774601719510-223137052.jpg"
+        ],
+        "specs": {
+          "specImage": "http://localhost:3000/uploads/image-1774601727837-289827334.png"
+        },
+        "price": 29000,
+        "stock": 100,
+        "version": 1,
+        "status": "active"
+      }
+    ],
+    [
+      "p_1774601884714",
+      {
+        "id": "p_1774601884714",
+        "sku": "Device-TD-Aurr",
+        "name": "Sixhill Aurr",
+        "description": "",
+        "categoryId": "cat_devices",
+        "subCategoryId": "cat_terea",
+        "images": [
+          "http://localhost:3000/uploads/image-1774601877520-448729191.jpg",
+          "http://localhost:3000/uploads/image-1774601877543-431163102.jpg",
+          "http://localhost:3000/uploads/image-1774601882319-973260510.jpg",
+          "http://localhost:3000/uploads/image-1774601882342-898706847.jpg"
+        ],
+        "specs": {
+          "specImage": "http://localhost:3000/uploads/image-1774601848860-134369307.png",
+          "color": "Grey，Purple，Gold"
+        },
+        "price": 599000,
+        "stock": 96,
+        "version": 1,
+        "status": "active"
+      }
+    ],
+    [
+      "p_1774798652727",
+      {
+        "id": "p_1774798652727",
+        "sku": "Bundle-KB-KungFu 1+5",
+        "name": "KungFu 1+5",
+        "description": "Includes: 1 Kungfu Air device + 5 Kuanzhai stick packs",
+        "categoryId": "Bundle",
+        "subCategoryId": "KungFu Bundle",
+        "images": [
+          "http://localhost:3000/uploads/image-1774798650873-34528024.jpg"
+        ],
+        "specs": {
+          "color": "Blue, Sliver"
+        },
+        "price": 279000,
+        "stock": 100,
+        "version": 1,
+        "status": "active"
+      }
+    ]
+  ],
+  "priceLogs": [],
+  "operationLogs": [
+    {
+      "id": "log_1774867354438_615",
+      "action": "UPDATE",
+      "entityType": "ORDER_STATUS",
+      "entityId": "ORD-20260329075647-2653",
+      "details": "Status changed to delivered",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-30T10:42:34.438Z"
+    },
+    {
+      "id": "log_1774867082356_272",
+      "action": "UPDATE",
+      "entityType": "ORDER_STATUS",
+      "entityId": "ORD-20260329075647-2653",
+      "details": "Status changed to shipped",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-30T10:38:02.356Z"
+    },
+    {
+      "id": "log_1774866842617_757",
+      "action": "DELETE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327112828-2921",
+      "details": "Admin deleted order",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-30T10:34:02.617Z"
+    },
+    {
+      "id": "log_1774866840946_240",
+      "action": "DELETE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327112257-7862",
+      "details": "Admin deleted order",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-30T10:34:00.946Z"
+    },
+    {
+      "id": "log_1774866839486_757",
+      "action": "DELETE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327112103-1724",
+      "details": "Admin deleted order",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-30T10:33:59.486Z"
+    },
+    {
+      "id": "log_1774866838070_183",
+      "action": "DELETE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327112000-4984",
+      "details": "Admin deleted order",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-30T10:33:58.070Z"
+    },
+    {
+      "id": "log_1774866836274_435",
+      "action": "DELETE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327111327-5468",
+      "details": "Admin deleted order",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-30T10:33:56.274Z"
+    },
+    {
+      "id": "log_1774866834505_170",
+      "action": "DELETE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327110308-6782",
+      "details": "Admin deleted order",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-30T10:33:54.505Z"
+    },
+    {
+      "id": "log_1774866833145_6",
+      "action": "DELETE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327103038-6680",
+      "details": "Admin deleted order",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-30T10:33:53.145Z"
+    },
+    {
+      "id": "log_1774866831726_101",
+      "action": "DELETE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327103022-1506",
+      "details": "Admin deleted order",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-30T10:33:51.726Z"
+    },
+    {
+      "id": "log_1774866830220_333",
+      "action": "DELETE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327102545-4016",
+      "details": "Admin deleted order",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-30T10:33:50.220Z"
+    },
+    {
+      "id": "log_1774866828683_398",
+      "action": "DELETE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327102417-4707",
+      "details": "Admin deleted order",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-30T10:33:48.683Z"
+    },
+    {
+      "id": "log_1774866827107_873",
+      "action": "DELETE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327102327-6270",
+      "details": "Admin deleted order",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-30T10:33:47.107Z"
+    },
+    {
+      "id": "log_1774866825694_272",
+      "action": "DELETE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327101659-5401",
+      "details": "Admin deleted order",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-30T10:33:45.694Z"
+    },
+    {
+      "id": "log_1774866823971_194",
+      "action": "DELETE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327101155-7100",
+      "details": "Admin deleted order",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-30T10:33:43.971Z"
+    },
+    {
+      "id": "log_1774866820571_445",
+      "action": "DELETE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327084559-1969",
+      "details": "Admin deleted order",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-30T10:33:40.571Z"
+    },
+    {
+      "id": "log_1774866818714_894",
+      "action": "DELETE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327084037-4246",
+      "details": "Admin deleted order",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-30T10:33:38.714Z"
+    },
+    {
+      "id": "log_1774866812466_470",
+      "action": "DELETE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327113117-8656",
+      "details": "Admin deleted order",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-30T10:33:32.466Z"
+    },
+    {
+      "id": "log_1774866811212_194",
+      "action": "DELETE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260329060204-1475",
+      "details": "Admin deleted order",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-30T10:33:31.212Z"
+    },
+    {
+      "id": "log_1774866809014_773",
+      "action": "DELETE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260329061726-7929",
+      "details": "Admin deleted order",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-30T10:33:29.014Z"
+    },
+    {
+      "id": "log_1774866807378_87",
+      "action": "DELETE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260329061919-3600",
+      "details": "Admin deleted order",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-30T10:33:27.378Z"
+    },
+    {
+      "id": "log_1774866805246_923",
+      "action": "DELETE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260329074703-1575",
+      "details": "Admin deleted order",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-30T10:33:25.246Z"
+    },
+    {
+      "id": "log_1774864218487_418",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260330095018-9844",
+      "details": "User submitted payment receipt",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-30T09:50:18.487Z"
+    },
+    {
+      "id": "log_1774864218478_195",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260330095018-9844",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-30T09:50:18.478Z"
+    },
+    {
+      "id": "log_1774805149867_39",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260329172549-2167",
+      "details": "User submitted payment receipt",
+      "operatorId": "u_1774805129883",
+      "operatorName": "jake",
+      "timestamp": "2026-03-29T17:25:49.867Z"
+    },
+    {
+      "id": "log_1774805149858_556",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260329172549-2167",
+      "details": "User placed new order",
+      "operatorId": "u_1774805129883",
+      "operatorName": "jake",
+      "timestamp": "2026-03-29T17:25:49.858Z"
+    },
+    {
+      "id": "log_1774798652728_785",
+      "action": "CREATE",
+      "entityType": "PRODUCT",
+      "entityId": "p_1774798652727",
+      "details": "Created product Bundle-KB-KungFu 1+5",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-29T15:37:32.728Z"
+    },
+    {
+      "id": "log_1774798539677_395",
+      "action": "CREATE",
+      "entityType": "CATEGORY",
+      "entityId": "KungFu Bundle",
+      "details": "Created category KungFu Bundle",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-29T15:35:39.677Z"
+    },
+    {
+      "id": "log_1774798502134_384",
+      "action": "CREATE",
+      "entityType": "CATEGORY",
+      "entityId": "Bundle",
+      "details": "Created category Bundle",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-29T15:35:02.134Z"
+    },
+    {
+      "id": "log_1774798486653_754",
+      "action": "DELETE",
+      "entityType": "PRODUCT",
+      "entityId": "p_1774796840957",
+      "details": "Deleted product in batch",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-29T15:34:46.654Z"
+    },
+    {
+      "id": "log_1774797357856_275",
+      "action": "DELETE",
+      "entityType": "CATEGORY",
+      "entityId": "Bundle",
+      "details": "Deleted category",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-29T15:15:57.856Z"
+    },
+    {
+      "id": "log_1774797352076_420",
+      "action": "DELETE",
+      "entityType": "CATEGORY",
+      "entityId": "KungFu Bundle",
+      "details": "Deleted category",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-29T15:15:52.076Z"
+    },
+    {
+      "id": "log_1774797017862_496",
+      "action": "UPDATE",
+      "entityType": "PRODUCT",
+      "entityId": "p_1774796840957",
+      "details": "Updated basic info",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-29T15:10:17.862Z"
+    },
+    {
+      "id": "log_1774796997710_416",
+      "action": "CREATE",
+      "entityType": "CATEGORY",
+      "entityId": "KungFu Bundle",
+      "details": "Created category KungFu Bundle",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-29T15:09:57.710Z"
+    },
+    {
+      "id": "log_1774796964866_801",
+      "action": "CREATE",
+      "entityType": "CATEGORY",
+      "entityId": "Bundle",
+      "details": "Created category Sixhill Bundle",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-29T15:09:24.866Z"
+    },
+    {
+      "id": "log_1774796840957_170",
+      "action": "CREATE",
+      "entityType": "PRODUCT",
+      "entityId": "p_1774796840957",
+      "details": "Created product Sixhill-Bundle-KungFu Bundle",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-29T15:07:20.957Z"
+    },
+    {
+      "id": "log_1774772505344_440",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260329082145-7828",
+      "details": "User submitted payment receipt",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-29T08:21:45.344Z"
+    },
+    {
+      "id": "log_1774772505334_51",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260329082145-7828",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-29T08:21:45.334Z"
+    },
+    {
+      "id": "log_1774771685992_976",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260329080805-9788",
+      "details": "User submitted payment receipt",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-29T08:08:05.992Z"
+    },
+    {
+      "id": "log_1774771685983_53",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260329080805-9788",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-29T08:08:05.983Z"
+    },
+    {
+      "id": "log_1774771016459_520",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260329075647-2653",
+      "details": "User submitted payment receipt",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-29T07:56:56.459Z"
+    },
+    {
+      "id": "log_1774771007241_194",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260329075647-2653",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-29T07:56:47.241Z"
+    },
+    {
+      "id": "log_1774770865030_181",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260329075425-3679",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-29T07:54:25.030Z"
+    },
+    {
+      "id": "log_1774770823089_880",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327103038-6680",
+      "details": "Status changed to refunded",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-29T07:53:43.089Z"
+    },
+    {
+      "id": "log_1774770821842_900",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327111327-5468",
+      "details": "Status changed to refunded",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-29T07:53:41.842Z"
+    },
+    {
+      "id": "log_1774770785831_915",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327112000-4984",
+      "details": "Status changed to cancelled",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-29T07:53:05.831Z"
+    },
+    {
+      "id": "log_1774770783695_421",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327112103-1724",
+      "details": "Status changed to cancelled",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-29T07:53:03.695Z"
+    },
+    {
+      "id": "log_1774770781507_573",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327112257-7862",
+      "details": "Status changed to cancelled",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-29T07:53:01.507Z"
+    },
+    {
+      "id": "log_1774770779109_329",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327112828-2921",
+      "details": "Status changed to cancelled",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-29T07:52:59.109Z"
+    },
+    {
+      "id": "log_1774770777049_228",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327113117-8656",
+      "details": "Status changed to cancelled",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-29T07:52:57.049Z"
+    },
+    {
+      "id": "log_1774770775023_971",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260329060204-1475",
+      "details": "Status changed to cancelled",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-29T07:52:55.023Z"
+    },
+    {
+      "id": "log_1774770772595_131",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260329061726-7929",
+      "details": "Status changed to cancelled",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-29T07:52:52.595Z"
+    },
+    {
+      "id": "log_1774770755428_132",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260329061919-3600",
+      "details": "Status changed to cancelled",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-29T07:52:35.428Z"
+    },
+    {
+      "id": "log_1774770748928_99",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260329074703-1575",
+      "details": "Status changed to cancelled",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-29T07:52:28.928Z"
+    },
+    {
+      "id": "log_1774770423409_153",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260329074703-1575",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-29T07:47:03.409Z"
+    },
+    {
+      "id": "log_1774765159362_356",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260329061919-3600",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-29T06:19:19.362Z"
+    },
+    {
+      "id": "log_1774765046149_69",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260329061726-7929",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-29T06:17:26.149Z"
+    },
+    {
+      "id": "log_1774764124132_39",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260329060204-1475",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-29T06:02:04.132Z"
+    },
+    {
+      "id": "log_1774611077659_692",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327113117-8656",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-27T11:31:17.659Z"
+    },
+    {
+      "id": "log_1774610908414_984",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327112828-2921",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-27T11:28:28.414Z"
+    },
+    {
+      "id": "log_1774610577731_919",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327112257-7862",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-27T11:22:57.731Z"
+    },
+    {
+      "id": "log_1774610463758_78",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327112103-1724",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-27T11:21:03.758Z"
+    },
+    {
+      "id": "log_1774610400716_461",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327112000-4984",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-27T11:20:00.716Z"
+    },
+    {
+      "id": "log_1774610007268_90",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327111327-5468",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-27T11:13:27.268Z"
+    },
+    {
+      "id": "log_1774609775139_328",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327103022-1506",
+      "details": "Status changed to refunded",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T11:09:35.139Z"
+    },
+    {
+      "id": "log_1774609742882_715",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327103038-6680",
+      "details": "Status changed to delivered",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T11:09:02.882Z"
+    },
+    {
+      "id": "log_1774609388511_777",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327110308-6782",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-27T11:03:08.511Z"
+    },
+    {
+      "id": "log_1774607983089_705",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327103038-6680",
+      "details": "Status changed to shipped",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T10:39:43.089Z"
+    },
+    {
+      "id": "log_1774607980674_77",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327103038-6680",
+      "details": "Status changed to paid",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T10:39:40.674Z"
+    },
+    {
+      "id": "log_1774607438046_137",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327103038-6680",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-27T10:30:38.046Z"
+    },
+    {
+      "id": "log_1774607422805_61",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327103022-1506",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-27T10:30:22.805Z"
+    },
+    {
+      "id": "log_1774607280190_640",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327102327-6270",
+      "details": "Status changed to refunded",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T10:28:00.190Z"
+    },
+    {
+      "id": "log_1774607278802_783",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327102417-4707",
+      "details": "Status changed to refunded",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T10:27:58.802Z"
+    },
+    {
+      "id": "log_1774607276900_830",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327102545-4016",
+      "details": "Status changed to refunded",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T10:27:56.900Z"
+    },
+    {
+      "id": "log_1774607273812_265",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327102545-4016",
+      "details": "Status changed to delivered",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T10:27:53.812Z"
+    },
+    {
+      "id": "log_1774607272534_485",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327102545-4016",
+      "details": "Status changed to shipped",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T10:27:52.534Z"
+    },
+    {
+      "id": "log_1774607265827_221",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327084037-4246",
+      "details": "Status changed to refunded",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T10:27:45.827Z"
+    },
+    {
+      "id": "log_1774607265101_755",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327084559-1969",
+      "details": "Status changed to refunded",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T10:27:45.101Z"
+    },
+    {
+      "id": "log_1774607264443_185",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327101155-7100",
+      "details": "Status changed to refunded",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T10:27:44.443Z"
+    },
+    {
+      "id": "log_1774607263705_865",
+      "action": "UPDATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327101659-5401",
+      "details": "Status changed to refunded",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T10:27:43.705Z"
+    },
+    {
+      "id": "log_1774607145816_368",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327102545-4016",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-27T10:25:45.816Z"
+    },
+    {
+      "id": "log_1774607057806_115",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327102417-4707",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-27T10:24:17.806Z"
+    },
+    {
+      "id": "log_1774607007990_738",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327102327-6270",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-27T10:23:27.990Z"
+    },
+    {
+      "id": "log_1774606619173_232",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327101659-5401",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-27T10:16:59.173Z"
+    },
+    {
+      "id": "log_1774606315621_1",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327101155-7100",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-27T10:11:55.621Z"
+    },
+    {
+      "id": "log_1774601884714_504",
+      "action": "CREATE",
+      "entityType": "PRODUCT",
+      "entityId": "p_1774601884714",
+      "details": "Created product Device-TD-Aurr",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:58:04.714Z"
+    },
+    {
+      "id": "log_1774601728319_96",
+      "action": "CREATE",
+      "entityType": "PRODUCT",
+      "entityId": "p_1774601728319",
+      "details": "Created product Tobacco-NI-Mellow Red",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:55:28.319Z"
+    },
+    {
+      "id": "log_1774601657078_591",
+      "action": "CREATE",
+      "entityType": "PRODUCT",
+      "entityId": "p_1774601657078",
+      "details": "Created product Tobacco-NI-Coral Pink",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:54:17.078Z"
+    },
+    {
+      "id": "log_1774601517970_583",
+      "action": "CREATE",
+      "entityType": "PRODUCT",
+      "entityId": "p_1774601517970",
+      "details": "Created product Tobacco-KZ-Orange Red",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:51:57.970Z"
+    },
+    {
+      "id": "log_1774601413814_337",
+      "action": "DELETE",
+      "entityType": "PRODUCT",
+      "entityId": "p_1774601123253",
+      "details": "Deleted product in batch",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:50:13.814Z"
+    },
+    {
+      "id": "log_1774601399543_443",
+      "action": "CREATE",
+      "entityType": "PRODUCT",
+      "entityId": "p_1774601399543",
+      "details": "Created product Tobacco-KZ-Green",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:49:59.543Z"
+    },
+    {
+      "id": "log_1774601346254_401",
+      "action": "CREATE",
+      "entityType": "CATEGORY",
+      "entityId": "Kuanzhai Sticks",
+      "details": "Created category Kuanzhai Sticks",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:49:06.254Z"
+    },
+    {
+      "id": "log_1774601320992_952",
+      "action": "DELETE",
+      "entityType": "CATEGORY",
+      "entityId": "cat_kuanzhai",
+      "details": "Deleted category",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:48:40.992Z"
+    },
+    {
+      "id": "log_1774601224362_223",
+      "action": "UPDATE",
+      "entityType": "PRODUCT",
+      "entityId": "p_1774601123253",
+      "details": "Updated images",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:47:04.362Z"
+    },
+    {
+      "id": "log_1774601224355_494",
+      "action": "UPDATE",
+      "entityType": "PRODUCT",
+      "entityId": "p_1774601123253",
+      "details": "Updated basic info",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:47:04.355Z"
+    },
+    {
+      "id": "log_1774601159112_241",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327084559-1969",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-27T08:45:59.112Z"
+    },
+    {
+      "id": "log_1774601123253_53",
+      "action": "CREATE",
+      "entityType": "PRODUCT",
+      "entityId": "p_1774601123253",
+      "details": "Created product Tobacco-KZ",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:45:23.253Z"
+    },
+    {
+      "id": "log_1774600932646_430",
+      "action": "DELETE",
+      "entityType": "PRODUCT",
+      "entityId": "p_ns_03",
+      "details": "Deleted product in batch",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:42:12.646Z"
+    },
+    {
+      "id": "log_1774600932646_736",
+      "action": "DELETE",
+      "entityType": "PRODUCT",
+      "entityId": "p_ns_02",
+      "details": "Deleted product in batch",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:42:12.646Z"
+    },
+    {
+      "id": "log_1774600932646_301",
+      "action": "DELETE",
+      "entityType": "PRODUCT",
+      "entityId": "p_ns_01",
+      "details": "Deleted product in batch",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:42:12.646Z"
+    },
+    {
+      "id": "log_1774600932646_869",
+      "action": "DELETE",
+      "entityType": "PRODUCT",
+      "entityId": "p_kz_10",
+      "details": "Deleted product in batch",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:42:12.646Z"
+    },
+    {
+      "id": "log_1774600932646_775",
+      "action": "DELETE",
+      "entityType": "PRODUCT",
+      "entityId": "p_kz_09",
+      "details": "Deleted product in batch",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:42:12.646Z"
+    },
+    {
+      "id": "log_1774600932646_87",
+      "action": "DELETE",
+      "entityType": "PRODUCT",
+      "entityId": "p_kz_08",
+      "details": "Deleted product in batch",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:42:12.646Z"
+    },
+    {
+      "id": "log_1774600932646_822",
+      "action": "DELETE",
+      "entityType": "PRODUCT",
+      "entityId": "p_kz_07",
+      "details": "Deleted product in batch",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:42:12.646Z"
+    },
+    {
+      "id": "log_1774600932646_900",
+      "action": "DELETE",
+      "entityType": "PRODUCT",
+      "entityId": "p_kz_06",
+      "details": "Deleted product in batch",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:42:12.646Z"
+    },
+    {
+      "id": "log_1774600932646_37",
+      "action": "DELETE",
+      "entityType": "PRODUCT",
+      "entityId": "p_kz_05",
+      "details": "Deleted product in batch",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:42:12.646Z"
+    },
+    {
+      "id": "log_1774600932646_460",
+      "action": "DELETE",
+      "entityType": "PRODUCT",
+      "entityId": "p_kz_04",
+      "details": "Deleted product in batch",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:42:12.646Z"
+    },
+    {
+      "id": "log_1774600932646_832",
+      "action": "DELETE",
+      "entityType": "PRODUCT",
+      "entityId": "p_kz_03",
+      "details": "Deleted product in batch",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:42:12.646Z"
+    },
+    {
+      "id": "log_1774600932646_254",
+      "action": "DELETE",
+      "entityType": "PRODUCT",
+      "entityId": "p_kz_02",
+      "details": "Deleted product in batch",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:42:12.646Z"
+    },
+    {
+      "id": "log_1774600932646_540",
+      "action": "DELETE",
+      "entityType": "PRODUCT",
+      "entityId": "p_kz_01",
+      "details": "Deleted product in batch",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:42:12.646Z"
+    },
+    {
+      "id": "log_1774600932646_23",
+      "action": "DELETE",
+      "entityType": "PRODUCT",
+      "entityId": "p_1002",
+      "details": "Deleted product in batch",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:42:12.646Z"
+    },
+    {
+      "id": "log_1774600932646_651",
+      "action": "DELETE",
+      "entityType": "PRODUCT",
+      "entityId": "p_1001",
+      "details": "Deleted product in batch",
+      "operatorId": "a9999",
+      "operatorName": "Admin Jake",
+      "timestamp": "2026-03-27T08:42:12.646Z"
+    },
+    {
+      "id": "log_1774600837088_828",
+      "action": "CREATE",
+      "entityType": "ORDER",
+      "entityId": "ORD-20260327084037-4246",
+      "details": "User placed new order",
+      "operatorId": "u1001",
+      "operatorName": "Normal User",
+      "timestamp": "2026-03-27T08:40:37.088Z"
+    }
+  ],
+  "orders": [
+    [
+      "ORD-20260329075425-3679",
+      {
+        "orderId": "ORD-20260329075425-3679",
+        "userId": "u1001",
+        "items": [
+          {
+            "productId": "p_1774601884714",
+            "sku": "Device-TD-Aurr",
+            "name": "Sixhill Aurr",
+            "priceAtPurchase": 599000,
+            "quantity": 1,
+            "color": "Grey",
+            "itemTotal": 599000
+          }
+        ],
+        "totalAmount": 599000,
+        "paymentMethod": "bank_transfer",
+        "status": "pending_payment",
+        "createdAt": "2026-03-29T07:54:25.030Z"
+      }
+    ],
+    [
+      "ORD-20260329075647-2653",
+      {
+        "orderId": "ORD-20260329075647-2653",
+        "userId": "u1001",
+        "items": [
+          {
+            "productId": "p_1774601657078",
+            "sku": "Tobacco-NI-Coral Pink",
+            "name": "Nise Coral Pink",
+            "priceAtPurchase": 29000,
+            "quantity": 2,
+            "color": null,
+            "itemTotal": 58000
+          },
+          {
+            "productId": "p_1774601657078",
+            "sku": "Tobacco-NI-Coral Pink",
+            "name": "Nise Coral Pink",
+            "priceAtPurchase": 29000,
+            "quantity": 1,
+            "color": null,
+            "itemTotal": 29000
+          }
+        ],
+        "totalAmount": 87000,
+        "paymentMethod": "bank_transfer",
+        "status": "delivered",
+        "createdAt": "2026-03-29T07:56:47.241Z",
+        "receiptUrl": "http://localhost:3000/uploads/image-1774771016451-830170487.jpg",
+        "updatedAt": "2026-03-30T10:42:34.438Z"
+      }
+    ],
+    [
+      "ORD-20260329080805-9788",
+      {
+        "orderId": "ORD-20260329080805-9788",
+        "userId": "u1001",
+        "items": [
+          {
+            "productId": "p_1774601884714",
+            "sku": "Device-TD-Aurr",
+            "name": "Sixhill Aurr",
+            "priceAtPurchase": 599000,
+            "quantity": 1,
+            "color": "Grey",
+            "itemTotal": 599000
+          }
+        ],
+        "totalAmount": 599000,
+        "paymentMethod": "bank_transfer",
+        "status": "processing",
+        "createdAt": "2026-03-29T08:08:05.983Z",
+        "receiptUrl": "http://localhost:3000/uploads/image-1774771685974-22744424.jpg",
+        "updatedAt": "2026-03-29T08:08:05.992Z"
+      }
+    ],
+    [
+      "ORD-20260329082145-7828",
+      {
+        "orderId": "ORD-20260329082145-7828",
+        "userId": "u1001",
+        "items": [
+          {
+            "productId": "p_1774601884714",
+            "sku": "Device-TD-Aurr",
+            "name": "Sixhill Aurr",
+            "priceAtPurchase": 599000,
+            "quantity": 1,
+            "color": "Grey",
+            "itemTotal": 599000
+          }
+        ],
+        "totalAmount": 599000,
+        "paymentMethod": "bank_transfer",
+        "status": "processing",
+        "createdAt": "2026-03-29T08:21:45.334Z",
+        "receiptUrl": "http://localhost:3000/uploads/image-1774772505317-707429977.jpg",
+        "updatedAt": "2026-03-29T08:21:45.344Z"
+      }
+    ],
+    [
+      "ORD-20260329172549-2167",
+      {
+        "orderId": "ORD-20260329172549-2167",
+        "userId": "u_1774805129883",
+        "items": [
+          {
+            "productId": "p_1774601884714",
+            "sku": "Device-TD-Aurr",
+            "name": "Sixhill Aurr",
+            "priceAtPurchase": 599000,
+            "quantity": 1,
+            "color": "Grey",
+            "itemTotal": 599000
+          }
+        ],
+        "totalAmount": 599000,
+        "paymentMethod": "bank_transfer",
+        "status": "processing",
+        "createdAt": "2026-03-29T17:25:49.858Z",
+        "receiptUrl": "http://localhost:3000/uploads/image-1774805149840-943420863.jpg",
+        "updatedAt": "2026-03-29T17:25:49.867Z"
+      }
+    ],
+    [
+      "ORD-20260330095018-9844",
+      {
+        "orderId": "ORD-20260330095018-9844",
+        "userId": "u1001",
+        "items": [
+          {
+            "productId": "p_1774601657078",
+            "sku": "Tobacco-NI-Coral Pink",
+            "name": "Nise Coral Pink",
+            "priceAtPurchase": 29000,
+            "quantity": 1,
+            "color": null,
+            "itemTotal": 29000
+          },
+          {
+            "productId": "p_1774601399543",
+            "sku": "Tobacco-KZ-Green",
+            "name": "Kuanzhai Green",
+            "priceAtPurchase": 32000,
+            "quantity": 1,
+            "color": null,
+            "itemTotal": 32000
+          }
+        ],
+        "totalAmount": 61000,
+        "paymentMethod": "bank_transfer",
+        "status": "processing",
+        "createdAt": "2026-03-30T09:50:18.478Z",
+        "receiptUrl": "http://localhost:3000/uploads/image-1774864218466-780633177.jpg",
+        "updatedAt": "2026-03-30T09:50:18.487Z"
+      }
+    ]
+  ],
+  "users": [
+    [
+      "u1001",
+      {
+        "id": "u1001",
+        "name": "Normal User",
+        "role": "user"
+      }
+    ],
+    [
+      "a9999",
+      {
+        "id": "a9999",
+        "name": "Admin Jake",
+        "role": "admin"
+      }
+    ],
+    [
+      "u_1774805129883",
+      {
+        "id": "u_1774805129883",
+        "username": "jake",
+        "password": "2023003",
+        "name": "jake",
+        "phone": "123456778",
+        "address": "jakarta",
+        "ageConfirmed": true,
+        "role": "user"
+      }
+    ]
+  ],
+  "reviews": [],
+  "categories": [
+    [
+      "cat_sticks",
+      {
+        "id": "cat_sticks",
+        "name": "Tobacco sticks",
+        "description": "Main category for sticks",
+        "parentId": null,
+        "sortOrder": 1
+      }
+    ],
+    [
+      "cat_nise",
+      {
+        "id": "cat_nise",
+        "name": "Nise sticks",
+        "description": "Nise brand",
+        "parentId": "cat_sticks",
+        "sortOrder": 2
+      }
+    ],
+    [
+      "cat_devices",
+      {
+        "id": "cat_devices",
+        "name": "HNB Devices",
+        "description": "Heating devices",
+        "parentId": null,
+        "sortOrder": 2
+      }
+    ],
+    [
+      "cat_terea",
+      {
+        "id": "cat_terea",
+        "name": "TEREA Device",
+        "description": "TEREA heating devices",
+        "parentId": "cat_devices",
+        "sortOrder": 1
+      }
+    ],
+    [
+      "cat_heated",
+      {
+        "id": "cat_heated",
+        "name": "HEATED Device",
+        "description": "HEATED devices",
+        "parentId": "cat_devices",
+        "sortOrder": 2
+      }
+    ],
+    [
+      "cat_acc",
+      {
+        "id": "cat_acc",
+        "name": "Accessories",
+        "description": "Cases, chargers, etc.",
+        "parentId": null,
+        "sortOrder": 3
+      }
+    ],
+    [
+      "Kuanzhai Sticks",
+      {
+        "id": "Kuanzhai Sticks",
+        "name": "Kuanzhai Sticks",
+        "description": "",
+        "parentId": "cat_sticks",
+        "sortOrder": 7
+      }
+    ],
+    [
+      "Bundle",
+      {
+        "id": "Bundle",
+        "name": "Bundle",
+        "description": "",
+        "parentId": null,
+        "sortOrder": 8
+      }
+    ],
+    [
+      "KungFu Bundle",
+      {
+        "id": "KungFu Bundle",
+        "name": "KungFu Bundle",
+        "description": "",
+        "parentId": "Bundle",
+        "sortOrder": 9
+      }
+    ]
+  ]
+}
