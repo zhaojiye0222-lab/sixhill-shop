@@ -556,7 +556,7 @@ app.get('/api/admin/stats', authenticate, requireAdmin, async (req, res) => {
 // ==========================================
 // 上传图片 API
 // ==========================================
-app.post('/api/upload', authenticate, requireAdmin, upload.single('image'), (req, res) => {
+app.post('/api/upload', authenticate, upload.single('image'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No image uploaded' });
   }
