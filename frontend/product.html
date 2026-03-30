@@ -390,6 +390,11 @@
         const showReviewModal = ref(false);
         const newReview = ref({ rating: 5, comment: '' });
 
+        // Define API_BASE similarly to index.html
+        const API_BASE = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.')
+          ? `http://${window.location.hostname}:3000/api`
+          : '/api';
+
         // 真实 API 请求获取商品详情
         const fetchProduct = async (skuParam) => {
           try {
@@ -403,7 +408,7 @@
             }
 
             // 调用真实的本地接口
-            const response = await fetch(`http://192.168.1.31:3000/api/products/${identifier}`);
+            const response = await fetch(`${API_BASE}/products/${identifier}`);
             if (!response.ok) throw new Error('Product not found');
             
             const data = await response.json();
@@ -559,7 +564,7 @@
             // 1. 获取 Token
             let token = localStorage.getItem('userToken');
             if (!token) {
-              const loginRes = await fetch('http://192.168.1.31:3000/api/login', {
+              const loginRes = await fetch(`${API_BASE}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: 'user', password: 'user123' })
@@ -573,7 +578,7 @@
             // 2. 上传截图
             const formData = new FormData();
             formData.append('image', receiptFile.value);
-            const uploadRes = await fetch('http://192.168.1.31:3000/api/upload', {
+            const uploadRes = await fetch(`${API_BASE}/upload`, {
               method: 'POST',
               headers: { 'Authorization': `Bearer ${token}` },
               body: formData
@@ -587,7 +592,7 @@
             if (selectedColor.value) orderItem.color = selectedColor.value;
             if (isBundle.value) orderItem.bundleFlavors = getSelectedBundleFlavors();
 
-            const orderRes = await fetch('http://192.168.1.31:3000/api/orders', {
+            const orderRes = await fetch(`${API_BASE}/orders`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -605,7 +610,7 @@
             }
 
             // 4. 提交支付截图关联到订单
-            const paymentRes = await fetch(`http://192.168.1.31:3000/api/orders/${orderData.orderId || orderData.id}/payment`, {
+            const paymentRes = await fetch(`${API_BASE}/orders/${orderData.orderId || orderData.id}/payment`, {
               method: 'POST',
               headers: { 
                 'Content-Type': 'application/json',
