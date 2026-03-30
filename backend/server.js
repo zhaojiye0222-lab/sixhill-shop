@@ -568,7 +568,11 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Something broke!' });
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
-});
+module.exports = app;
+
+if (require.main === module) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
+  });
+}
