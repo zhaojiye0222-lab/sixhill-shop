@@ -248,7 +248,7 @@
           <div v-show="activeTab === 'orders'" class="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full">
             <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50 rounded-t-2xl">
               <div class="flex space-x-2">
-                <button v-for="filter in ['all', 'pending_payment', 'processing', 'paid', 'shipped', 'delivered']" :key="filter"
+                <button v-for="filter in ['all', 'pending_payment', 'shipped', 'delivered', 'refunded']" :key="filter"
                         @click="orderFilter = filter"
                         :class="['px-3 py-1.5 rounded-lg text-sm font-medium transition-colors', orderFilter === filter ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50']">
                   {{ getStatusLabel(filter) }}
@@ -317,14 +317,14 @@
                     
                     <!-- Admin Actions -->
                     <div class="flex gap-2">
-                      <button v-if="order.status === 'pending_payment' && order.paymentReceiptUrl" @click="updateOrderStatus((order.id || order.orderId), 'paid')" class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-bold shadow-sm hover:bg-green-700 transition">
-                        Confirm Payment
+                      <button v-if="order.status === 'pending_payment' && order.paymentReceiptUrl" @click="updateOrderStatus((order.id || order.orderId), 'shipped')" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold shadow-sm hover:bg-indigo-700 transition">
+                        Confirm Payment & Ship
                       </button>
-                      <button v-if="['paid', 'processing'].includes(order.status)" @click="updateOrderStatus((order.id || order.orderId), 'shipped')" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold shadow-sm hover:bg-indigo-700 transition">
-                        Mark as Shipped
-                      </button>
-                      <button v-if="['pending_payment', 'paid', 'processing'].includes(order.status)" @click="cancelOrderAdmin((order.id || order.orderId))" class="px-4 py-2 bg-white border border-red-200 text-red-600 rounded-lg text-sm font-bold hover:bg-red-50 transition">
+                      <button v-if="['pending_payment'].includes(order.status)" @click="cancelOrderAdmin((order.id || order.orderId))" class="px-4 py-2 bg-white border border-red-200 text-red-600 rounded-lg text-sm font-bold hover:bg-red-50 transition">
                         Cancel Order
+                      </button>
+                      <button v-if="['shipped', 'delivered'].includes(order.status)" @click="updateOrderStatus((order.id || order.orderId), 'refunded')" class="px-4 py-2 bg-white border border-orange-200 text-orange-600 rounded-lg text-sm font-bold hover:bg-orange-50 transition">
+                        Refund
                       </button>
                     </div>
                   </div>
@@ -690,12 +690,9 @@
         const getStatusLabel = (status) => {
           const map = {
             'all': 'All Orders',
-            'pending_payment': 'Pending Payment',
-            'processing': 'Processing',
-            'paid': 'Paid / To Ship',
+            'pending_payment': 'Pending',
             'shipped': 'Shipped',
             'delivered': 'Completed',
-            'cancelled': 'Cancelled',
             'refunded': 'Refunded'
           };
           return map[status] || status;
@@ -704,11 +701,8 @@
         const getStatusClass = (status) => {
           const map = {
             'pending_payment': 'bg-orange-50 text-orange-600 border-orange-200',
-            'processing': 'bg-yellow-50 text-yellow-600 border-yellow-200',
-            'paid': 'bg-indigo-50 text-indigo-600 border-indigo-200',
             'shipped': 'bg-blue-50 text-blue-600 border-blue-200',
             'delivered': 'bg-green-50 text-green-600 border-green-200',
-            'cancelled': 'bg-gray-100 text-gray-500 border-gray-200',
             'refunded': 'bg-red-50 text-red-600 border-red-200'
           };
           return map[status] || 'bg-gray-100 text-gray-800';
