@@ -880,9 +880,8 @@
         // Login State
         // Base API URL config
         // In production, we can use empty string '' to use the same host, or hardcode the production domain
-        const API_BASE = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.')
-          ? `http://${window.location.hostname}:3000/api`
-          : '/api';
+        const isLocal = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.');
+        const API_BASE = isLocal ? `http://${window.location.hostname}:3000/api` : '/api';
         
         const showLoginModal = ref(false);
         const isLoggingIn = ref(false);
@@ -1048,8 +1047,8 @@
           const identifier = product.id || product.sku;
           if (!identifier) return;
           
-          // Use absolute path with full origin to bypass any single-page routing quirks
-          const targetUrl = window.location.origin + `/frontend/product.html?id=${identifier}`;
+          // Using a reliable path relative to root
+          const targetUrl = `/frontend/product.html?id=${identifier}`;
           console.log('Navigating to product:', targetUrl);
           
           window.location.href = targetUrl;
