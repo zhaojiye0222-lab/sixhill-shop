@@ -1794,9 +1794,16 @@
               orderStatusFilter.value = 'completed';
               // 确保进入了订单历史列表视图
               showOrderHistory.value = true;
+              
+              // 强制触发一下重新获取订单列表，防止本地缓存和后端不同步导致卡死
+              await fetchMyOrders();
+            } else {
+              const errData = await res.json();
+              alert(errData.error || 'Failed to confirm receipt');
             }
           } catch (err) {
             console.error(err);
+            alert('Network error: ' + err.message);
           }
         };
 
