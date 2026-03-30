@@ -408,10 +408,12 @@
             }
 
             // 调用真实的本地接口
+            console.log(`Fetching product details from ${API_BASE}/products/${identifier}...`);
             const response = await fetch(`${API_BASE}/products/${identifier}`);
             if (!response.ok) throw new Error('Product not found');
             
             const data = await response.json();
+            console.log('Loaded product details:', data);
             product.value = data;
             
             // Fix images array if it's somehow undefined or missing
@@ -457,7 +459,7 @@
 
         const fetchReviews = async (productId) => {
           try {
-            const res = await fetch(`http://192.168.1.31:3000/api/products/${productId}/reviews`);
+            const res = await fetch(`${API_BASE}/products/${productId}/reviews`);
             reviews.value = await res.json();
           } catch(err) {
             console.error('Failed to load reviews');

@@ -1047,6 +1047,10 @@
           // 直接使用 ID 来请求，因为后端 ProductService.getProduct 会优先匹配 id
           const identifier = product.id || product.sku;
           if (!identifier) return;
+          // IMPORTANT: Check environment to decide route path
+          const isLocal = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.');
+          // In local dev, we are usually at root (e.g. localhost:3000/index.html) so frontend folder is explicit
+          // In Vercel, routing might rewrite this, but /frontend/product.html is generally safe if vercel.json routes it.
           window.location.href = `/frontend/product.html?id=${identifier}`;
         };
 
