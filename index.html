@@ -1048,11 +1048,11 @@
           const identifier = product.id || product.sku;
           if (!identifier) return;
           
-          // Debug check
-          console.log('Navigating to product:', identifier);
+          // Use absolute path with full origin to bypass any single-page routing quirks
+          const targetUrl = window.location.origin + `/frontend/product.html?id=${identifier}`;
+          console.log('Navigating to product:', targetUrl);
           
-          // Use window.location.assign for a more reliable hard navigation
-          window.location.assign(`/frontend/product.html?id=${identifier}`);
+          window.location.href = targetUrl;
         };
 
         const goToCategory = (catId) => {
