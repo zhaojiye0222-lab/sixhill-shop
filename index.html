@@ -1792,6 +1792,8 @@
               
               // 自动切换到 completed(Review) 标签页，让用户看到跳转效果
               orderStatusFilter.value = 'completed';
+              // 确保进入了订单历史列表视图
+              showOrderHistory.value = true;
             }
           } catch (err) {
             console.error(err);
