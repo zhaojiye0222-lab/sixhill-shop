@@ -680,7 +680,15 @@
         const filteredOrders = computed(() => {
           let result = [...orders.value].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
           if (orderFilter.value !== 'all') {
-            result = result.filter(o => o.status === orderFilter.value);
+            if (orderFilter.value === 'pending_payment') {
+               // Pending 标签同时显示 pending_payment 和 processing 的订单
+               result = result.filter(o => o.status === 'pending_payment' || o.status === 'processing');
+            } else if (orderFilter.value === 'delivered') {
+               // Completed 标签同时显示 delivered 和 completed 的订单
+               result = result.filter(o => o.status === 'delivered' || o.status === 'completed');
+            } else {
+               result = result.filter(o => o.status === orderFilter.value);
+            }
           }
           return result;
         });
