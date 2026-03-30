@@ -1,5 +1,10 @@
-require('dotenv').config();
+// Ensure dotenv is loaded before reading env vars
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 const mysql = require('mysql2/promise');
+
+// In Vercel, the string "true" comes from process.env as a string
+const useSSL = process.env.DB_SSL === 'true' || process.env.DB_SSL === true;
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST || '127.0.0.1',
@@ -10,7 +15,7 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : undefined
+  ssl: useSSL ? { rejectUnauthorized: false } : undefined
 });
 
 module.exports = pool;
