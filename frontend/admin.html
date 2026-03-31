@@ -1000,6 +1000,11 @@
             if (!payload.specs) {
               payload.specs = { color: '' };
             }
+            
+            // Clean up empty colors string before sending
+            if (payload.specs && typeof payload.specs.color === 'string' && payload.specs.color.trim() === '') {
+                payload.specs.color = '';
+            }
 
             const res = await fetch(url, {
               method,
@@ -1010,7 +1015,16 @@
               body: JSON.stringify(payload)
             });
             
-            const data = await res.json();
+            // Log response as text first to debug JSON parsing issues
+            const textData = await res.text();
+            let data;
+            try {
+              data = JSON.parse(textData);
+            } catch (e) {
+              console.error('Server returned non-JSON:', textData);
+              throw new Error(`Server returned invalid response: ${textData.substring(0, 100)}...`);
+            }
+            
             if (!res.ok) throw new Error(data.error || 'Failed to save product');
             
             closeProductModal();
