@@ -343,13 +343,13 @@ app.get('/api/products/:identifier', async (req, res) => {
 // 新增商品 (限管理员)
 app.post('/api/products', authenticate, requireAdmin, async (req, res) => {
   try {
-    const { sku, name, description, categoryId, subCategoryId, price, stock, images } = req.body;
+    const { sku, name, description, categoryId, subCategoryId, price, stock, images, specs } = req.body;
     if (!sku || !name || price === undefined) {
        return res.status(400).json({ error: 'Missing required fields' });
     }
     
     const product = await ProductService.createProduct({
-      sku, name, description, categoryId, subCategoryId, price, stock, images
+      sku, name, description, categoryId, subCategoryId, price, stock, images, specs
     }, req.user.id);
 
     await logOperation('CREATE', 'PRODUCT', product.id, `Created product ${product.sku}`, req.user);
