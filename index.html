@@ -1358,6 +1358,11 @@
             return;
           }
 
+          // Fetch the latest user info to get the address if not in localStorage
+          if (!localStorage.getItem('userAddress') && currentUser.value && currentUser.value.address) {
+             localStorage.setItem('userAddress', currentUser.value.address);
+          }
+
           paymentModalData.value = null; // null 表示来自购物车
           receiptPreview.value = null;
           receiptFile.value = null;
