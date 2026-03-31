@@ -450,6 +450,9 @@
                             <span class="text-xs text-gray-400 ml-2">({{ subCat.id }})</span>
                           </div>
                         </div>
+                        <button @click="openProductModal(null, subCat.id)" class="w-7 h-7 mr-2 rounded text-indigo-400 hover:bg-indigo-50 hover:text-indigo-600 transition-colors flex items-center justify-center" title="Add Product to this Category">
+                          <i class="ph ph-plus"></i>
+                        </button>
                         <button @click="deleteCategory(subCat.id)" class="w-7 h-7 rounded text-gray-400 hover:bg-red-50 hover:text-red-600 transition-colors flex items-center justify-center">
                           <i class="ph ph-trash"></i>
                         </button>
