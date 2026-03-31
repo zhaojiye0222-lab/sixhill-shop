@@ -979,10 +979,14 @@
             console.log('Loaded products:', products.length);
             
             // 确保 products.images 是数组，虽然这已经在后端处理过了，但在前端再防御一下
-            const parsedProducts = products.map(p => ({
-              ...p,
-              images: Array.isArray(p.images) ? p.images : (typeof p.images === 'string' ? JSON.parse(p.images) : [])
-            }));
+            const parsedProducts = products.map(p => {
+              let imgs = p.images;
+              if (typeof imgs === 'string') {
+                try { imgs = JSON.parse(imgs); } catch(e) { imgs = []; }
+              }
+              if (!Array.isArray(imgs)) imgs = [];
+              return { ...p, images: imgs };
+            });
             
             allProducts.value = parsedProducts;
             
