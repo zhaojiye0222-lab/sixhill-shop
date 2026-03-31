@@ -550,25 +550,21 @@
 
             <!-- Image Upload -->
             <div>
-              <label class="block text-sm font-bold text-gray-700 mb-1">Product Image</label>
-              <div class="flex items-center space-x-4">
-                <div v-if="productForm.imageUrl" class="w-24 h-24 border border-gray-200 rounded-lg overflow-hidden bg-gray-50 flex-shrink-0 relative group">
-                  <img :src="productForm.imageUrl" class="w-full h-full object-cover" @error="$event.target.src='https://via.placeholder.com/150?text=Invalid+URL'">
-                  <div @click="productForm.imageUrl = ''" class="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center cursor-pointer transition-colors">
+              <label class="block text-sm font-bold text-gray-700 mb-1">Product Images</label>
+              <div class="flex flex-wrap gap-4 items-start">
+                <div v-for="(imgUrl, index) in productForm.images" :key="index" class="w-24 h-24 border border-gray-200 rounded-lg overflow-hidden bg-gray-50 flex-shrink-0 relative group">
+                  <img :src="imgUrl" class="w-full h-full object-cover" @error="$event.target.src='https://via.placeholder.com/150?text=Invalid+URL'">
+                  <div @click="productForm.images.splice(index, 1)" class="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center cursor-pointer transition-colors">
                     <i class="ph ph-trash text-white text-xl"></i>
                   </div>
                 </div>
-                <div v-else class="w-24 h-24 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 flex flex-col items-center justify-center text-gray-400">
-                  <i class="ph ph-image text-2xl mb-1"></i>
-                  <span class="text-xs">No image</span>
-                </div>
                 
-                <div class="flex-1">
-                  <label class="cursor-pointer bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition inline-block">
+                <div class="flex-1 min-w-[200px]">
+                  <label class="cursor-pointer bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition inline-flex items-center">
                     <i class="ph ph-upload-simple mr-1"></i> Upload Image
                     <input type="file" accept="image/*" class="hidden" @change="handleImageUpload">
                   </label>
-                  <p class="text-xs text-gray-500 mt-2">Recommended: Square image, max 5MB. Will be automatically converted and optimized.</p>
+                  <p class="text-xs text-gray-500 mt-2">Recommended: Square image, max 5MB. You can upload multiple images one by one.</p>
                 </div>
               </div>
             </div>
@@ -667,7 +663,7 @@
           categoryId: '',
           subCategoryId: '',
           description: '',
-          imageUrl: '',
+          images: [],
           specs: { color: '' } // 新增 specs 对象存放颜色
         });
 
@@ -917,7 +913,7 @@
               categoryId: product.categoryId,
               subCategoryId: product.subCategoryId || '',
               description: product.description || '',
-              imageUrl: (product.images && product.images.length > 0) ? product.images[0] : '',
+              images: (product.images && Array.isArray(product.images)) ? [...product.images] : [],
               specs: product.specs ? { ...product.specs } : { color: '' }
             };
           } else {
@@ -937,7 +933,7 @@
               categoryId: parentCatId, 
               subCategoryId: prefillSubCategoryId || '', 
               description: '', 
-              imageUrl: '', 
+              images: [], 
               specs: { color: '' }
             };
           }
@@ -978,7 +974,8 @@
             }
 
             const data = await res.json();
-            productForm.value.imageUrl = data.url;
+            if (!productForm.value.images) productForm.value.images = [];
+            productForm.value.images.push(data.url);
           } catch (err) {
             alert('Upload failed: ' + err.message);
           }
@@ -994,12 +991,7 @@
             const method = editingProduct.value ? 'PUT' : 'POST';
             
             const payload = { ...productForm.value };
-            if (payload.imageUrl) {
-               payload.images = [payload.imageUrl];
-            } else {
-               payload.images = [];
-            }
-            delete payload.imageUrl;
+            // images 已经是数组了，不需要处理 imageUrl
 
             const res = await fetch(url, {
               method,
