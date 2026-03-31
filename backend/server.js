@@ -620,7 +620,7 @@ module.exports = app;
 
 // IMPORTANT: Do NOT listen on a port when running in Vercel
 // Vercel handles the server listening automatically
-if (process.env.NODE_ENV !== 'production' && require.main === module) {
+if (!process.env.VERCEL && require.main === module) {
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
