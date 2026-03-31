@@ -906,7 +906,7 @@
         };
 
         // Product Management
-        const openProductModal = (product = null) => {
+        const openProductModal = (product = null, prefillSubCategoryId = null) => {
           if (product) {
             editingProduct.value = product;
             productForm.value = {
@@ -917,12 +917,28 @@
               categoryId: product.categoryId,
               subCategoryId: product.subCategoryId || '',
               description: product.description || '',
-              imageUrl: (product.images && product.images.length > 0) ? product.images[0] : ''
+              imageUrl: (product.images && product.images.length > 0) ? product.images[0] : '',
+              specs: product.specs ? { ...product.specs } : { color: '' }
             };
           } else {
             editingProduct.value = null;
+            // 如果从子分类点击添加，自动找到它所属的主分类并预填
+            let parentCatId = '';
+            if (prefillSubCategoryId) {
+               const subCat = categories.value.find(c => c.id === prefillSubCategoryId);
+               if (subCat) parentCatId = subCat.parentId;
+            }
+            
             productForm.value = {
-              name: '', sku: '', price: 0, stock: 0, categoryId: '', subCategoryId: '', description: '', imageUrl: ''
+              name: '', 
+              sku: '', 
+              price: 0, 
+              stock: 0, 
+              categoryId: parentCatId, 
+              subCategoryId: prefillSubCategoryId || '', 
+              description: '', 
+              imageUrl: '', 
+              specs: { color: '' }
             };
           }
           showProductModal.value = true;
