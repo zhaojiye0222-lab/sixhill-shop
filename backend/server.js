@@ -343,11 +343,18 @@ app.get('/api/products/:identifier', async (req, res) => {
 // 新增商品 (限管理员)
 app.post('/api/products', authenticate, requireAdmin, async (req, res) => {
   try {
-    const { sku, name, description, categoryId, subCategoryId, price, stock, images, specs } = req.body;
+    let { sku, name, description, categoryId, subCategoryId, price, stock, images, specs } = req.body;
     if (!sku || !name || price === undefined) {
        return res.status(400).json({ error: 'Missing required fields' });
     }
     
+    if (typeof images === 'string') {
+      try { images = JSON.parse(images); } catch (e) { images = [images]; }
+    }
+    if (typeof specs === 'string') {
+      try { specs = JSON.parse(specs); } catch (e) { specs = {}; }
+    }
+
     const product = await ProductService.createProduct({
       sku, name, description, categoryId, subCategoryId, price, stock, images, specs
     }, req.user.id);
@@ -413,8 +420,20 @@ app.put('/api/products/:productId', authenticate, requireAdmin, async (req, res)
     if (subCategoryId !== undefined) { updates.push('sub_category_id = ?'); values.push(subCategoryId); }
     if (price !== undefined) { updates.push('price = ?'); values.push(Number(price)); }
     if (stock !== undefined) { updates.push('stock = ?'); values.push(parseInt(stock, 10)); }
-    if (images !== undefined) { updates.push('images = ?'); values.push(JSON.stringify(images)); }
-    if (specs !== undefined) { updates.push('specs = ?'); values.push(JSON.stringify(specs)); }
+    if (images !== undefined) { 
+      let parsedImages = images;
+      if (typeof images === 'string') {
+        try { parsedImages = JSON.parse(images); } catch (e) { parsedImages = [images]; }
+      }
+      updates.push('images = ?'); values.push(JSON.stringify(parsedImages)); 
+    }
+    if (specs !== undefined) { 
+      let parsedSpecs = specs;
+      if (typeof specs === 'string') {
+        try { parsedSpecs = JSON.parse(specs); } catch (e) { parsedSpecs = {}; }
+      }
+      updates.push('specs = ?'); values.push(JSON.stringify(parsedSpecs)); 
+    }
 
     if (updates.length > 0) {
       values.push(id);
