@@ -414,6 +414,7 @@ app.put('/api/products/:productId', authenticate, requireAdmin, async (req, res)
     if (price !== undefined) { updates.push('price = ?'); values.push(Number(price)); }
     if (stock !== undefined) { updates.push('stock = ?'); values.push(parseInt(stock, 10)); }
     if (images !== undefined) { updates.push('images = ?'); values.push(JSON.stringify(images)); }
+    if (specs !== undefined) { updates.push('specs = ?'); values.push(JSON.stringify(specs)); }
 
     if (updates.length > 0) {
       values.push(id);

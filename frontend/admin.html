@@ -996,7 +996,10 @@
             const method = editingProduct.value ? 'PUT' : 'POST';
             
             const payload = { ...productForm.value };
-            // images 已经是数组了，不需要处理 imageUrl
+            // Ensure specs is an object and contains color if applicable
+            if (!payload.specs) {
+              payload.specs = { color: '' };
+            }
 
             const res = await fetch(url, {
               method,
