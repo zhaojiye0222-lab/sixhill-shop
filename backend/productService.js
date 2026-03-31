@@ -10,14 +10,15 @@ class ProductService {
       let images = [];
       try {
         images = typeof row.images === 'string' ? JSON.parse(row.images) : (row.images || []);
+        if (!Array.isArray(images)) images = [];
       } catch (e) {
-        // Fallback if parsing fails (e.g. invalid JSON in DB)
         images = [];
       }
 
       let specs = {};
       try {
         specs = typeof row.specs === 'string' ? JSON.parse(row.specs) : (row.specs || {});
+        if (typeof specs !== 'object' || specs === null) specs = {};
       } catch (e) {
         specs = {};
       }

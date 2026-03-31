@@ -323,15 +323,20 @@ app.get('/api/products/:identifier', async (req, res) => {
     if (product.categoryId) {
       const [rows] = await db.query('SELECT * FROM products');
       for (const p of rows) {
+        
+        let pImages = [];
+        try { pImages = typeof p.images === 'string' ? JSON.parse(p.images) : (p.images || []); } catch(e){}
+        if (!Array.isArray(pImages)) pImages = [];
+
         // 如果当前商品是 Bundle 套装，那么允许它选择所有的 Sticks（烟弹）作为口味/变体
         if (product.categoryId === 'Bundle' || product.categoryId === 'cat_bundle') {
            if (p.category_id === 'cat_sticks') {
-             allFlavors.push({ id: p.id, name: p.name, sku: p.sku, images: p.images, price: p.price, stock: p.stock });
+             allFlavors.push({ id: p.id, name: p.name, sku: p.sku, images: pImages, price: p.price, stock: p.stock });
            }
         } else {
            // 普通商品，只显示同分类同子类的其他口味
            if (p.category_id === product.categoryId && p.sub_category_id === product.subCategoryId) {
-             allFlavors.push({ id: p.id, name: p.name, sku: p.sku, images: p.images, price: p.price, stock: p.stock });
+             allFlavors.push({ id: p.id, name: p.name, sku: p.sku, images: pImages, price: p.price, stock: p.stock });
            }
         }
       }
