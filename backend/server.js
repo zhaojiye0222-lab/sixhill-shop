@@ -325,7 +325,17 @@ app.get('/api/products/:identifier', async (req, res) => {
       for (const p of rows) {
         
         let pImages = [];
-        try { pImages = typeof p.images === 'string' ? JSON.parse(p.images) : (p.images || []); } catch(e){}
+        try { 
+          if (typeof p.images === 'string') {
+            if (p.images.trim().startsWith('[')) {
+              pImages = JSON.parse(p.images);
+            } else {
+              pImages = [p.images];
+            }
+          } else if (Array.isArray(p.images)) {
+            pImages = p.images;
+          }
+        } catch(e){}
         if (!Array.isArray(pImages)) pImages = [];
 
         // 如果当前商品是 Bundle 套装，那么允许它选择所有的 Sticks（烟弹）作为口味/变体
@@ -431,21 +441,21 @@ app.put('/api/products/:productId', authenticate, requireAdmin, async (req, res)
     if (subCategoryId !== undefined) { updates.push('sub_category_id = ?'); values.push(subCategoryId); }
     if (price !== undefined) { updates.push('price = ?'); values.push(Number(price)); }
     if (stock !== undefined) { updates.push('stock = ?'); values.push(parseInt(stock, 10)); }
-    if (images !== undefined) { 
+    if (images !== undefined) {
       let parsedImages = images;
       if (typeof images === 'string') {
         try { parsedImages = JSON.parse(images); } catch (e) { parsedImages = [images]; }
       }
       if (!Array.isArray(parsedImages)) parsedImages = [];
-      updates.push('images = ?'); values.push(JSON.stringify(parsedImages)); 
+      updates.push('images = ?'); values.push(JSON.stringify(parsedImages));    
     }
-    if (specs !== undefined) { 
+    if (specs !== undefined) {
       let parsedSpecs = specs;
       if (typeof specs === 'string') {
         try { parsedSpecs = JSON.parse(specs); } catch (e) { parsedSpecs = {}; }
       }
       if (typeof parsedSpecs !== 'object' || parsedSpecs === null) parsedSpecs = {};
-      updates.push('specs = ?'); values.push(JSON.stringify(parsedSpecs)); 
+      updates.push('specs = ?'); values.push(JSON.stringify(parsedSpecs));      
     }
 
     if (updates.length > 0) {
