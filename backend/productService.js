@@ -9,16 +9,37 @@ class ProductService {
     return rows.map(row => {
       let images = [];
       try {
-        images = typeof row.images === 'string' ? JSON.parse(row.images) : (row.images || []);
+        if (typeof row.images === 'string') {
+          // If the string starts with '[' or '{', it's likely a JSON string
+          if (row.images.trim().startsWith('[')) {
+            images = JSON.parse(row.images);
+          } else {
+            // It's a plain string, treat as single image URL
+            images = [row.images];
+          }
+        } else if (Array.isArray(row.images)) {
+          images = row.images;
+        } else {
+          images = [];
+        }
         if (!Array.isArray(images)) images = [];
       } catch (e) {
-        images = [];
+        images = typeof row.images === 'string' && row.images ? [row.images] : [];
       }
 
       let specs = {};
       try {
-        specs = typeof row.specs === 'string' ? JSON.parse(row.specs) : (row.specs || {});
-        if (typeof specs !== 'object' || specs === null) specs = {};
+        if (typeof row.specs === 'string') {
+          if (row.specs.trim().startsWith('{')) {
+            specs = JSON.parse(row.specs);
+          } else {
+            specs = {};
+          }
+        } else if (typeof row.specs === 'object' && row.specs !== null) {
+          specs = row.specs;
+        } else {
+          specs = {};
+        }
       } catch (e) {
         specs = {};
       }
