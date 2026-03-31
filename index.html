@@ -1843,7 +1843,14 @@
             
             const text = document.createElement('span');
             text.className = 'text-[10px] text-center px-1 truncate w-full';
-            text.innerText = (productName && typeof productName === 'string') ? productName : 'No Image';
+            
+            // 安全提取商品名称
+            let safeName = 'No Image';
+            if (productName) {
+              if (typeof productName === 'string') safeName = productName;
+              else if (typeof productName === 'object' && productName.name) safeName = productName.name;
+            }
+            text.innerText = safeName;
             
             fallbackDiv.appendChild(icon);
             fallbackDiv.appendChild(text);
