@@ -392,7 +392,7 @@ app.post('/api/products/:productId/price', authenticate, requireAdmin, async (re
 // 修改商品基础信息与分类 (限管理员)
 app.put('/api/products/:productId', authenticate, requireAdmin, async (req, res) => {
   try {
-    const { sku, name, description, categoryId, subCategoryId, price, stock, images } = req.body;
+    const { sku, name, description, categoryId, subCategoryId, price, stock, images, specs } = req.body;
     const id = req.params.productId;
     
     const [rows] = await db.query('SELECT * FROM products WHERE id = ?', [id]);
