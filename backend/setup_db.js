@@ -13,9 +13,9 @@ async function setupDatabase() {
     ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : undefined
   });
 
-  console.log('Creating database defaultdb (if it somehow does not exist)...');
-  await connection.query('CREATE DATABASE IF NOT EXISTS defaultdb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;');
-  await connection.query('USE defaultdb;');
+  const dbName = process.env.DB_NAME || 'jake_ecommerce';
+  console.log(`Using database ${dbName}...`);
+  await connection.query(`USE \`${dbName}\`;`);
 
   console.log('Creating tables...');
 
