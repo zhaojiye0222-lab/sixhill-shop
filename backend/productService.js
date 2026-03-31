@@ -65,14 +65,35 @@ class ProductService {
     
     let images = [];
     try {
-      images = typeof product.images === 'string' ? JSON.parse(product.images) : (product.images || []);
+      if (typeof product.images === 'string') {
+        if (product.images.trim().startsWith('[')) {
+          images = JSON.parse(product.images);
+        } else {
+          images = [product.images];
+        }
+      } else if (Array.isArray(product.images)) {
+        images = product.images;
+      } else {
+        images = [];
+      }
+      if (!Array.isArray(images)) images = [];
     } catch (e) {
-      images = [];
+      images = typeof product.images === 'string' && product.images ? [product.images] : [];
     }
 
     let specs = {};
     try {
-      specs = typeof product.specs === 'string' ? JSON.parse(product.specs) : (product.specs || {});
+      if (typeof product.specs === 'string') {
+        if (product.specs.trim().startsWith('{')) {
+          specs = JSON.parse(product.specs);
+        } else {
+          specs = {};
+        }
+      } else if (typeof product.specs === 'object' && product.specs !== null) {
+        specs = product.specs;
+      } else {
+        specs = {};
+      }
     } catch (e) {
       specs = {};
     }
