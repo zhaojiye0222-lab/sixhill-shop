@@ -694,6 +694,25 @@
             <span class="font-bold text-lg text-red-600">Rp {{ formatPrice(paymentModalData ? paymentModalData.totalAmount : cartTotal) }}</span>
           </div>
           
+          <div class="bg-indigo-50 rounded-lg p-3 mt-4 border border-indigo-100">
+            <div class="flex justify-between items-center mb-1">
+              <h5 class="text-xs font-bold text-indigo-800 flex items-center"><i class="ph ph-map-pin mr-1"></i> Shipping Address</h5>
+              <button @click="isEditingCheckoutAddress = !isEditingCheckoutAddress" class="text-[10px] text-indigo-600 font-bold hover:underline">
+                {{ isEditingCheckoutAddress ? 'Cancel' : 'Edit' }}
+              </button>
+            </div>
+            <div v-if="!isEditingCheckoutAddress">
+              <p v-if="checkoutAddress" class="text-xs text-indigo-700 leading-tight">{{ checkoutAddress }}</p>
+              <p v-else class="text-xs text-red-500 italic">Please enter your shipping address</p>
+            </div>
+            <div v-else class="mt-2">
+              <textarea v-model="checkoutAddress" rows="2" class="w-full text-xs border border-indigo-200 rounded p-2 focus:outline-none focus:border-indigo-500" placeholder="Enter full shipping address..."></textarea>
+              <div class="flex justify-end mt-1">
+                <button @click="isEditingCheckoutAddress = false" class="bg-indigo-600 text-white text-[10px] px-3 py-1 rounded font-bold">Save</button>
+              </div>
+            </div>
+          </div>
+          
           <div class="bg-blue-50 rounded-lg p-3 mt-4 border border-blue-100">
             <h5 class="text-xs font-bold text-blue-800 mb-1 flex items-center"><i class="ph ph-bank mr-1"></i> Payment Information</h5>
             <p class="text-xs text-blue-600 mb-1">Please transfer the total amount to:</p>
@@ -1342,6 +1361,10 @@
           paymentModalData.value = null; // null 表示来自购物车
           receiptPreview.value = null;
           receiptFile.value = null;
+          // 每次打开 Checkout Modal，重置为非编辑状态，并从 localStorage 读取最新地址
+          isEditingCheckoutAddress.value = false;
+          checkoutAddress.value = localStorage.getItem('userAddress') || '';
+          
           showCheckoutModal.value = true;
         };
 
@@ -1395,7 +1418,8 @@
               },
               body: JSON.stringify({
                 items: orderItems,
-                paymentMethod: 'bank_transfer'
+                paymentMethod: 'bank_transfer',
+                shippingAddress: checkoutAddress.value
               })
             });
 
@@ -1473,7 +1497,8 @@
               },
               body: JSON.stringify({
                 items: orderItems,
-                paymentMethod: 'bank_transfer'
+                paymentMethod: 'bank_transfer',
+                shippingAddress: checkoutAddress.value
               })
             });
 

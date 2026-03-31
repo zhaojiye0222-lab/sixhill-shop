@@ -446,8 +446,8 @@ app.put('/api/products/:productId/image', authenticate, requireAdmin, async (req
 // 3. 创建订单
 app.post('/api/orders', authenticate, async (req, res) => {
   try {
-    const { items, paymentMethod } = req.body;
-    const order = await OrderService.createOrder(req.user.id, items, paymentMethod);
+    const { items, paymentMethod, shippingAddress } = req.body;
+    const order = await OrderService.createOrder(req.user.id, items, paymentMethod, shippingAddress);
     await logOperation('CREATE', 'ORDER', order.orderId || order.id, 'User placed new order', req.user);
     res.status(201).json(order);
   } catch (err) {

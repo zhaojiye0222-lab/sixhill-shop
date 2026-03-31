@@ -14,7 +14,7 @@ class OrderService {
   /**
    * 创建订单 (核心高并发防超卖逻辑)
    */
-  static async createOrder(userId, items, paymentMethod) {
+  static async createOrder(userId, items, paymentMethod, shippingAddress = null) {
     const [userRows] = await pool.query('SELECT id FROM users WHERE id = ?', [userId]);
     if (userRows.length === 0) throw new Error('User validation failed');
     if (!items || items.length === 0) throw new Error('Cart is empty');
@@ -57,9 +57,9 @@ class OrderService {
       
       // 创建订单记录
       await connection.query(
-        `INSERT INTO orders (order_id, user_id, total_amount, payment_method, status) 
-         VALUES (?, ?, ?, ?, 'pending_payment')`,
-        [orderId, userId, totalAmount, paymentMethod]
+        `INSERT INTO orders (order_id, user_id, total_amount, payment_method, status, shipping_address) 
+         VALUES (?, ?, ?, ?, 'pending_payment', ?)`,
+        [orderId, userId, totalAmount, paymentMethod, shippingAddress]
       );
 
       // 创建订单项记录
@@ -79,6 +79,7 @@ class OrderService {
         items: orderItems,
         totalAmount: Number(totalAmount.toFixed(2)),
         paymentMethod,
+        shipping_address: shippingAddress,
         status: 'pending_payment',
         createdAt: new Date().toISOString()
       };
@@ -139,6 +140,7 @@ class OrderService {
         paymentMethod: order.payment_method,
         paymentReceiptUrl: order.receipt_url,
         receiptUrl: order.receipt_url,
+        shippingAddress: order.shipping_address,
         status: order.status,
         isDeleted: !!order.is_deleted,
         createdAt: order.created_at,
