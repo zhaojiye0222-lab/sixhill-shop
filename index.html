@@ -767,7 +767,7 @@
           <div v-else class="grid grid-cols-2 gap-3">
             <div v-for="product in searchResults" :key="product.id" class="bg-white rounded-xl shadow-sm overflow-hidden flex flex-col cursor-pointer hover:shadow-md transition-shadow" @click="viewProductAndCloseSearch(product)">
               <div class="h-32 bg-gray-100 flex items-center justify-center p-2 relative">
-                <img v-if="product.images && product.images.length > 0 && !product.images[0].includes('placeholder')" :src="product.images[0]" :alt="product.name" class="max-h-full max-w-full object-contain mix-blend-multiply" @error="handleImageError($event, product)">
+                <img v-if="product.images && product.images.length > 0 && !product.images[0].includes('placeholder')" :src="product.images[0]" :alt="product.name" class="max-h-full max-w-full object-contain mix-blend-multiply" @error="handleImageError($event, product.name)">
                 <i v-else class="ph ph-package text-4xl text-gray-400"></i>
               </div>
               <div class="p-2.5 flex flex-col flex-1">
