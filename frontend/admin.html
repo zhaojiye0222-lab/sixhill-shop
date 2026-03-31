@@ -538,6 +538,13 @@
               <textarea v-model="productForm.description" rows="3" class="w-full border border-gray-200 rounded-lg py-2 px-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"></textarea>
             </div>
 
+            <!-- Colors (For Devices) -->
+            <div v-if="productForm.categoryId === 'cat_devices' || productForm.categoryId === 'Device'">
+              <label class="block text-sm font-bold text-gray-700 mb-1">Available Colors</label>
+              <input v-model="productForm.specs.color" type="text" class="w-full border border-gray-200 rounded-lg py-2 px-3 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" placeholder="e.g. Red, Blue, Space Grey (comma separated)">
+              <p class="text-xs text-gray-500 mt-1">Enter colors separated by commas.</p>
+            </div>
+
             <!-- Image Upload -->
             <div>
               <label class="block text-sm font-bold text-gray-700 mb-1">Product Image</label>
@@ -657,7 +664,8 @@
           categoryId: '',
           subCategoryId: '',
           description: '',
-          imageUrl: ''
+          imageUrl: '',
+          specs: { color: '' } // 新增 specs 对象存放颜色
         });
 
         // Category Modal State
