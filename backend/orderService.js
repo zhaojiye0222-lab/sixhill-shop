@@ -140,7 +140,7 @@ class OrderService {
         paymentMethod: order.payment_method,
         paymentReceiptUrl: order.receipt_url,
         receiptUrl: order.receipt_url,
-        shippingAddress: order.shipping_address,
+        shippingAddress: order.shipping_address || null,
         status: order.status,
         isDeleted: !!order.is_deleted,
         createdAt: order.created_at,
