@@ -81,7 +81,7 @@ class ProductService {
     if (skuRows.length > 0) throw new Error('SKU already exists');
 
     const newId = `p_${Date.now()}`;
-    const images = data.imageUrl ? [data.imageUrl] : (data.images || ['https://via.placeholder.com/400x400']);
+    const images = Array.isArray(data.images) ? data.images : (data.imageUrl ? [data.imageUrl] : ['https://via.placeholder.com/400x400']);
     const specs = data.specs || {};
     
     await pool.query(
