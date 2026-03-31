@@ -74,6 +74,7 @@ async function setupDatabase() {
       total_amount DECIMAL(10, 2) NOT NULL,
       payment_method VARCHAR(50),
       receipt_url TEXT,
+      shipping_address TEXT,
       status VARCHAR(50) DEFAULT 'pending_payment',
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
