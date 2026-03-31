@@ -447,7 +447,7 @@ app.put('/api/products/:productId/image', authenticate, requireAdmin, async (req
 app.post('/api/orders', authenticate, async (req, res) => {
   try {
     const { items, paymentMethod, shippingAddress } = req.body;
-    const order = await OrderService.createOrder(req.user.id, items, paymentMethod, shippingAddress);
+    const order = await OrderService.createOrder(req.user.id, items, paymentMethod, shippingAddress || null);
     await logOperation('CREATE', 'ORDER', order.orderId || order.id, 'User placed new order', req.user);
     res.status(201).json(order);
   } catch (err) {
