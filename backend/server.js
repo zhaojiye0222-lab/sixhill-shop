@@ -354,9 +354,12 @@ app.post('/api/products', authenticate, requireAdmin, async (req, res) => {
     if (typeof images === 'string') {
       try { images = JSON.parse(images); } catch (e) { images = [images]; }
     }
+    if (!Array.isArray(images)) images = [];
+
     if (typeof specs === 'string') {
       try { specs = JSON.parse(specs); } catch (e) { specs = {}; }
     }
+    if (typeof specs !== 'object' || specs === null) specs = {};
 
     const product = await ProductService.createProduct({
       sku, name, description, categoryId, subCategoryId, price, stock, images, specs
@@ -428,6 +431,7 @@ app.put('/api/products/:productId', authenticate, requireAdmin, async (req, res)
       if (typeof images === 'string') {
         try { parsedImages = JSON.parse(images); } catch (e) { parsedImages = [images]; }
       }
+      if (!Array.isArray(parsedImages)) parsedImages = [];
       updates.push('images = ?'); values.push(JSON.stringify(parsedImages)); 
     }
     if (specs !== undefined) { 
@@ -435,6 +439,7 @@ app.put('/api/products/:productId', authenticate, requireAdmin, async (req, res)
       if (typeof specs === 'string') {
         try { parsedSpecs = JSON.parse(specs); } catch (e) { parsedSpecs = {}; }
       }
+      if (typeof parsedSpecs !== 'object' || parsedSpecs === null) parsedSpecs = {};
       updates.push('specs = ?'); values.push(JSON.stringify(parsedSpecs)); 
     }
 
