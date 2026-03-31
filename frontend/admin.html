@@ -974,13 +974,12 @@
             }
 
             const data = await res.json();
-            // 确保 images 是一个数组
-            if (!Array.isArray(productForm.value.images)) {
-              productForm.value.images = [];
-            }
             
-            // 触发 Vue 的响应式更新
-            productForm.value.images = [...productForm.value.images, data.url];
+            // 使用 Vue 推荐的数组更新方式
+            productForm.value = {
+              ...productForm.value,
+              images: [...(productForm.value.images || []), data.url]
+            };
             
           } catch (err) {
             alert('Upload failed: ' + err.message);
