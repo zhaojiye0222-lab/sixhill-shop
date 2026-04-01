@@ -23,11 +23,16 @@ async function run() {
   for (const p of products) {
     if (!p.images) continue;
     let images = [];
-    try {
-      images = JSON.parse(p.images);
-    } catch(e) {
-      if (p.images.startsWith('[')) continue; // failed parse
-      images = [p.images];
+    if (typeof p.images === 'string') {
+      try {
+        images = JSON.parse(p.images);
+      } catch(e) {
+        images = [p.images];
+      }
+    } else if (Array.isArray(p.images)) {
+      images = p.images;
+    } else {
+      continue;
     }
     
     let changed = false;
