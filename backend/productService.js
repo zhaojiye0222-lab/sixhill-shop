@@ -1,57 +1,52 @@
 const pool = require('./database');
 
+/**
+ * 安全解析 images 字段（兼容 JSON 数组字符串、单字符串、已解析数组）
+ */
+function parseImages(raw) {
+  try {
+    if (typeof raw === 'string') {
+      if (raw.trim().startsWith('[')) return JSON.parse(raw);
+      return raw.trim() ? [raw] : [];
+    }
+    if (Array.isArray(raw)) return raw;
+  } catch (e) {
+    if (typeof raw === 'string' && raw.trim()) return [raw];
+  }
+  return [];
+}
+
+/**
+ * 安全解析 specs 字段（兼容 JSON 对象字符串、已解析对象）
+ */
+function parseSpecs(raw) {
+  try {
+    if (typeof raw === 'string' && raw.trim().startsWith('{')) return JSON.parse(raw);
+    if (typeof raw === 'object' && raw !== null && !Array.isArray(raw)) return raw;
+  } catch (e) {}
+  return {};
+}
+
+/**
+ * 将数据库行转为前端友好的产品对象
+ */
+function formatProduct(row) {
+  return {
+    ...row,
+    images: parseImages(row.images),
+    specs: parseSpecs(row.specs),
+    categoryId: row.category_id,
+    subCategoryId: row.sub_category_id
+  };
+}
+
 class ProductService {
   /**
    * 获取所有产品列表
    */
   static async getAllProducts() {
     const [rows] = await pool.query('SELECT * FROM products');
-    return rows.map(row => {
-      let images = [];
-      try {
-        if (typeof row.images === 'string') {
-          // If the string starts with '[' or '{', it's likely a JSON string
-          if (row.images.trim().startsWith('[')) {
-            images = JSON.parse(row.images);
-          } else {
-            // It's a plain string, treat as single image URL
-            images = [row.images];
-          }
-        } else if (Array.isArray(row.images)) {
-          images = row.images;
-        } else {
-          images = [];
-        }
-        if (!Array.isArray(images)) images = [];
-      } catch (e) {
-        images = typeof row.images === 'string' && row.images ? [row.images] : [];
-      }
-
-      let specs = {};
-      try {
-        if (typeof row.specs === 'string') {
-          if (row.specs.trim().startsWith('{')) {
-            specs = JSON.parse(row.specs);
-          } else {
-            specs = {};
-          }
-        } else if (typeof row.specs === 'object' && row.specs !== null) {
-          specs = row.specs;
-        } else {
-          specs = {};
-        }
-      } catch (e) {
-        specs = {};
-      }
-
-      return {
-        ...row,
-        images,
-        specs,
-        categoryId: row.category_id,
-        subCategoryId: row.sub_category_id
-      };
-    });
+    return rows.map(formatProduct);
   }
 
   /**
@@ -61,50 +56,7 @@ class ProductService {
   static async getProduct(identifier) {
     const [rows] = await pool.query('SELECT * FROM products WHERE id = ? OR sku = ?', [identifier, identifier]);
     if (rows.length === 0) throw new Error('Product not found');
-    const product = rows[0];
-    
-    let images = [];
-    try {
-      if (typeof product.images === 'string') {
-        if (product.images.trim().startsWith('[')) {
-          images = JSON.parse(product.images);
-        } else {
-          images = [product.images];
-        }
-      } else if (Array.isArray(product.images)) {
-        images = product.images;
-      } else {
-        images = [];
-      }
-      if (!Array.isArray(images)) images = [];
-    } catch (e) {
-      images = typeof product.images === 'string' && product.images ? [product.images] : [];
-    }
-
-    let specs = {};
-    try {
-      if (typeof product.specs === 'string') {
-        if (product.specs.trim().startsWith('{')) {
-          specs = JSON.parse(product.specs);
-        } else {
-          specs = {};
-        }
-      } else if (typeof product.specs === 'object' && product.specs !== null) {
-        specs = product.specs;
-      } else {
-        specs = {};
-      }
-    } catch (e) {
-      specs = {};
-    }
-
-    return {
-      ...product,
-      images,
-      specs,
-      categoryId: product.category_id,
-      subCategoryId: product.sub_category_id
-    };
+    return formatProduct(rows[0]);
   }
 
   /**
