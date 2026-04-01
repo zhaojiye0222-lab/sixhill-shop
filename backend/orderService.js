@@ -99,7 +99,7 @@ class OrderService {
     if (orderRows.length === 0) throw new Error('Order not found');
     const order = orderRows[0];
 
-    if (order.user_id !== userId) throw new Error('Unauthorized');
+    if (String(order.user_id) !== String(userId)) throw new Error('Unauthorized');
     if (order.status !== 'pending_payment') throw new Error('Order is not in pending_payment status');
 
     await pool.query(
