@@ -21,21 +21,21 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // ==========================================
-// 挂载 API 路由 (若使用路由拆分则取消注释)
+// 挂载 API 路由
 // ==========================================
-// const authRoutes       = require('./routes/auth');
-// const productRoutes    = require('./routes/products');
-// const categoryRoutes   = require('./routes/categories');
-// const orderRoutes      = require('./routes/orders');
-// const adminRoutes      = require('./routes/admin');
-// const uploadRoutes     = require('./routes/upload');
-//
-// app.use('/api', authRoutes);
-// app.use('/api/products', productRoutes);
-// app.use('/api/categories', categoryRoutes);
-// app.use('/api/orders', orderRoutes);
-// app.use('/api/admin', adminRoutes);
-// app.use('/api/upload', uploadRoutes);
+const authRoutes       = require('./routes/auth');
+const productRoutes    = require('./routes/products');
+const categoryRoutes   = require('./routes/categories');
+const orderRoutes      = require('./routes/orders');
+const adminRoutes      = require('./routes/admin');
+const uploadRoutes     = require('./routes/upload');
+
+app.use('/api', authRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // ==========================================
 // 静态文件与 SPA Fallback
