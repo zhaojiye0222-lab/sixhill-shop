@@ -1,7 +1,7 @@
 const { Client } = require('ssh2');
 const conn = new Client();
 conn.on('ready', () => {
-  const commands = "cd /var/www/Jake/backend && node migrate_images.js";
+  const commands = "mysql -u admin -p'JakeAdmin@2026' -e 'USE jake_ecommerce; ALTER TABLE orders ADD COLUMN is_deleted TINYINT(1) DEFAULT 0;'";
   conn.exec(commands, (err, stream) => {
     if (err) throw err;
     stream.on('close', (code) => {

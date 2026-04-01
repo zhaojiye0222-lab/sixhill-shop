@@ -63,23 +63,6 @@ async function run() {
     }
   }
   
-  // Also fix categories if they have base64 images
-  const [categories] = await pool.query('SELECT id, image_url FROM categories');
-  for (const c of categories) {
-    if (c.image_url && c.image_url.startsWith('data:image')) {
-        const matches = c.image_url.match(/^data:image\/([a-zA-Z0-9]+);base64,(.+)$/);
-        if (matches && matches.length === 3) {
-          const ext = matches[1];
-          const data = matches[2];
-          const buffer = Buffer.from(data, 'base64');
-          const filename = `cat_${c.id}_${Date.now()}.${ext}`;
-          fs.writeFileSync(path.join(uploadDir, filename), buffer);
-          await pool.query('UPDATE categories SET image_url = ? WHERE id = ?', [`/api/uploads/${filename}`, c.id]);
-          console.log(`Converted image for category ${c.id} -> ${filename}`);
-        }
-    }
-  }
-
   // Also fix orders receipts if any
   const [orders] = await pool.query('SELECT order_id, receipt_url FROM orders');
   for (const o of orders) {
