@@ -107,12 +107,6 @@ const authenticate = async (req, res, next) => {
 
 const requireAdmin = (req, res, next) => {
   if (req.user.role !== 'admin') {
-    // Check if the request is a patch for order status and target is 'completed' or 'cancelled'
-    if (req.method === 'PATCH' && req.path.includes('/status')) {
-       if (req.body.status === 'completed' || req.body.status === 'delivered' || req.body.status === 'cancelled') {
-          return next();
-       }
-    }
     return res.status(403).json({ error: 'Admin access required' });
   }
   next();
@@ -573,11 +567,15 @@ app.patch('/api/orders/:orderId/status', authenticate, async (req, res) => {
 
     // 只有管理员可以随意改状态，普通用户只能确认收货(completed/delivered)或取消订单
     if (req.user.role !== 'admin') {
+      // 检查普通用户是否在操作自己的订单
+      if (String(order.userId) !== String(req.user.id) && String(order.user_id) !== String(req.user.id)) {
+        return res.status(403).json({ error: 'Unauthorized to update this order' });
+      }
+      
       // Allow user to confirm receipt or cancel their own orders
-      // Temporarily bypass this check entirely to unblock the flow
-      // if (!['delivered', 'completed', 'cancelled', 'review'].includes(status)) {
-      //    return res.status(403).json({ error: 'Unauthorized status update' });
-      // }
+      if (!['delivered', 'completed', 'cancelled', 'review'].includes(status)) {
+         return res.status(403).json({ error: 'Unauthorized status update' });
+      }
     }
 
     const updatedOrder = await OrderService.updateOrderStatus(req.params.orderId, status);
