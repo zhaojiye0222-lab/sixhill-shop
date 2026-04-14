@@ -3,15 +3,66 @@
     {
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "Jake",
+        "navigationBarTitleText": "Sixhill Shop",
         "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/category/category",
+      "style": {
+        "navigationBarTitleText": "Category",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/cart/cart",
+      "style": {
+        "navigationBarTitleText": "Cart"
+      }
+    },
+    {
+      "path": "pages/profile/profile",
+      "style": {
+        "navigationBarTitleText": "Profile"
+      }
+    },
+    {
+      "path": "pages/detail/detail",
+      "style": {
+        "navigationBarTitleText": "Product Detail",
+        "navigationBarBackgroundColor": "#ffffff",
+        "navigationBarTextStyle": "black"
       }
     }
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "Jake",
+    "navigationBarTitleText": "Sixhill Shop",
     "navigationBarBackgroundColor": "#ffffff",
     "backgroundColor": "#f8f9fa"
+  },
+  "tabBar": {
+    "color": "#9ca3af",
+    "selectedColor": "#4f46e5",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "Home"
+      },
+      {
+        "pagePath": "pages/category/category",
+        "text": "Category"
+      },
+      {
+        "pagePath": "pages/cart/cart",
+        "text": "Cart"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "Profile"
+      }
+    ]
   }
 }

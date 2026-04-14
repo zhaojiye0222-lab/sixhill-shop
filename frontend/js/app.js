@@ -4,7 +4,7 @@
  */
 const { createApp, ref, computed, watch, onMounted } = Vue;
 
-createApp({
+const app = createApp({
   setup() {
     // 全局 UI 状态
     const activeTab = ref('home');
@@ -154,4 +154,64 @@ createApp({
       formatPrice, handleImageError
     };
   }
-}).mount('#app');
+});
+
+// 全局注册拖拽滑动指令，用于横向滑动的容器
+app.directive('dragscroll', {
+  mounted(el) {
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+    let isDragging = false;
+
+    // 设置初始鼠标样式
+    el.style.cursor = 'grab';
+
+    el.addEventListener('mousedown', (e) => {
+      isDown = true;
+      isDragging = false;
+      el.style.cursor = 'grabbing';
+      el.style.userSelect = 'none'; // 防止拖拽时选中文本
+      startX = e.pageX - el.offsetLeft;
+      scrollLeft = el.scrollLeft;
+    });
+
+    el.addEventListener('mouseleave', () => {
+      isDown = false;
+      el.style.cursor = 'grab';
+      el.style.userSelect = '';
+    });
+
+    el.addEventListener('mouseup', () => {
+      isDown = false;
+      el.style.cursor = 'grab';
+      el.style.userSelect = '';
+    });
+
+    el.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      const x = e.pageX - el.offsetLeft;
+      const walk = x - startX;
+      
+      // 如果滑动距离超过 5px，则认定为拖拽行为，不再是普通的点击
+      if (Math.abs(walk) > 5) {
+        isDragging = true;
+      }
+      
+      if (isDragging) {
+        e.preventDefault();
+        el.scrollLeft = scrollLeft - walk;
+      }
+    });
+
+    // 使用捕获阶段拦截 click 事件：如果是拖拽，则阻止其触发点击跳转
+    el.addEventListener('click', (e) => {
+      if (isDragging) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    }, true);
+  }
+});
+
+app.mount('#app');

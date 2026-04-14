@@ -1,7 +1,7 @@
 const { Client } = require('ssh2');
 const conn = new Client();
 conn.on('ready', () => {
-  const commands = "ls -l /var/www/Jake/backend/";
+  const commands = "cp -r /tmp/uploads/* /var/www/Jake/backend/uploads/ 2>/dev/null || true";
   conn.exec(commands, (err, stream) => {
     if (err) throw err;
     stream.on('close', (code) => {

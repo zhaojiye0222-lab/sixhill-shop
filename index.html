@@ -188,7 +188,7 @@
         <div v-show="activeTab === 'category'" class="h-full flex flex-col bg-white">
           <!-- Top Category Navigation -->
           <div class="bg-white border-b border-gray-100 shadow-sm z-10 sticky top-0">
-            <div class="flex overflow-x-auto hide-scrollbar px-2 py-3">
+            <div class="flex overflow-x-auto hide-scrollbar px-2 py-3" v-dragscroll>
               <div v-for="(cat, index) in categories" :key="index" 
                    @click="currentCategory = cat.id; currentSubCategory = null"
                    :class="['whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-medium mr-2 transition-colors cursor-pointer', 

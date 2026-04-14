@@ -176,4 +176,64 @@ router.put('/:productId/image', authenticate, requireAdmin, async (req, res) => 
   }
 });
 
+// ==========================================
+// 商品评论
+// ==========================================
+
+// 确保 reviews 表存在
+(async () => {
+  try {
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS reviews (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        product_id VARCHAR(50) NOT NULL,
+        user_id VARCHAR(50) NOT NULL,
+        user_name VARCHAR(100),
+        rating INT DEFAULT 5,
+        comment TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )
+    `);
+  } catch (e) {
+    // 表可能已存在，忽略错误
+  }
+})();
+
+// 获取商品评论列表
+router.get('/:productId/reviews', async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      'SELECT r.*, u.name AS user_name FROM reviews r LEFT JOIN users u ON r.user_id = u.id WHERE r.product_id = ? ORDER BY r.created_at DESC',
+      [req.params.productId]
+    );
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 提交商品评论 (需登录)
+router.post('/:productId/reviews', authenticate, async (req, res) => {
+  try {
+    const { rating, comment } = req.body;
+    const productId = req.params.productId;
+    const userId = req.user.id;
+
+    // 检查商品是否存在
+    const [productRows] = await db.query('SELECT id FROM products WHERE id = ?', [productId]);
+    if (productRows.length === 0) return res.status(404).json({ error: 'Product not found' });
+
+    await db.query(
+      'INSERT INTO reviews (product_id, user_id, rating, comment) VALUES (?, ?, ?, ?)',
+      [productId, userId, rating || 5, comment || '']
+    );
+
+    res.status(201).json({ message: 'Review submitted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

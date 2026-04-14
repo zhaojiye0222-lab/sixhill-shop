@@ -1,5 +1,5 @@
 <template>
-  <view class="max-w-md mx-auto min-h-screen bg-gray-50 flex flex-col relative pb-20">
+  <view class="min-h-screen bg-gray-50 flex flex-col relative pb-20">
     <!-- Header -->
     <view class="sticky top-0 z-40 bg-white/90 backdrop-blur-md px-4 py-3 flex justify-between items-center shadow-sm">
       <view class="flex items-center space-x-2">
@@ -30,25 +30,25 @@
 
     <!-- Features -->
     <view class="px-4 mt-6 grid grid-cols-4 gap-3">
-      <view class="flex flex-col items-center">
+      <view class="flex flex-col items-center" @click="goToCategory('cat_devices')">
         <view class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mb-1.5 shadow-sm">
           <text class="text-2xl">📱</text>
         </view>
         <text class="text-[10px] font-medium text-gray-600 text-center leading-tight">Devices</text>
       </view>
-      <view class="flex flex-col items-center">
+      <view class="flex flex-col items-center" @click="goToCategory('cat_sticks')">
         <view class="w-12 h-12 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center mb-1.5 shadow-sm">
           <text class="text-2xl">🚬</text>
         </view>
         <text class="text-[10px] font-medium text-gray-600 text-center leading-tight">Sticks</text>
       </view>
-      <view class="flex flex-col items-center">
+      <view class="flex flex-col items-center" @click="goToCategory('cat_accessories')">
         <view class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center mb-1.5 shadow-sm">
           <text class="text-2xl">🔌</text>
         </view>
         <text class="text-[10px] font-medium text-gray-600 text-center leading-tight">Accessories</text>
       </view>
-      <view class="flex flex-col items-center">
+      <view class="flex flex-col items-center" @click="goToCategory('new')">
         <view class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center mb-1.5 shadow-sm">
           <text class="text-2xl">✨</text>
         </view>
@@ -70,7 +70,7 @@
       <view v-else class="grid grid-cols-2 gap-4">
         <view v-for="(product, index) in featuredProducts" :key="index" class="bg-white rounded-2xl p-3 shadow-sm relative flex flex-col h-full">
           <view class="w-full h-32 bg-gray-100 rounded-xl mb-3 flex items-center justify-center relative overflow-hidden">
-            <image v-if="product.images && product.images.length > 0" :src="product.images[0]" mode="aspectFill" class="w-full h-full" />
+            <image v-if="product.images && product.images.length > 0" :src="getImageUrl(product.images[0])" mode="aspectFit" class="w-full h-full p-2" />
             <text v-else class="text-3xl text-gray-300">📦</text>
           </view>
           
@@ -90,66 +90,58 @@
       </view>
     </view>
 
-    <!-- Bottom Navigation Bar -->
-    <view class="fixed bottom-0 left-0 right-0 h-16 bg-white border-t border-gray-100 flex justify-around items-center px-2 z-50 max-w-md mx-auto shadow-[0_-4px_20px_rgba(0,0,0,0.03)] pb-safe">
-      <view class="flex flex-col items-center justify-center w-full h-full text-indigo-600">
-        <text class="text-2xl mb-0.5">🏠</text>
-        <text class="text-[10px] font-medium">Home</text>
-      </view>
-      <view class="flex flex-col items-center justify-center w-full h-full text-gray-400">
-        <text class="text-2xl mb-0.5">🗂️</text>
-        <text class="text-[10px] font-medium">Category</text>
-      </view>
-      <view class="flex flex-col items-center justify-center w-full h-full text-gray-400">
-        <text class="text-2xl mb-0.5">🛒</text>
-        <text class="text-[10px] font-medium">Cart</text>
-      </view>
-      <view class="flex flex-col items-center justify-center w-full h-full text-gray-400">
-        <text class="text-2xl mb-0.5">👤</text>
-        <text class="text-[10px] font-medium">Profile</text>
-      </view>
-    </view>
   </view>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useProductStore } from '../../store'
 
+const productStore = useProductStore()
 const featuredProducts = ref([])
 const loading = ref(true)
 
-// 在小程序中使用局域网 IP 代替 localhost，因为手机模拟器可能无法访问 localhost
-// 确保你的 Node 后端服务正在运行
-const API_BASE_URL = 'http://127.0.0.1:3000/api'
-
-const fetchProducts = () => {
+const fetchProducts = async () => {
   loading.value = true
-  uni.request({
-    url: `${API_BASE_URL}/products`,
-    method: 'GET',
-    success: (res) => {
-      console.log('Products fetched:', res.data)
-      // 过滤出设备分类作为首页推荐
-      const products = res.data || []
-      const devices = products.filter(p => p.categoryId === 'cat_devices')
-      featuredProducts.value = devices.length > 0 ? devices.slice(0, 4) : products.slice(0, 4)
-    },
-    fail: (err) => {
-      console.error('Failed to fetch products:', err)
-      uni.showToast({
-        title: 'Failed to load data',
-        icon: 'none'
-      })
-    },
-    complete: () => {
-      loading.value = false
-    }
-  })
+  try {
+    await productStore.fetchProductsAndCategories()
+    const products = productStore.allProducts.value || []
+    const devices = products.filter(p => p.categoryId === 'cat_devices')
+    featuredProducts.value = devices.length > 0 ? devices.slice(0, 4) : products.slice(0, 4)
+  } catch (err) {
+    console.error('Failed to fetch products:', err)
+    uni.showToast({
+      title: 'Failed to load data',
+      icon: 'none'
+    })
+  } finally {
+    loading.value = false
+  }
 }
 
 const formatPrice = (price) => {
   return Number(price).toLocaleString('id-ID')
 }
+
+const getImageUrl = (url) => {
+  if (!url) return '';
+  if (url.startsWith('http') || url.startsWith('data:')) return url;
+  // If it's a relative path starting with /api, prepend the server IP
+  return url.startsWith('/') ? `http://8.215.108.239${url}` : `http://8.215.108.239/${url}`;
+}
+
+const goToCategory = (catId) => {
+  productStore.activeCategory.value = catId;
+  uni.switchTab({
+    url: '/pages/category/category'
+  })
+}
+
+const goToDetail = (product) => {
+  uni.navigateTo({
+    url: `/pages/detail/detail?id=${product.id}`
+  });
+};
 
 // 页面加载时请求数据
 onMounted(() => {

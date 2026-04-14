@@ -857,7 +857,12 @@
             fetchAdminData();
           } catch (err) {
             console.error('Error updating order status:', err);
-            alert(err.message);
+            if (err.message === 'Invalid or expired token' || err.message.includes('401')) {
+              alert('Your session has expired. Please log in again.');
+              doLogout();
+            } else {
+              alert(err.message);
+            }
           }
         };
 
@@ -884,7 +889,13 @@
             
             alert('Order deleted successfully');
           } catch (err) {
-            alert(err.message);
+            console.error('Error deleting order:', err);
+            if (err.message === 'Invalid or expired token' || err.message.includes('401')) {
+              alert('Your session has expired. Please log in again.');
+              doLogout();
+            } else {
+              alert(err.message);
+            }
           }
         };
 
@@ -982,7 +993,13 @@
             };
             
           } catch (err) {
-            alert('Upload failed: ' + err.message);
+            console.error('Error uploading image:', err);
+            if (err.message === 'Invalid or expired token' || err.message.includes('401')) {
+              alert('Your session has expired. Please log in again.');
+              doLogout();
+            } else {
+              alert('Upload failed: ' + err.message);
+            }
           }
         };
 
@@ -1030,7 +1047,13 @@
             closeProductModal();
             fetchAdminData(); // Refresh list
           } catch (err) {
-            alert(err.message);
+            console.error('Error saving product:', err);
+            if (err.message === 'Invalid or expired token' || err.message.includes('401')) {
+              alert('Your session has expired. Please log in again.');
+              doLogout();
+            } else {
+              alert(err.message);
+            }
           } finally {
             isSavingProduct.value = false;
           }
@@ -1047,7 +1070,13 @@
             if (!res.ok) throw new Error('Failed to delete product');
             fetchAdminData();
           } catch (err) {
-            alert(err.message);
+            console.error('Error deleting product/category:', err);
+            if (err.message === 'Invalid or expired token' || err.message.includes('401')) {
+              alert('Your session has expired. Please log in again.');
+              doLogout();
+            } else {
+              alert(err.message);
+            }
           }
         };
 
@@ -1076,7 +1105,13 @@
             showCategoryModal.value = false;
             fetchAdminData(); // Refresh list
           } catch (err) {
-            alert(err.message);
+            console.error('Error saving category:', err);
+            if (err.message === 'Invalid or expired token' || err.message.includes('401')) {
+              alert('Your session has expired. Please log in again.');
+              doLogout();
+            } else {
+              alert(err.message);
+            }
           } finally {
             isSavingCategory.value = false;
           }
@@ -1096,7 +1131,13 @@
             
             fetchAdminData();
           } catch (err) {
-            alert(err.message);
+            console.error('Error deleting category:', err);
+            if (err.message === 'Invalid or expired token' || err.message.includes('401')) {
+              alert('Your session has expired. Please log in again.');
+              doLogout();
+            } else {
+              alert(err.message);
+            }
           }
         };
 

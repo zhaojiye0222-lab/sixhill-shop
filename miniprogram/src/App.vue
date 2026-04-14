@@ -13,8 +13,13 @@ export default {
 </script>
 
 <style>
-/* Remove tailwind imports completely to bypass wxss parsing error */
+/* Base styles to replace disabled preflight */
+view, text, image, scroll-view, swiper, button, input, textarea, label, navigator {
+  box-sizing: border-box;
+}
+
 page {
+  height: 100%;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   background-color: #f8f9fa;
 }

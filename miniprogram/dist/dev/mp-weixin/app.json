@@ -1,12 +1,40 @@
 {
   "pages": [
-    "pages/index/index"
+    "pages/index/index",
+    "pages/category/category",
+    "pages/cart/cart",
+    "pages/profile/profile",
+    "pages/detail/detail"
   ],
   "window": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "Jake",
+    "navigationBarTitleText": "Sixhill Shop",
     "navigationBarBackgroundColor": "#ffffff",
     "backgroundColor": "#f8f9fa"
+  },
+  "tabBar": {
+    "color": "#9ca3af",
+    "selectedColor": "#4f46e5",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "Home"
+      },
+      {
+        "pagePath": "pages/category/category",
+        "text": "Category"
+      },
+      {
+        "pagePath": "pages/cart/cart",
+        "text": "Cart"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "Profile"
+      }
+    ]
   },
   "usingComponents": {}
 }

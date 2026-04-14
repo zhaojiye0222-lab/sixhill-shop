@@ -641,20 +641,19 @@
           submitting.value = true;
 
           try {
-            // 1. 首先需要登录获取 Token
-            const loginRes = await fetch('http://192.168.1.31:3000/api/login', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ username: 'user', password: 'user123' })
-            });
-            const { token } = await loginRes.json();
+            // 使用已登录的 Token
+            const token = localStorage.getItem('userToken');
+            if (!token) {
+              alert('Please login first to place an order.');
+              submitting.value = false;
+              return;
+            }
 
-            // 2. 带着 Token 发起真实下单请求
             const orderItem = { productId: product.value.id, quantity: quantity.value };
             if (selectedColor.value) orderItem.color = selectedColor.value;
             if (isBundle.value) orderItem.bundleFlavors = getSelectedBundleFlavors();
 
-            const orderRes = await fetch('http://192.168.1.31:3000/api/orders', {
+            const orderRes = await fetch(`${API_BASE}/orders`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -692,16 +691,15 @@
           const submitReview = async () => {
             try {
               // 需要先登录获取 Token 才能评价 (简化处理，每次都重新获取测试用)
-              const loginRes = await fetch('http://192.168.1.31:3000/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: 'user', password: 'user123' })
-              });
-              const { token } = await loginRes.json();
+              const token = localStorage.getItem('userToken');
+              if (!token) {
+                alert('Please login first to submit a review.');
+                return;
+              }
 
-              const res = await fetch(`http://192.168.1.31:3000/api/products/${product.value.id}/reviews`, {
+              const res = await fetch(`${API_BASE}/products/${product.value.id}/reviews`, {
                 method: 'POST',
-                headers: { 
+                headers: {
                   'Content-Type': 'application/json',
                   'Authorization': `Bearer ${token}`
                 },
