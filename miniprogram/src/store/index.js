@@ -81,9 +81,19 @@ export const useProductStore = () => {
 
 // --- Cart State ---
 export const useCartStore = () => {
+  const updateBadge = () => {
+    const count = cart.value.reduce((sum, item) => sum + item.qty, 0);
+    if (count > 0) {
+      uni.setTabBarBadge({ index: 2, text: String(count) }).catch(() => {});
+    } else {
+      uni.removeTabBarBadge({ index: 2 }).catch(() => {});
+    }
+  };
+
   const saveCart = () => {
     try {
       uni.setStorageSync('shopCart', cart.value);
+      updateBadge();
     } catch (e) {
       console.error('Failed to save cart', e);
     }
@@ -145,6 +155,7 @@ export const useCartStore = () => {
     removeFromCart,
     clearCart,
     saveCart,
+    updateBadge,
     cartTotal,
     cartCount
   };

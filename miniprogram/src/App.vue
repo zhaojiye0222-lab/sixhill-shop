@@ -1,10 +1,16 @@
 <script>
+import { useCartStore } from './store'
+
 export default {
   onLaunch: function () {
     console.log('App Launch')
+    const cartStore = useCartStore()
+    cartStore.updateBadge()
   },
   onShow: function () {
     console.log('App Show')
+    const cartStore = useCartStore()
+    cartStore.updateBadge()
   },
   onHide: function () {
     console.log('App Hide')

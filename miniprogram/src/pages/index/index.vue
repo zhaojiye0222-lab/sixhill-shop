@@ -68,9 +68,10 @@
       </view>
 
       <view v-else class="grid grid-cols-2 gap-4">
-        <view v-for="(product, index) in featuredProducts" :key="index" class="bg-white rounded-2xl p-3 shadow-sm relative flex flex-col h-full">
+        <view v-for="(product, index) in featuredProducts" :key="index" @click="goToDetail(product)" class="bg-white rounded-2xl p-3 shadow-sm relative flex flex-col h-full">
           <view class="w-full h-32 bg-gray-100 rounded-xl mb-3 flex items-center justify-center relative overflow-hidden">
             <image v-if="product.images && product.images.length > 0" :src="getImageUrl(product.images[0])" mode="aspectFit" class="w-full h-full p-2" />
+            <image v-else-if="product.image_url" :src="getImageUrl(product.image_url)" mode="aspectFit" class="w-full h-full p-2" />
             <text v-else class="text-3xl text-gray-300">📦</text>
           </view>
           
@@ -81,7 +82,7 @@
             </view>
             <view class="flex justify-between items-center mt-2">
               <text class="font-bold text-red-600 text-sm">Rp {{ formatPrice(product.price) }}</text>
-              <view class="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center shadow-md">
+              <view @click.stop="addToCart(product)" class="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center shadow-md active:bg-indigo-700">
                 <text class="text-white text-lg leading-none mb-0.5">+</text>
               </view>
             </view>
@@ -95,9 +96,10 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useProductStore } from '../../store'
+import { useProductStore, useCartStore } from '../../store'
 
 const productStore = useProductStore()
+const cartStore = useCartStore()
 const featuredProducts = ref([])
 const loading = ref(true)
 
@@ -140,8 +142,21 @@ const goToCategory = (catId) => {
 const goToDetail = (product) => {
   uni.navigateTo({
     url: `/pages/detail/detail?id=${product.id}`
-  });
-};
+  })
+}
+
+const addToCart = (product) => {
+  try {
+    const color = product.colors ? product.colors.split(',')[0] : 'Default';
+    cartStore.addToCart(product, 1, color);
+    uni.showToast({
+      title: 'Added to cart',
+      icon: 'success'
+    });
+  } catch (e) {
+    console.error('addToCart error:', e);
+  }
+}
 
 // 页面加载时请求数据
 onMounted(() => {
