@@ -26,6 +26,19 @@ export const useAuthStore = () => {
     }
   };
 
+  const register = async (userData) => {
+    try {
+      const res = await jsonRequest('/register', 'POST', userData);
+      userToken.value = res.token;
+      currentUser.value = res.user;
+      uni.setStorageSync('userToken', res.token);
+      uni.setStorageSync('userProfile', res.user);
+      return res;
+    } catch (err) {
+      throw err;
+    }
+  };
+
   const logout = () => {
     userToken.value = '';
     currentUser.value = null;
@@ -37,6 +50,7 @@ export const useAuthStore = () => {
     userToken,
     currentUser,
     login,
+    register,
     logout,
   };
 };
