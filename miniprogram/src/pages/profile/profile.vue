@@ -66,9 +66,9 @@
             <text class="text-3xl">👤</text>
           </view>
           <view class="flex-1">
-            <text class="text-xl font-bold block">{{ currentUser?.name || currentUser?.username }}</text>
-            <text class="text-indigo-200 text-sm block mt-0.5">{{ currentUser?.phone || 'No phone number' }}</text>
-            <view v-if="currentUser?.role === 'admin'" class="inline-block bg-white/20 text-white text-[10px] px-2 py-0.5 rounded mt-1">
+            <text class="text-xl font-bold block">{{ currentUser ? (currentUser.name || currentUser.username) : '' }}</text>
+            <text class="text-indigo-200 text-sm block mt-0.5">{{ currentUser ? currentUser.phone : 'No phone number' }}</text>
+            <view v-if="currentUser && currentUser.role === 'admin'" class="inline-block bg-white/20 text-white text-[10px] px-2 py-0.5 rounded mt-1">
               Admin
             </view>
           </view>
@@ -282,7 +282,7 @@ const fetchOrders = async () => {
   isLoadingOrders.value = true;
   try {
     // If admin, fetch all orders, else fetch user's orders
-    const endpoint = currentUser.value?.role === 'admin' ? '/admin/orders' : '/orders';
+    const endpoint = (currentUser.value && currentUser.value.role === 'admin') ? '/admin/orders' : '/orders';
     const res = await jsonRequest(endpoint, 'GET');
     // Sort by created_at descending
     orders.value = res.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));

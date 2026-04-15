@@ -33,7 +33,7 @@
 
         <!-- Product Image -->
         <image 
-          :src="getImageUrl(item.images?.[0] || item.image_url)" 
+          :src="getImageUrl(item.images && item.images.length > 0 ? item.images[0] : item.image_url)" 
           mode="aspectFit" 
           class="w-20 h-20 rounded-xl bg-gray-50 border border-gray-100 mr-3 flex-shrink-0 p-1" 
         />
@@ -48,7 +48,7 @@
               <view v-if="item.selectedColor" class="bg-gray-100 px-2 py-0.5 rounded text-[10px] text-gray-600">
                 {{ item.selectedColor }}
               </view>
-              <view v-if="item.selectedFlavor" class="bg-gray-100 px-2 py-0.5 rounded text-[10px] text-gray-600">
+              <view v-if="item.selectedFlavor && item.selectedFlavor.name" class="bg-gray-100 px-2 py-0.5 rounded text-[10px] text-gray-600">
                 {{ item.selectedFlavor.name }}
               </view>
             </view>

@@ -11,9 +11,11 @@
           <swiper-item v-if="!product.images || product.images.length === 0">
             <image :src="getImageUrl(product.image_url)" mode="aspectFit" class="w-full h-full bg-gray-50" />
           </swiper-item>
-          <swiper-item v-for="(img, index) in product.images" :key="index">
-            <image :src="getImageUrl(img)" mode="aspectFit" class="w-full h-full bg-gray-50" />
-          </swiper-item>
+          <template v-else>
+            <swiper-item v-for="(img, index) in product.images" :key="index">
+              <image :src="getImageUrl(img)" mode="aspectFit" class="w-full h-full bg-gray-50" />
+            </swiper-item>
+          </template>
         </swiper>
       </view>
 
@@ -35,7 +37,7 @@
             <text class="text-gray-900 text-sm truncate mr-1">
               {{ selectedColor ? selectedColor : 'Color' }}{{ selectedFlavor ? ', ' + selectedFlavor.name : '' }}
             </text>
-            <text class="text-gray-400 text-lg">›</text>
+            <text class="text-gray-400 text-xs">></text>
           </view>
         </view>
       </view>
@@ -101,7 +103,8 @@
 
         <!-- Product Summary -->
         <view class="flex items-center mb-6 pr-8">
-          <image :src="getImageUrl(product.images?.[0] || product.image_url)" mode="aspectFit" class="w-20 h-20 rounded-xl bg-gray-50 border border-gray-100 mr-4 flex-shrink-0 p-1" />
+          <image v-if="product.images && product.images.length > 0" :src="getImageUrl(product.images[0])" mode="aspectFit" class="w-20 h-20 rounded-xl bg-gray-50 border border-gray-100 mr-4 flex-shrink-0 p-1" />
+          <image v-else :src="getImageUrl(product.image_url)" mode="aspectFit" class="w-20 h-20 rounded-xl bg-gray-50 border border-gray-100 mr-4 flex-shrink-0 p-1" />
           <view class="flex flex-col">
             <text class="text-red-600 font-bold text-lg">Rp {{ formatPrice(product.price) }}</text>
             <text class="text-sm text-gray-500 mt-1">Stock: {{ product.stock > 0 ? product.stock : 'Out of stock' }}</text>
@@ -135,7 +138,7 @@
                 :key="flavor.id"
                 @click="selectedFlavor = flavor"
                 :class="['flex items-center p-2 rounded-xl border transition-all',
-                         selectedFlavor?.id === flavor.id ? 'border-indigo-600 bg-indigo-50' : 'border-gray-200 bg-white']"
+                         (selectedFlavor ? selectedFlavor.id : product.id) === flavor.id ? 'border-indigo-600 bg-indigo-50' : 'border-gray-200 bg-white']"
               >
                 <view class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center mr-3 overflow-hidden">
                   <image v-if="flavor.images && flavor.images.length > 0" :src="getImageUrl(flavor.images[0])" mode="aspectFit" class="w-full h-full p-1 bg-white" />
@@ -144,8 +147,8 @@
                 <view class="flex-1 flex flex-col">
                   <text class="text-sm font-medium text-gray-900">{{ flavor.name }}</text>
                 </view>
-                <view class="w-5 h-5 rounded-full border flex items-center justify-center" :class="selectedFlavor?.id === flavor.id ? 'border-indigo-600 bg-indigo-600' : 'border-gray-300'">
-                  <text v-if="selectedFlavor?.id === flavor.id" class="text-white text-xs">✓</text>
+                <view class="w-5 h-5 rounded-full border flex items-center justify-center" :class="(selectedFlavor ? selectedFlavor.id : product.id) === flavor.id ? 'border-indigo-600 bg-indigo-600' : 'border-gray-300'">
+                  <text v-if="(selectedFlavor ? selectedFlavor.id : product.id) === flavor.id" class="text-white text-xs">✓</text>
                 </view>
               </view>
             </view>
@@ -172,11 +175,11 @@
         <view class="pt-4 pb-safe mt-auto">
           <button 
             class="w-full bg-indigo-600 text-white rounded-full py-3 text-base font-bold shadow-lg m-0 border-none after:border-none"
-            :class="{'opacity-50': product.stock === 0}"
-            :disabled="product.stock === 0"
-            @click="confirmSku"
+            :class="{'opacity-50': !product.stock || Number(product.stock) <= 0}"
+            :disabled="!product.stock || Number(product.stock) <= 0"
+            @click.stop="confirmSku"
           >
-            {{ product.stock !== 0 ? 'Confirm' : 'Out of Stock' }}
+            {{ product.stock && Number(product.stock) > 0 ? 'Confirm' : 'Out of Stock' }}
           </button>
         </view>
       </view>
@@ -237,7 +240,7 @@ const loadProduct = async () => {
       if (siblings.length > 0) {
         // Include self and siblings
         allFlavors.value = [product.value, ...siblings];
-        selectedFlavor.value = product.value;
+        selectedFlavor.value = null; // Default to main product
       }
     }
   }
@@ -287,21 +290,22 @@ const confirmSku = () => {
       return;
     }
     
-    // Use selectedFlavor if available, otherwise use product
     const productToAdd = selectedFlavor.value ? selectedFlavor.value : product.value;
+    const finalColor = selectedColor.value || 'Default';
+    const flavorToSave = (selectedFlavor.value && selectedFlavor.value.id !== product.value.id) ? selectedFlavor.value : null;
     
     if (skuAction.value === 'cart') {
-      cartStore.addToCart(productToAdd, quantity.value, selectedColor.value, selectedFlavor.value);
+      cartStore.addToCart(productToAdd, quantity.value, finalColor, flavorToSave);
       uni.showToast({ title: 'Added to cart', icon: 'success' });
       closeSkuModal();
     } else {
-      // Buy Now logic
-      cartStore.addToCart(productToAdd, quantity.value, selectedColor.value, selectedFlavor.value);
+      cartStore.addToCart(productToAdd, quantity.value, finalColor, flavorToSave);
       closeSkuModal();
-      uni.switchTab({ url: '/pages/cart/cart' }); // Temporarily redirect to cart
+      uni.switchTab({ url: '/pages/cart/cart' });
     }
   } catch (e) {
     console.error('confirmSku error:', e);
+    uni.showToast({ title: 'Failed: ' + String(e.message || e), icon: 'none' });
   }
 };
 </script>

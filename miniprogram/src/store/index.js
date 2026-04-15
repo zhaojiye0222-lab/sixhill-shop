@@ -94,8 +94,8 @@ export const useCartStore = () => {
       const existing = cart.value.find(item => 
         item.id === product.id && 
         item.selectedColor === color && 
-        item.selectedFlavor?.id === flavor?.id &&
-        JSON.stringify(item.bundleFlavors) === JSON.stringify(bundleFlavors)
+        (item.selectedFlavor ? item.selectedFlavor.id : null) === (flavor ? flavor.id : null) &&
+        JSON.stringify(item.bundleFlavors || null) === JSON.stringify(bundleFlavors || null)
       );
       
       if (existing) {
@@ -120,8 +120,8 @@ export const useCartStore = () => {
     cart.value = cart.value.filter(item => 
       !(item.id === product.id && 
         item.selectedColor === color && 
-        item.selectedFlavor?.id === flavor?.id &&
-        JSON.stringify(item.bundleFlavors) === JSON.stringify(bundleFlavors))
+        (item.selectedFlavor ? item.selectedFlavor.id : null) === (flavor ? flavor.id : null) &&
+        JSON.stringify(item.bundleFlavors || null) === JSON.stringify(bundleFlavors || null))
     );
     saveCart();
   };
@@ -144,6 +144,7 @@ export const useCartStore = () => {
     addToCart,
     removeFromCart,
     clearCart,
+    saveCart,
     cartTotal,
     cartCount
   };
