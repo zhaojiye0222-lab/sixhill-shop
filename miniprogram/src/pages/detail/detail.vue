@@ -172,11 +172,11 @@
         <view class="pt-4 pb-safe mt-auto">
           <button 
             class="w-full bg-indigo-600 text-white rounded-full py-3 text-base font-bold shadow-lg m-0 border-none after:border-none"
-            :class="{'opacity-50': product.stock <= 0}"
-            :disabled="product.stock <= 0"
+            :class="{'opacity-50': product.stock === 0}"
+            :disabled="product.stock === 0"
             @click="confirmSku"
           >
-            {{ product.stock > 0 ? 'Confirm' : 'Out of Stock' }}
+            {{ product.stock !== 0 ? 'Confirm' : 'Out of Stock' }}
           </button>
         </view>
       </view>
@@ -281,23 +281,27 @@ const closeSkuModal = () => {
 };
 
 const confirmSku = () => {
-  if (!selectedColor.value && availableColors.value.length > 0) {
-    uni.showToast({ title: 'Please select a color', icon: 'none' });
-    return;
-  }
-  
-  // Use selectedFlavor if available, otherwise use product
-  const productToAdd = selectedFlavor.value ? selectedFlavor.value : product.value;
-  
-  if (skuAction.value === 'cart') {
-    cartStore.addToCart(productToAdd, quantity.value, selectedColor.value);
-    uni.showToast({ title: 'Added to cart', icon: 'success' });
-    closeSkuModal();
-  } else {
-    // Buy Now logic
-    cartStore.addToCart(productToAdd, quantity.value, selectedColor.value);
-    closeSkuModal();
-    uni.switchTab({ url: '/pages/cart/cart' }); // Temporarily redirect to cart
+  try {
+    if (!selectedColor.value && availableColors.value.length > 0) {
+      uni.showToast({ title: 'Please select a color', icon: 'none' });
+      return;
+    }
+    
+    // Use selectedFlavor if available, otherwise use product
+    const productToAdd = selectedFlavor.value ? selectedFlavor.value : product.value;
+    
+    if (skuAction.value === 'cart') {
+      cartStore.addToCart(productToAdd, quantity.value, selectedColor.value, selectedFlavor.value);
+      uni.showToast({ title: 'Added to cart', icon: 'success' });
+      closeSkuModal();
+    } else {
+      // Buy Now logic
+      cartStore.addToCart(productToAdd, quantity.value, selectedColor.value, selectedFlavor.value);
+      closeSkuModal();
+      uni.switchTab({ url: '/pages/cart/cart' }); // Temporarily redirect to cart
+    }
+  } catch (e) {
+    console.error('confirmSku error:', e);
   }
 };
 </script>

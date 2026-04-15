@@ -9,7 +9,8 @@ const allProducts = ref([]);
 const categories = ref([]);
 const activeCategory = ref(null);
 
-const cart = ref(uni.getStorageSync('shopCart') || []);
+const cartData = uni.getStorageSync('shopCart');
+const cart = ref(Array.isArray(cartData) ? cartData : []);
 
 // --- Auth State ---
 export const useAuthStore = () => {
@@ -81,36 +82,45 @@ export const useProductStore = () => {
 // --- Cart State ---
 export const useCartStore = () => {
   const saveCart = () => {
-    uni.setStorageSync('shopCart', cart.value);
+    try {
+      uni.setStorageSync('shopCart', cart.value);
+    } catch (e) {
+      console.error('Failed to save cart', e);
+    }
   };
 
   const addToCart = (product, quantity = 1, color = null, flavor = null, bundleFlavors = null) => {
-    const existing = cart.value.find(item => 
-      item.id === product.id && 
-      item.selectedColor === color && 
-      item.selectedFlavor === flavor &&
-      JSON.stringify(item.bundleFlavors) === JSON.stringify(bundleFlavors)
-    );
-    
-    if (existing) {
-      existing.qty += quantity;
-    } else {
-      cart.value.push({
-        ...product,
-        qty: quantity,
-        selectedColor: color,
-        selectedFlavor: flavor,
-        bundleFlavors: bundleFlavors
-      });
+    try {
+      const existing = cart.value.find(item => 
+        item.id === product.id && 
+        item.selectedColor === color && 
+        item.selectedFlavor?.id === flavor?.id &&
+        JSON.stringify(item.bundleFlavors) === JSON.stringify(bundleFlavors)
+      );
+      
+      if (existing) {
+        existing.qty += quantity;
+      } else {
+        cart.value.push({
+          ...product,
+          qty: quantity,
+          selectedColor: color,
+          selectedFlavor: flavor,
+          bundleFlavors: bundleFlavors
+        });
+      }
+      saveCart();
+    } catch (err) {
+      console.error('Error in addToCart:', err);
+      uni.showToast({ title: 'Failed to add to cart', icon: 'none' });
     }
-    saveCart();
   };
 
   const removeFromCart = (product, color, flavor = null, bundleFlavors = null) => {
     cart.value = cart.value.filter(item => 
       !(item.id === product.id && 
         item.selectedColor === color && 
-        item.selectedFlavor === flavor &&
+        item.selectedFlavor?.id === flavor?.id &&
         JSON.stringify(item.bundleFlavors) === JSON.stringify(bundleFlavors))
     );
     saveCart();

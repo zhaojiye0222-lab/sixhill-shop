@@ -182,12 +182,16 @@ const goToDetail = (product) => {
 };
 
 const addToCart = (product) => {
-  const color = product.colors ? product.colors.split(',')[0] : 'Default';
-  cartStore.addToCart(product, 1, color);
-  uni.showToast({
-    title: 'Added to cart',
-    icon: 'success'
-  });
+  try {
+    const color = product.colors ? product.colors.split(',')[0] : 'Default';
+    cartStore.addToCart(product, 1, color);
+    uni.showToast({
+      title: 'Added to cart',
+      icon: 'success'
+    });
+  } catch (e) {
+    console.error('addToCart error:', e);
+  }
 };
 </script>
 
