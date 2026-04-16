@@ -1,6 +1,7 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const store_index = require("../../store/index.js");
+const utils_config = require("../../utils/config.js");
 require("../../utils/api.js");
 const _sfc_main = {
   __name: "detail",
@@ -39,19 +40,17 @@ const _sfc_main = {
           );
           if (siblings.length > 0) {
             allFlavors.value = [product.value, ...siblings];
-            selectedFlavor.value = product.value;
+            selectedFlavor.value = null;
           }
         }
       }
       loading.value = false;
     };
-    const getImageUrl = (url) => {
-      if (!url)
-        return "";
-      if (url.startsWith("http") || url.startsWith("data:"))
-        return url;
-      return url.startsWith("/") ? `http://8.215.108.239${url}` : `http://8.215.108.239/${url}`;
-    };
+    common_vendor.onPullDownRefresh(async () => {
+      await productStore.fetchProductsAndCategories();
+      await loadProduct();
+      common_vendor.index.stopPullDownRefresh();
+    });
     const formatPrice = (price) => {
       return Number(price).toLocaleString("id-ID");
     };
@@ -64,7 +63,7 @@ const _sfc_main = {
         return product.value.specs.color.split(",").map((c) => c.trim());
       return [];
     });
-    const cartCount = common_vendor.computed(() => cartStore.cartCount.value);
+    const cartCount = cartStore.cartCount;
     const goHome = () => {
       common_vendor.index.switchTab({ url: "/pages/index/index" });
     };
@@ -79,36 +78,43 @@ const _sfc_main = {
       showSkuModal.value = false;
     };
     const confirmSku = () => {
-      if (!selectedColor.value && availableColors.value.length > 0) {
-        common_vendor.index.showToast({ title: "Please select a color", icon: "none" });
-        return;
-      }
-      const productToAdd = selectedFlavor.value ? selectedFlavor.value : product.value;
-      if (skuAction.value === "cart") {
-        cartStore.addToCart(productToAdd, quantity.value, selectedColor.value);
-        common_vendor.index.showToast({ title: "Added to cart", icon: "success" });
-        closeSkuModal();
-      } else {
-        cartStore.addToCart(productToAdd, quantity.value, selectedColor.value);
-        closeSkuModal();
-        common_vendor.index.switchTab({ url: "/pages/cart/cart" });
+      try {
+        if (!selectedColor.value && availableColors.value.length > 0) {
+          common_vendor.index.showToast({ title: "Please select a color", icon: "none" });
+          return;
+        }
+        const productToAdd = selectedFlavor.value ? selectedFlavor.value : product.value;
+        const finalColor = selectedColor.value || "Default";
+        const flavorToSave = selectedFlavor.value && selectedFlavor.value.id !== product.value.id ? selectedFlavor.value : null;
+        if (skuAction.value === "cart") {
+          cartStore.addToCart(productToAdd, quantity.value, finalColor, flavorToSave);
+          common_vendor.index.showToast({ title: "Added to cart", icon: "success" });
+          closeSkuModal();
+        } else {
+          cartStore.addToCart(productToAdd, quantity.value, finalColor, flavorToSave);
+          closeSkuModal();
+          common_vendor.index.switchTab({ url: "/pages/cart/cart" });
+        }
+      } catch (e) {
+        console.error("confirmSku error:", e);
+        common_vendor.index.showToast({ title: "Failed: " + String(e.message || e), icon: "none" });
       }
     };
     return (_ctx, _cache) => {
-      var _a;
       return common_vendor.e({
         a: loading.value
       }, loading.value ? {} : product.value ? common_vendor.e({
         c: !product.value.images || product.value.images.length === 0
       }, !product.value.images || product.value.images.length === 0 ? {
-        d: getImageUrl(product.value.image_url)
-      } : {}, {
+        d: common_vendor.unref(utils_config.getImageUrl)(product.value.image_url)
+      } : {
         e: common_vendor.f(product.value.images, (img, index, i0) => {
           return {
-            a: getImageUrl(img),
+            a: common_vendor.unref(utils_config.getImageUrl)(img),
             b: index
           };
-        }),
+        })
+      }, {
         f: common_vendor.t(formatPrice(product.value.price)),
         g: product.value.isNew
       }, product.value.isNew ? {} : {}, {
@@ -144,13 +150,18 @@ const _sfc_main = {
       }, showSkuModal.value ? common_vendor.e({
         B: common_vendor.o(closeSkuModal),
         C: common_vendor.o(closeSkuModal),
-        D: getImageUrl(((_a = product.value.images) == null ? void 0 : _a[0]) || product.value.image_url),
-        E: common_vendor.t(formatPrice(product.value.price)),
-        F: common_vendor.t(product.value.stock > 0 ? product.value.stock : "Out of stock"),
-        G: common_vendor.t(selectedColor.value || "Color"),
-        H: common_vendor.unref(availableColors).length > 0
+        D: product.value.images && product.value.images.length > 0
+      }, product.value.images && product.value.images.length > 0 ? {
+        E: common_vendor.unref(utils_config.getImageUrl)(product.value.images[0])
+      } : {
+        F: common_vendor.unref(utils_config.getImageUrl)(product.value.image_url)
+      }, {
+        G: common_vendor.t(formatPrice(product.value.price)),
+        H: common_vendor.t(product.value.stock > 0 ? product.value.stock : "Out of stock"),
+        I: common_vendor.t(selectedColor.value || "Color"),
+        J: common_vendor.unref(availableColors).length > 0
       }, common_vendor.unref(availableColors).length > 0 ? {
-        I: common_vendor.f(common_vendor.unref(availableColors), (color, k0, i0) => {
+        K: common_vendor.f(common_vendor.unref(availableColors), (color, k0, i0) => {
           return {
             a: common_vendor.t(color),
             b: color,
@@ -159,32 +170,31 @@ const _sfc_main = {
           };
         })
       } : {}, {
-        J: allFlavors.value && allFlavors.value.length > 0
+        L: allFlavors.value && allFlavors.value.length > 0
       }, allFlavors.value && allFlavors.value.length > 0 ? {
-        K: common_vendor.f(allFlavors.value, (flavor, k0, i0) => {
-          var _a2, _b, _c, _d;
+        M: common_vendor.f(allFlavors.value, (flavor, k0, i0) => {
           return common_vendor.e({
             a: flavor.images && flavor.images.length > 0
           }, flavor.images && flavor.images.length > 0 ? {
-            b: getImageUrl(flavor.images[0])
+            b: common_vendor.unref(utils_config.getImageUrl)(flavor.images[0])
           } : {}, {
             c: common_vendor.t(flavor.name),
-            d: ((_a2 = selectedFlavor.value) == null ? void 0 : _a2.id) === flavor.id
-          }, ((_b = selectedFlavor.value) == null ? void 0 : _b.id) === flavor.id ? {} : {}, {
-            e: common_vendor.n(((_c = selectedFlavor.value) == null ? void 0 : _c.id) === flavor.id ? "border-indigo-600 bg-indigo-600" : "border-gray-300"),
+            d: (selectedFlavor.value ? selectedFlavor.value.id : product.value.id) === flavor.id
+          }, (selectedFlavor.value ? selectedFlavor.value.id : product.value.id) === flavor.id ? {} : {}, {
+            e: common_vendor.n((selectedFlavor.value ? selectedFlavor.value.id : product.value.id) === flavor.id ? "border-indigo-600 bg-indigo-600" : "border-gray-300"),
             f: flavor.id,
             g: common_vendor.o(($event) => selectedFlavor.value = flavor, flavor.id),
-            h: common_vendor.n(((_d = selectedFlavor.value) == null ? void 0 : _d.id) === flavor.id ? "border-indigo-600 bg-indigo-50" : "border-gray-200 bg-white")
+            h: common_vendor.n((selectedFlavor.value ? selectedFlavor.value.id : product.value.id) === flavor.id ? "border-indigo-600 bg-indigo-50" : "border-gray-200 bg-white")
           });
         })
       } : {}, {
-        L: common_vendor.o(($event) => quantity.value > 1 && quantity.value--),
-        M: common_vendor.t(quantity.value),
-        N: common_vendor.o(($event) => quantity.value < product.value.stock && quantity.value++),
-        O: common_vendor.t(product.value.stock > 0 ? "Confirm" : "Out of Stock"),
-        P: product.value.stock <= 0 ? 1 : "",
-        Q: product.value.stock <= 0,
-        R: common_vendor.o(confirmSku)
+        N: common_vendor.o(($event) => quantity.value > 1 && quantity.value--),
+        O: common_vendor.t(quantity.value),
+        P: common_vendor.o(($event) => quantity.value < product.value.stock && quantity.value++),
+        Q: common_vendor.t(product.value.stock && Number(product.value.stock) > 0 ? "Confirm" : "Out of Stock"),
+        R: !product.value.stock || Number(product.value.stock) <= 0 ? 1 : "",
+        S: !product.value.stock || Number(product.value.stock) <= 0,
+        T: common_vendor.o(confirmSku)
       }) : {});
     };
   }

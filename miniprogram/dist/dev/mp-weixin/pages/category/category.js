@@ -1,6 +1,7 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
 const store_index = require("../../store/index.js");
+const utils_config = require("../../utils/config.js");
 require("../../utils/api.js");
 const _sfc_main = {
   __name: "category",
@@ -10,6 +11,7 @@ const _sfc_main = {
     const currentCategory = common_vendor.ref("cat_devices");
     const currentSubCategory = common_vendor.ref(null);
     common_vendor.onShow(() => {
+      cartStore.updateBadge();
       if (productStore.activeCategory.value) {
         currentCategory.value = productStore.activeCategory.value;
         currentSubCategory.value = null;
@@ -24,13 +26,10 @@ const _sfc_main = {
         currentCategory.value = topCategories.value[0].id;
       }
     });
-    const getImageUrl = (url) => {
-      if (!url)
-        return "";
-      if (url.startsWith("http") || url.startsWith("data:"))
-        return url;
-      return url.startsWith("/") ? `http://8.215.108.239${url}` : `http://8.215.108.239/${url}`;
-    };
+    common_vendor.onPullDownRefresh(async () => {
+      await productStore.fetchProductsAndCategories();
+      common_vendor.index.stopPullDownRefresh();
+    });
     const formatPrice = (price) => {
       return Number(price).toLocaleString("id-ID");
     };
@@ -73,12 +72,16 @@ const _sfc_main = {
       });
     };
     const addToCart = (product) => {
-      const color = product.colors ? product.colors.split(",")[0] : "Default";
-      cartStore.addToCart(product, 1, color);
-      common_vendor.index.showToast({
-        title: "Added to cart",
-        icon: "success"
-      });
+      try {
+        const color = product.colors ? product.colors.split(",")[0] : "Default";
+        cartStore.addToCart(product, 1, color);
+        common_vendor.index.showToast({
+          title: "Added to cart",
+          icon: "success"
+        });
+      } catch (e) {
+        console.error("addToCart error:", e);
+      }
     };
     return (_ctx, _cache) => {
       return common_vendor.e({
@@ -107,7 +110,7 @@ const _sfc_main = {
           return common_vendor.e({
             a: product.images && product.images.length > 0
           }, product.images && product.images.length > 0 ? {
-            b: getImageUrl(product.images[0])
+            b: common_vendor.unref(utils_config.getImageUrl)(product.images[0])
           } : {}, {
             c: product.isNew
           }, product.isNew ? {} : {}, {

@@ -2,5 +2,6 @@
   "navigationBarTitleText": "Product Detail",
   "navigationBarBackgroundColor": "#ffffff",
   "navigationBarTextStyle": "black",
+  "enablePullDownRefresh": true,
   "usingComponents": {}
 }

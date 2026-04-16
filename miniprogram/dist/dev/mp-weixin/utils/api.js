@@ -1,6 +1,6 @@
 "use strict";
 const common_vendor = require("../common/vendor.js");
-const API_BASE = "http://8.215.108.239/api";
+const utils_config = require("./config.js");
 const authRequest = (url, options = {}) => {
   return new Promise((resolve, reject) => {
     const token = common_vendor.index.getStorageSync("userToken");
@@ -12,7 +12,7 @@ const authRequest = (url, options = {}) => {
       header["Content-Type"] = header["Content-Type"] || "application/json";
     }
     common_vendor.index.request({
-      url: url.startsWith("http") ? url : `${API_BASE}${url}`,
+      url: url.startsWith("http") ? url : `${utils_config.CONFIG.API_BASE}${url}`,
       method: options.method || "GET",
       data: options.data,
       header,
@@ -29,4 +29,8 @@ const authRequest = (url, options = {}) => {
     });
   });
 };
+const jsonRequest = (url, method, data) => {
+  return authRequest(url, { method, data });
+};
 exports.authRequest = authRequest;
+exports.jsonRequest = jsonRequest;

@@ -151,7 +151,7 @@
             </view>
 
             <!-- Action Buttons -->
-            <view class="mt-3 flex space-x-2" v-if="order.status === 'pending_payment' || order.status === 'shipped'">
+            <view class="mt-3 flex space-x-2" v-if="order.status === 'pending_payment' || order.status === 'shipped' || (currentUser && currentUser.role === 'admin' && (order.status === 'processing' || order.status === 'paid'))">
               <button 
                 v-if="order.status === 'pending_payment'"
                 class="flex-1 bg-indigo-50 text-indigo-600 rounded-xl py-2 text-xs font-bold m-0 border-none after:border-none"
@@ -167,6 +167,30 @@
               >
                 Confirm Receipt
               </button>
+
+              <template v-if="currentUser && currentUser.role === 'admin'">
+                <button 
+                  v-if="order.status === 'processing'"
+                  class="flex-1 bg-green-50 text-green-600 rounded-xl py-2 text-xs font-bold m-0 border-none after:border-none"
+                  @click="approvePayment(order.id)"
+                >
+                  Approve Payment
+                </button>
+                <button 
+                  v-if="order.status === 'processing'"
+                  class="flex-1 bg-red-50 text-red-600 rounded-xl py-2 text-xs font-bold m-0 border-none after:border-none"
+                  @click="rejectPayment(order.id)"
+                >
+                  Reject Payment
+                </button>
+                <button 
+                  v-if="order.status === 'paid'"
+                  class="flex-1 bg-indigo-600 text-white rounded-xl py-2 text-xs font-bold shadow-sm m-0 border-none after:border-none"
+                  @click="markAsShipped(order.id)"
+                >
+                  Mark as Shipped
+                </button>
+              </template>
             </view>
           </view>
         </view>
@@ -177,9 +201,10 @@
 
 <script setup>
 import { ref, computed, reactive } from 'vue';
-import { onShow } from '@dcloudio/uni-app';
+import { onShow, onPullDownRefresh } from '@dcloudio/uni-app';
 import { useAuthStore, useCartStore } from '../../store';
 import { jsonRequest } from '../../utils/api';
+import { getImageUrl, CONFIG } from '../../utils/config';
 
 const authStore = useAuthStore();
 
@@ -206,6 +231,7 @@ const orderTabs = [
   { label: 'All', value: 'all', icon: '📋' },
   { label: 'Pending', value: 'pending_payment', icon: '💳' },
   { label: 'Processing', value: 'processing', icon: '⏳' },
+  { label: 'Paid', value: 'paid', icon: '💰' },
   { label: 'Shipped', value: 'shipped', icon: '🚚' },
   { label: 'Completed', value: 'completed', icon: '✅' }
 ];
@@ -306,7 +332,7 @@ const uploadPaymentReceipt = (orderId) => {
       uni.showLoading({ title: 'Uploading...' });
       
       uni.uploadFile({
-        url: 'http://8.215.108.239/api/upload',
+        url: `${CONFIG.API_BASE}/upload`,
         filePath: filePath,
         name: 'image',
         header: {
@@ -364,11 +390,13 @@ const confirmReceipt = (orderId) => {
 };
 
 // Helpers
-const getImageUrl = (url) => {
-  if (!url) return '';
-  if (url.startsWith('http') || url.startsWith('data:')) return url;
-  return url.startsWith('/') ? `http://8.215.108.239${url}` : `http://8.215.108.239/${url}`;
-};
+
+onPullDownRefresh(async () => {
+  if (isLoggedIn.value) {
+    await fetchOrders();
+  }
+  uni.stopPullDownRefresh();
+});
 
 const formatPrice = (price) => {
   return Number(price).toLocaleString('id-ID');
@@ -387,6 +415,7 @@ const formatStatus = (status) => {
   const map = {
     'pending_payment': 'Pending Pay',
     'processing': 'Processing',
+    'paid': 'Paid',
     'shipped': 'Shipped',
     'completed': 'Completed',
     'cancelled': 'Cancelled'
@@ -398,11 +427,75 @@ const getStatusClass = (status) => {
   const map = {
     'pending_payment': 'bg-orange-100 text-orange-600',
     'processing': 'bg-blue-100 text-blue-600',
+    'paid': 'bg-indigo-100 text-indigo-600',
     'shipped': 'bg-purple-100 text-purple-600',
     'completed': 'bg-green-100 text-green-600',
     'cancelled': 'bg-red-100 text-red-600'
   };
   return map[status] || 'bg-gray-100 text-gray-600';
+};
+
+const approvePayment = (orderId) => {
+  uni.showModal({
+    title: 'Approve Payment',
+    content: 'Are you sure you want to approve this payment?',
+    success: async (res) => {
+      if (res.confirm) {
+        uni.showLoading({ title: 'Updating...' });
+        try {
+          await jsonRequest(`/orders/${orderId}/status`, 'PATCH', { status: 'paid' });
+          uni.showToast({ title: 'Payment approved!', icon: 'success' });
+          fetchOrders();
+        } catch (err) {
+          uni.showToast({ title: 'Failed to update', icon: 'none' });
+        } finally {
+          uni.hideLoading();
+        }
+      }
+    }
+  });
+};
+
+const rejectPayment = (orderId) => {
+  uni.showModal({
+    title: 'Reject Payment',
+    content: 'Are you sure you want to reject this payment?',
+    success: async (res) => {
+      if (res.confirm) {
+        uni.showLoading({ title: 'Updating...' });
+        try {
+          await jsonRequest(`/orders/${orderId}/status`, 'PATCH', { status: 'pending_payment' });
+          uni.showToast({ title: 'Payment rejected!', icon: 'success' });
+          fetchOrders();
+        } catch (err) {
+          uni.showToast({ title: 'Failed to update', icon: 'none' });
+        } finally {
+          uni.hideLoading();
+        }
+      }
+    }
+  });
+};
+
+const markAsShipped = (orderId) => {
+  uni.showModal({
+    title: 'Mark as Shipped',
+    content: 'Has this order been shipped?',
+    success: async (res) => {
+      if (res.confirm) {
+        uni.showLoading({ title: 'Updating...' });
+        try {
+          await jsonRequest(`/orders/${orderId}/status`, 'PATCH', { status: 'shipped' });
+          uni.showToast({ title: 'Order marked as shipped!', icon: 'success' });
+          fetchOrders();
+        } catch (err) {
+          uni.showToast({ title: 'Failed to update', icon: 'none' });
+        } finally {
+          uni.hideLoading();
+        }
+      }
+    }
+  });
 };
 </script>
 

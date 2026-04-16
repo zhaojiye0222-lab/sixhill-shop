@@ -1,5 +1,5 @@
 // src/utils/api.js
-const API_BASE = 'http://8.215.108.239/api'; // Use production IP for testing on real devices/emulator. Change to localhost for local backend if needed.
+import { CONFIG } from './config';
 
 export const authRequest = (url, options = {}) => {
   return new Promise((resolve, reject) => {
@@ -15,7 +15,7 @@ export const authRequest = (url, options = {}) => {
     }
 
     uni.request({
-      url: url.startsWith('http') ? url : `${API_BASE}${url}`,
+      url: url.startsWith('http') ? url : `${CONFIG.API_BASE}${url}`,
       method: options.method || 'GET',
       data: options.data,
       header: header,

@@ -1,5 +1,10 @@
 
-.container.data-v-fb6ea9e5 {
-  min-height: 100vh;
-  background-color: #f8f9fa;
+.pb-safe.data-v-fb6ea9e5 {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.line-clamp-2.data-v-fb6ea9e5 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

@@ -1,5 +1,7 @@
 
-.container.data-v-04d37cba {
-  min-height: 100vh;
-  background-color: #f8f9fa;
+.line-clamp-1.data-v-04d37cba {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

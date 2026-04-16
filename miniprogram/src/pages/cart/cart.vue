@@ -183,9 +183,10 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { onShow } from '@dcloudio/uni-app';
+import { onShow, onPullDownRefresh } from '@dcloudio/uni-app';
 import { useCartStore, useAuthStore } from '../../store';
 import { jsonRequest } from '../../utils/api';
+import { getImageUrl, CONFIG } from '../../utils/config';
 
 const cartStore = useCartStore();
 const authStore = useAuthStore();
@@ -208,11 +209,10 @@ onShow(() => {
   }
 });
 
-const getImageUrl = (url) => {
-  if (!url) return '';
-  if (url.startsWith('http') || url.startsWith('data:')) return url;
-  return url.startsWith('/') ? `http://8.215.108.239${url}` : `http://8.215.108.239/${url}`;
-};
+onPullDownRefresh(() => {
+  cartStore.updateBadge();
+  uni.stopPullDownRefresh();
+});
 
 const formatPrice = (price) => {
   return Number(price).toLocaleString('id-ID');
@@ -294,7 +294,7 @@ const uploadReceipt = async () => {
     if (!receiptFile.value) return resolve(null);
     
     uni.uploadFile({
-      url: 'http://8.215.108.239/api/upload',
+      url: `${CONFIG.API_BASE}/upload`,
       filePath: receiptFile.value,
       name: 'image',
       header: {

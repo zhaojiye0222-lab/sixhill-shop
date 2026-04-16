@@ -3,27 +3,31 @@
     {
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "Sixhill Shop",
-        "navigationStyle": "custom"
+        "navigationBarTitleText": "Home",
+        "navigationStyle": "custom",
+        "enablePullDownRefresh": true
       }
     },
     {
       "path": "pages/category/category",
       "style": {
         "navigationBarTitleText": "Category",
-        "navigationStyle": "custom"
+        "navigationStyle": "custom",
+        "enablePullDownRefresh": true
       }
     },
     {
       "path": "pages/cart/cart",
       "style": {
-        "navigationBarTitleText": "Cart"
+        "navigationBarTitleText": "Cart",
+        "enablePullDownRefresh": true
       }
     },
     {
       "path": "pages/profile/profile",
       "style": {
-        "navigationBarTitleText": "Profile"
+        "navigationBarTitleText": "Profile",
+        "enablePullDownRefresh": true
       }
     },
     {
@@ -31,7 +35,8 @@
       "style": {
         "navigationBarTitleText": "Product Detail",
         "navigationBarBackgroundColor": "#ffffff",
-        "navigationBarTextStyle": "black"
+        "navigationBarTextStyle": "black",
+        "enablePullDownRefresh": true
       }
     }
   ],

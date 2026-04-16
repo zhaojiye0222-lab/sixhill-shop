@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 const common_vendor = require("./common/vendor.js");
+const store_index = require("./store/index.js");
+require("./utils/api.js");
+require("./utils/config.js");
 if (!Math) {
   "./pages/index/index.js";
   "./pages/category/category.js";
@@ -11,9 +14,13 @@ if (!Math) {
 const _sfc_main = {
   onLaunch: function() {
     console.log("App Launch");
+    const cartStore = store_index.useCartStore();
+    cartStore.updateBadge();
   },
   onShow: function() {
     console.log("App Show");
+    const cartStore = store_index.useCartStore();
+    cartStore.updateBadge();
   },
   onHide: function() {
     console.log("App Hide");

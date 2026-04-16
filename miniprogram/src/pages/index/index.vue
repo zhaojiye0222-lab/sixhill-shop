@@ -19,7 +19,7 @@
 
     <!-- Banner -->
     <view class="px-4 mt-4">
-      <view class="w-full h-40 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl relative overflow-hidden shadow-lg flex items-center p-6">
+      <view class="w-full h-40 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl relative overflow-hidden shadow-lg flex items-center p-6" @click="goToCategory('cat_devices')">
         <view class="relative z-10 w-2/3">
           <text class="text-white/80 text-xs font-bold tracking-wider uppercase mb-1 block">New Arrival</text>
           <text class="text-white text-xl font-bold leading-tight mb-2 block">Experience the Future of Heat-Not-Burn</text>
@@ -60,7 +60,7 @@
     <view class="px-4 mt-8">
       <view class="flex justify-between items-center mb-4">
         <text class="font-bold text-lg text-gray-800">Featured Devices</text>
-        <text class="text-xs text-indigo-600 font-medium">See all ></text>
+        <text class="text-xs text-indigo-600 font-medium" @click="goToCategory('cat_devices')">See all ></text>
       </view>
 
       <view v-if="loading" class="text-center py-8 text-gray-400 text-sm">
@@ -96,8 +96,9 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { onShow } from '@dcloudio/uni-app'
+import { onShow, onPullDownRefresh } from '@dcloudio/uni-app'
 import { useProductStore, useCartStore } from '../../store'
+import { getImageUrl } from '../../utils/config'
 
 const productStore = useProductStore()
 const cartStore = useCartStore()
@@ -130,15 +131,8 @@ const formatPrice = (price) => {
   return Number(price).toLocaleString('id-ID')
 }
 
-const getImageUrl = (url) => {
-  if (!url) return '';
-  if (url.startsWith('http') || url.startsWith('data:')) return url;
-  // If it's a relative path starting with /api, prepend the server IP
-  return url.startsWith('/') ? `http://8.215.108.239${url}` : `http://8.215.108.239/${url}`;
-}
-
-const goToCategory = (catId) => {
-  productStore.activeCategory.value = catId;
+const goToCategory = (categoryId) => {
+  productStore.activeCategory.value = categoryId;
   uni.switchTab({
     url: '/pages/category/category'
   })
@@ -166,6 +160,11 @@ const addToCart = (product) => {
 // 页面加载时请求数据
 onMounted(() => {
   fetchProducts()
+})
+
+onPullDownRefresh(async () => {
+  await fetchProducts()
+  uni.stopPullDownRefresh()
 })
 
 </script>

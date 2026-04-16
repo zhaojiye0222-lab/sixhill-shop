@@ -189,8 +189,9 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { onLoad } from '@dcloudio/uni-app';
+import { onLoad, onPullDownRefresh } from '@dcloudio/uni-app';
 import { useProductStore, useCartStore } from '../../store';
+import { getImageUrl } from '../../utils/config';
 
 const productStore = useProductStore();
 const cartStore = useCartStore();
@@ -247,11 +248,11 @@ const loadProduct = async () => {
   loading.value = false;
 };
 
-const getImageUrl = (url) => {
-  if (!url) return '';
-  if (url.startsWith('http') || url.startsWith('data:')) return url;
-  return url.startsWith('/') ? `http://8.215.108.239${url}` : `http://8.215.108.239/${url}`;
-};
+onPullDownRefresh(async () => {
+  await productStore.fetchProductsAndCategories();
+  await loadProduct();
+  uni.stopPullDownRefresh();
+});
 
 const formatPrice = (price) => {
   return Number(price).toLocaleString('id-ID');
