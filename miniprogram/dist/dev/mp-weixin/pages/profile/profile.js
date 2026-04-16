@@ -105,7 +105,7 @@ const _sfc_main = {
       try {
         const endpoint = currentUser.value && currentUser.value.role === "admin" ? "/admin/orders" : "/orders";
         const res = await utils_api.jsonRequest(endpoint, "GET");
-        orders.value = res.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        orders.value = res.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       } catch (err) {
         console.error("Failed to fetch orders", err);
         common_vendor.index.showToast({ title: "Failed to load orders", icon: "none" });
@@ -183,7 +183,8 @@ const _sfc_main = {
       common_vendor.index.stopPullDownRefresh();
     });
     const formatPrice = (price) => {
-      return Number(price).toLocaleString("id-ID");
+      const num = Number(price);
+      return isNaN(num) ? "0" : num.toLocaleString("id-ID");
     };
     const formatDate = (dateStr) => {
       if (!dateStr)
@@ -330,7 +331,7 @@ const _sfc_main = {
         F: common_vendor.f(common_vendor.unref(filteredOrders), (order, k0, i0) => {
           return common_vendor.e({
             a: common_vendor.t(order.id),
-            b: common_vendor.t(formatDate(order.created_at)),
+            b: common_vendor.t(formatDate(order.createdAt)),
             c: common_vendor.t(formatStatus(order.status)),
             d: common_vendor.n(getStatusClass(order.status)),
             e: common_vendor.f(order.items, (item, idx, i1) => {
@@ -342,11 +343,11 @@ const _sfc_main = {
                 c: common_vendor.t(item.name),
                 d: common_vendor.t(item.color || "Default"),
                 e: common_vendor.t(item.quantity),
-                f: common_vendor.t(formatPrice(item.price_at_purchase * item.quantity)),
+                f: common_vendor.t(formatPrice(item.priceAtPurchase * item.quantity)),
                 g: idx
               });
             }),
-            f: common_vendor.t(formatPrice(order.total_amount)),
+            f: common_vendor.t(formatPrice(order.totalAmount)),
             g: order.status === "pending_payment" || order.status === "shipped" || common_vendor.unref(currentUser) && common_vendor.unref(currentUser).role === "admin" && (order.status === "processing" || order.status === "paid")
           }, order.status === "pending_payment" || order.status === "shipped" || common_vendor.unref(currentUser) && common_vendor.unref(currentUser).role === "admin" && (order.status === "processing" || order.status === "paid") ? common_vendor.e({
             h: order.status === "pending_payment"

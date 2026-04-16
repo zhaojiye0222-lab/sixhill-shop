@@ -1,4 +1,5 @@
 const pool = require('../database');
+const { parseImages } = require('../utils/parsers');
 
 class OrderService {
   /**
@@ -44,7 +45,8 @@ class OrderService {
           priceAtPurchase: product.price,
           quantity: item.quantity,
           color: item.color || null,
-          itemTotal
+          itemTotal,
+          images: parseImages(product.images)
         });
 
         await connection.query('UPDATE products SET stock = stock - ? WHERE id = ?', [item.quantity, product.id]);
@@ -113,7 +115,13 @@ class OrderService {
     const orderIds = ordersRows.map(o => o.order_id);
 
     const placeholders = orderIds.map(() => '?').join(',');
-    const [itemRows] = await pool.query(`SELECT * FROM order_items WHERE order_id IN (${placeholders})`, orderIds);
+    const [itemRows] = await pool.query(
+      `SELECT oi.*, p.images 
+       FROM order_items oi 
+       LEFT JOIN products p ON oi.product_id = p.id 
+       WHERE oi.order_id IN (${placeholders})`, 
+      orderIds
+    );
 
     return ordersRows.map(order => {
       const items = itemRows.filter(i => i.order_id === order.order_id).map(i => ({
@@ -123,7 +131,8 @@ class OrderService {
         priceAtPurchase: i.price_at_purchase,
         quantity: i.quantity,
         color: i.color,
-        itemTotal: i.item_total
+        itemTotal: i.item_total,
+        images: parseImages(i.images)
       }));
 
       return {

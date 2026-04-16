@@ -124,7 +124,7 @@
             <view class="flex justify-between items-center mb-3 pb-3 border-b border-gray-100">
               <view>
                 <text class="text-xs text-gray-500 block">Order #{{ order.id }}</text>
-                <text class="text-[10px] text-gray-400">{{ formatDate(order.created_at) }}</text>
+                <text class="text-[10px] text-gray-400">{{ formatDate(order.createdAt) }}</text>
               </view>
               <view :class="['px-2 py-1 rounded text-xs font-bold', getStatusClass(order.status)]">
                 {{ formatStatus(order.status) }}
@@ -144,14 +144,14 @@
                     {{ item.color || 'Default' }} x{{ item.quantity }}
                   </text>
                 </view>
-                <text class="text-sm font-bold text-gray-900">Rp {{ formatPrice(item.price_at_purchase * item.quantity) }}</text>
+                <text class="text-sm font-bold text-gray-900">Rp {{ formatPrice(item.priceAtPurchase * item.quantity) }}</text>
               </view>
             </view>
 
             <!-- Order Footer -->
             <view class="flex justify-between items-center pt-3 border-t border-gray-100">
               <text class="text-sm text-gray-500">Total Amount</text>
-              <text class="text-base font-bold text-red-600">Rp {{ formatPrice(order.total_amount) }}</text>
+              <text class="text-base font-bold text-red-600">Rp {{ formatPrice(order.totalAmount) }}</text>
             </view>
 
             <!-- Action Buttons -->
@@ -323,8 +323,8 @@ const fetchOrders = async () => {
     // If admin, fetch all orders, else fetch user's orders
     const endpoint = (currentUser.value && currentUser.value.role === 'admin') ? '/admin/orders' : '/orders';
     const res = await jsonRequest(endpoint, 'GET');
-    // Sort by created_at descending
-    orders.value = res.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    // Sort by createdAt descending
+    orders.value = res.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   } catch (err) {
     console.error('Failed to fetch orders', err);
     uni.showToast({ title: 'Failed to load orders', icon: 'none' });
@@ -410,7 +410,8 @@ onPullDownRefresh(async () => {
 });
 
 const formatPrice = (price) => {
-  return Number(price).toLocaleString('id-ID');
+  const num = Number(price);
+  return isNaN(num) ? '0' : num.toLocaleString('id-ID');
 };
 
 const formatDate = (dateStr) => {
