@@ -331,7 +331,7 @@ const submitOrder = async (type = 'later') => {
   }
 
   isSubmitting.value = true;
-  uni.showLoading({ title: 'Processing...' });
+  uni.showLoading({ title: 'Processing...', mask: true });
 
   try {
     // 1. Prepare items

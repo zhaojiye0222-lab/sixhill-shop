@@ -16,7 +16,8 @@ const _sfc_main = {
       password: "",
       name: "",
       phone: "",
-      address: ""
+      address: "",
+      ageConfirmed: false
     });
     const orders = common_vendor.ref([]);
     const isLoadingOrders = common_vendor.ref(false);
@@ -54,8 +55,12 @@ const _sfc_main = {
         common_vendor.index.showToast({ title: "Name is required", icon: "none" });
         return;
       }
+      if (isRegistering.value && !form.ageConfirmed) {
+        common_vendor.index.showToast({ title: "You must be 21+ to register", icon: "none" });
+        return;
+      }
       isSubmitting.value = true;
-      common_vendor.index.showLoading({ title: "Processing..." });
+      common_vendor.index.showLoading({ title: "Processing...", mask: true });
       try {
         if (isRegistering.value) {
           await authStore.register({
@@ -66,17 +71,19 @@ const _sfc_main = {
             address: form.address,
             ageConfirmed: true
           });
+          common_vendor.index.hideLoading();
           common_vendor.index.showToast({ title: "Registration successful", icon: "success" });
         } else {
           await authStore.login(form.username, form.password);
+          common_vendor.index.hideLoading();
           common_vendor.index.showToast({ title: "Login successful", icon: "success" });
         }
         fetchOrders();
       } catch (err) {
+        common_vendor.index.hideLoading();
         common_vendor.index.showToast({ title: err.message || "Authentication failed", icon: "none" });
       } finally {
         isSubmitting.value = false;
-        common_vendor.index.hideLoading();
       }
     };
     const handleLogout = () => {
@@ -113,7 +120,7 @@ const _sfc_main = {
         sourceType: ["album", "camera"],
         success: (res) => {
           const filePath = res.tempFilePaths[0];
-          common_vendor.index.showLoading({ title: "Uploading..." });
+          common_vendor.index.showLoading({ title: "Uploading...", mask: true });
           common_vendor.index.uploadFile({
             url: `${utils_config.CONFIG.API_BASE}/upload`,
             filePath,
@@ -128,20 +135,20 @@ const _sfc_main = {
                   await utils_api.jsonRequest(`/orders/${orderId}/payment`, "POST", {
                     receiptUrl: data.url
                   });
+                  common_vendor.index.hideLoading();
                   common_vendor.index.showToast({ title: "Receipt uploaded!", icon: "success" });
                   fetchOrders();
                 } else {
                   throw new Error("No URL returned");
                 }
               } catch (e) {
+                common_vendor.index.hideLoading();
                 common_vendor.index.showToast({ title: "Upload failed", icon: "none" });
               }
             },
             fail: () => {
-              common_vendor.index.showToast({ title: "Upload failed", icon: "none" });
-            },
-            complete: () => {
               common_vendor.index.hideLoading();
+              common_vendor.index.showToast({ title: "Upload failed", icon: "none" });
             }
           });
         }
@@ -153,17 +160,17 @@ const _sfc_main = {
         content: "Have you received your package?",
         success: async (res) => {
           if (res.confirm) {
-            common_vendor.index.showLoading({ title: "Updating..." });
+            common_vendor.index.showLoading({ title: "Updating...", mask: true });
             try {
               await utils_api.jsonRequest(`/orders/${orderId}/status`, "PATCH", {
                 status: "completed"
               });
+              common_vendor.index.hideLoading();
               common_vendor.index.showToast({ title: "Order completed!", icon: "success" });
               fetchOrders();
             } catch (err) {
-              common_vendor.index.showToast({ title: "Failed to update", icon: "none" });
-            } finally {
               common_vendor.index.hideLoading();
+              common_vendor.index.showToast({ title: "Failed to update", icon: "none" });
             }
           }
         }
@@ -218,15 +225,15 @@ const _sfc_main = {
         content: "Are you sure you want to approve this payment?",
         success: async (res) => {
           if (res.confirm) {
-            common_vendor.index.showLoading({ title: "Updating..." });
+            common_vendor.index.showLoading({ title: "Updating...", mask: true });
             try {
               await utils_api.jsonRequest(`/orders/${orderId}/status`, "PATCH", { status: "paid" });
+              common_vendor.index.hideLoading();
               common_vendor.index.showToast({ title: "Payment approved!", icon: "success" });
               fetchOrders();
             } catch (err) {
-              common_vendor.index.showToast({ title: "Failed to update", icon: "none" });
-            } finally {
               common_vendor.index.hideLoading();
+              common_vendor.index.showToast({ title: "Failed to update", icon: "none" });
             }
           }
         }
@@ -238,15 +245,15 @@ const _sfc_main = {
         content: "Are you sure you want to reject this payment?",
         success: async (res) => {
           if (res.confirm) {
-            common_vendor.index.showLoading({ title: "Updating..." });
+            common_vendor.index.showLoading({ title: "Updating...", mask: true });
             try {
               await utils_api.jsonRequest(`/orders/${orderId}/status`, "PATCH", { status: "pending_payment" });
+              common_vendor.index.hideLoading();
               common_vendor.index.showToast({ title: "Payment rejected!", icon: "success" });
               fetchOrders();
             } catch (err) {
-              common_vendor.index.showToast({ title: "Failed to update", icon: "none" });
-            } finally {
               common_vendor.index.hideLoading();
+              common_vendor.index.showToast({ title: "Failed to update", icon: "none" });
             }
           }
         }
@@ -258,15 +265,15 @@ const _sfc_main = {
         content: "Has this order been shipped?",
         success: async (res) => {
           if (res.confirm) {
-            common_vendor.index.showLoading({ title: "Updating..." });
+            common_vendor.index.showLoading({ title: "Updating...", mask: true });
             try {
               await utils_api.jsonRequest(`/orders/${orderId}/status`, "PATCH", { status: "shipped" });
+              common_vendor.index.hideLoading();
               common_vendor.index.showToast({ title: "Order marked as shipped!", icon: "success" });
               fetchOrders();
             } catch (err) {
-              common_vendor.index.showToast({ title: "Failed to update", icon: "none" });
-            } finally {
               common_vendor.index.hideLoading();
+              common_vendor.index.showToast({ title: "Failed to update", icon: "none" });
             }
           }
         }
@@ -289,21 +296,23 @@ const _sfc_main = {
         k: form.phone,
         l: common_vendor.o(($event) => form.phone = $event.detail.value),
         m: form.address,
-        n: common_vendor.o(($event) => form.address = $event.detail.value)
+        n: common_vendor.o(($event) => form.address = $event.detail.value),
+        o: form.ageConfirmed,
+        p: common_vendor.o((e) => form.ageConfirmed = e.detail.value)
       } : {}, {
-        o: common_vendor.t(isSubmitting.value ? "Processing..." : isRegistering.value ? "Sign Up" : "Login"),
-        p: isSubmitting.value,
-        q: common_vendor.o(handleSubmit),
-        r: common_vendor.t(isRegistering.value ? "Already have an account?" : "Don't have an account?"),
-        s: common_vendor.t(isRegistering.value ? "Login here" : "Register now"),
-        t: common_vendor.o(($event) => isRegistering.value = !isRegistering.value)
+        q: common_vendor.t(isSubmitting.value ? "Processing..." : isRegistering.value ? "Sign Up" : "Login"),
+        r: isSubmitting.value,
+        s: common_vendor.o(handleSubmit),
+        t: common_vendor.t(isRegistering.value ? "Already have an account?" : "Don't have an account?"),
+        v: common_vendor.t(isRegistering.value ? "Login here" : "Register now"),
+        w: common_vendor.o(($event) => isRegistering.value = !isRegistering.value)
       }) : common_vendor.e({
-        v: common_vendor.t(common_vendor.unref(currentUser) ? common_vendor.unref(currentUser).name || common_vendor.unref(currentUser).username : ""),
-        w: common_vendor.t(common_vendor.unref(currentUser) ? common_vendor.unref(currentUser).phone : "No phone number"),
-        x: common_vendor.unref(currentUser) && common_vendor.unref(currentUser).role === "admin"
+        x: common_vendor.t(common_vendor.unref(currentUser) ? common_vendor.unref(currentUser).name || common_vendor.unref(currentUser).username : ""),
+        y: common_vendor.t(common_vendor.unref(currentUser) ? common_vendor.unref(currentUser).phone : "No phone number"),
+        z: common_vendor.unref(currentUser) && common_vendor.unref(currentUser).role === "admin"
       }, common_vendor.unref(currentUser) && common_vendor.unref(currentUser).role === "admin" ? {} : {}, {
-        y: common_vendor.o(handleLogout),
-        z: common_vendor.f(orderTabs, (tab, k0, i0) => {
+        A: common_vendor.o(handleLogout),
+        B: common_vendor.f(orderTabs, (tab, k0, i0) => {
           return common_vendor.e({
             a: common_vendor.t(tab.icon),
             b: common_vendor.n(currentTab.value === tab.value ? "bg-indigo-50 text-indigo-600" : "bg-gray-50 text-gray-500"),
@@ -315,10 +324,10 @@ const _sfc_main = {
             g: common_vendor.o(($event) => currentTab.value = tab.value, tab.value)
           });
         }),
-        A: common_vendor.t(common_vendor.unref(currentTabLabel)),
-        B: isLoadingOrders.value
+        C: common_vendor.t(common_vendor.unref(currentTabLabel)),
+        D: isLoadingOrders.value
       }, isLoadingOrders.value ? {} : common_vendor.unref(filteredOrders).length === 0 ? {} : {
-        D: common_vendor.f(common_vendor.unref(filteredOrders), (order, k0, i0) => {
+        F: common_vendor.f(common_vendor.unref(filteredOrders), (order, k0, i0) => {
           return common_vendor.e({
             a: common_vendor.t(order.id),
             b: common_vendor.t(formatDate(order.created_at)),
@@ -366,7 +375,7 @@ const _sfc_main = {
           });
         })
       }, {
-        C: common_vendor.unref(filteredOrders).length === 0
+        E: common_vendor.unref(filteredOrders).length === 0
       }));
     };
   }

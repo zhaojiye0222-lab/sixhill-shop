@@ -35,6 +35,10 @@
               <text class="text-sm font-medium text-gray-700 mb-1 block">Shipping Address</text>
               <textarea v-model="form.address" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm min-h-[80px]" placeholder="Enter full address" />
             </view>
+            <view class="flex items-center mt-2">
+              <switch type="checkbox" :checked="form.ageConfirmed" @change="e => form.ageConfirmed = e.detail.value" color="#4f46e5" style="transform:scale(0.7)" />
+              <text class="text-xs text-gray-600 ml-1">I confirm that I am 21+ years old</text>
+            </view>
           </template>
 
           <!-- Submit Button -->
@@ -219,7 +223,8 @@ const form = reactive({
   password: '',
   name: '',
   phone: '',
-  address: ''
+  address: '',
+  ageConfirmed: false
 });
 
 // Orders state
@@ -263,9 +268,13 @@ const handleSubmit = async () => {
     uni.showToast({ title: 'Name is required', icon: 'none' });
     return;
   }
+  if (isRegistering.value && !form.ageConfirmed) {
+    uni.showToast({ title: 'You must be 21+ to register', icon: 'none' });
+    return;
+  }
 
   isSubmitting.value = true;
-  uni.showLoading({ title: 'Processing...' });
+  uni.showLoading({ title: 'Processing...', mask: true });
 
   try {
     if (isRegistering.value) {
@@ -277,18 +286,20 @@ const handleSubmit = async () => {
         address: form.address,
         ageConfirmed: true
       });
+      uni.hideLoading();
       uni.showToast({ title: 'Registration successful', icon: 'success' });
     } else {
       await authStore.login(form.username, form.password);
+      uni.hideLoading();
       uni.showToast({ title: 'Login successful', icon: 'success' });
     }
     // Fetch orders after successful login/register
     fetchOrders();
   } catch (err) {
+    uni.hideLoading();
     uni.showToast({ title: err.message || 'Authentication failed', icon: 'none' });
   } finally {
     isSubmitting.value = false;
-    uni.hideLoading();
   }
 };
 
@@ -329,7 +340,7 @@ const uploadPaymentReceipt = (orderId) => {
     sourceType: ['album', 'camera'],
     success: (res) => {
       const filePath = res.tempFilePaths[0];
-      uni.showLoading({ title: 'Uploading...' });
+      uni.showLoading({ title: 'Uploading...', mask: true });
       
       uni.uploadFile({
         url: `${CONFIG.API_BASE}/upload`,
@@ -346,20 +357,20 @@ const uploadPaymentReceipt = (orderId) => {
               await jsonRequest(`/orders/${orderId}/payment`, 'POST', {
                 receiptUrl: data.url
               });
+              uni.hideLoading();
               uni.showToast({ title: 'Receipt uploaded!', icon: 'success' });
               fetchOrders();
             } else {
               throw new Error('No URL returned');
             }
           } catch (e) {
+            uni.hideLoading();
             uni.showToast({ title: 'Upload failed', icon: 'none' });
           }
         },
         fail: () => {
-          uni.showToast({ title: 'Upload failed', icon: 'none' });
-        },
-        complete: () => {
           uni.hideLoading();
+          uni.showToast({ title: 'Upload failed', icon: 'none' });
         }
       });
     }
@@ -372,17 +383,17 @@ const confirmReceipt = (orderId) => {
     content: 'Have you received your package?',
     success: async (res) => {
       if (res.confirm) {
-        uni.showLoading({ title: 'Updating...' });
+        uni.showLoading({ title: 'Updating...', mask: true });
         try {
           await jsonRequest(`/orders/${orderId}/status`, 'PATCH', {
             status: 'completed'
           });
+          uni.hideLoading();
           uni.showToast({ title: 'Order completed!', icon: 'success' });
           fetchOrders();
         } catch (err) {
-          uni.showToast({ title: 'Failed to update', icon: 'none' });
-        } finally {
           uni.hideLoading();
+          uni.showToast({ title: 'Failed to update', icon: 'none' });
         }
       }
     }
@@ -441,15 +452,15 @@ const approvePayment = (orderId) => {
     content: 'Are you sure you want to approve this payment?',
     success: async (res) => {
       if (res.confirm) {
-        uni.showLoading({ title: 'Updating...' });
+        uni.showLoading({ title: 'Updating...', mask: true });
         try {
           await jsonRequest(`/orders/${orderId}/status`, 'PATCH', { status: 'paid' });
+          uni.hideLoading();
           uni.showToast({ title: 'Payment approved!', icon: 'success' });
           fetchOrders();
         } catch (err) {
-          uni.showToast({ title: 'Failed to update', icon: 'none' });
-        } finally {
           uni.hideLoading();
+          uni.showToast({ title: 'Failed to update', icon: 'none' });
         }
       }
     }
@@ -462,15 +473,15 @@ const rejectPayment = (orderId) => {
     content: 'Are you sure you want to reject this payment?',
     success: async (res) => {
       if (res.confirm) {
-        uni.showLoading({ title: 'Updating...' });
+        uni.showLoading({ title: 'Updating...', mask: true });
         try {
           await jsonRequest(`/orders/${orderId}/status`, 'PATCH', { status: 'pending_payment' });
+          uni.hideLoading();
           uni.showToast({ title: 'Payment rejected!', icon: 'success' });
           fetchOrders();
         } catch (err) {
-          uni.showToast({ title: 'Failed to update', icon: 'none' });
-        } finally {
           uni.hideLoading();
+          uni.showToast({ title: 'Failed to update', icon: 'none' });
         }
       }
     }
@@ -483,15 +494,15 @@ const markAsShipped = (orderId) => {
     content: 'Has this order been shipped?',
     success: async (res) => {
       if (res.confirm) {
-        uni.showLoading({ title: 'Updating...' });
+        uni.showLoading({ title: 'Updating...', mask: true });
         try {
           await jsonRequest(`/orders/${orderId}/status`, 'PATCH', { status: 'shipped' });
+          uni.hideLoading();
           uni.showToast({ title: 'Order marked as shipped!', icon: 'success' });
           fetchOrders();
         } catch (err) {
-          uni.showToast({ title: 'Failed to update', icon: 'none' });
-        } finally {
           uni.hideLoading();
+          uni.showToast({ title: 'Failed to update', icon: 'none' });
         }
       }
     }

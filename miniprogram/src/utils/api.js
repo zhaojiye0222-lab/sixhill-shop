@@ -23,7 +23,17 @@ export const authRequest = (url, options = {}) => {
         if (res.statusCode >= 200 && res.statusCode < 300) {
           resolve(res.data);
         } else {
-          reject(res.data || new Error('Request failed'));
+          let errMsg = 'Request failed';
+          if (res.data) {
+            if (typeof res.data === 'string') {
+              errMsg = res.data;
+            } else if (res.data.error) {
+              errMsg = res.data.error;
+            } else if (res.data.message) {
+              errMsg = res.data.message;
+            }
+          }
+          reject(new Error(errMsg));
         }
       },
       fail: (err) => {

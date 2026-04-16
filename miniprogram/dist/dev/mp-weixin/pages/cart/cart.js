@@ -130,7 +130,7 @@ const _sfc_main = {
         return;
       }
       isSubmitting.value = true;
-      common_vendor.index.showLoading({ title: "Processing..." });
+      common_vendor.index.showLoading({ title: "Processing...", mask: true });
       try {
         const orderItems = cart.value.map((item) => ({
           productId: item.id,
