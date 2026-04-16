@@ -202,6 +202,7 @@ const isSubmitting = ref(false);
 
 // Load user address on show if available
 onShow(() => {
+  cartStore.updateBadge();
   if (authStore.currentUser.value && authStore.currentUser.value.address) {
     shippingAddress.value = authStore.currentUser.value.address;
   }

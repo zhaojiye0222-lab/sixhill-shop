@@ -96,12 +96,17 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
 import { useProductStore, useCartStore } from '../../store'
 
 const productStore = useProductStore()
 const cartStore = useCartStore()
 const featuredProducts = ref([])
 const loading = ref(true)
+
+onShow(() => {
+  cartStore.updateBadge()
+})
 
 const fetchProducts = async () => {
   loading.value = true

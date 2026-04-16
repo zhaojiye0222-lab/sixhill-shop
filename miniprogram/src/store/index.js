@@ -9,8 +9,30 @@ const allProducts = ref([]);
 const categories = ref([]);
 const activeCategory = ref(null);
 
-const cartData = uni.getStorageSync('shopCart');
-const cart = ref(Array.isArray(cartData) ? cartData : []);
+const getInitialCart = () => {
+  const data = uni.getStorageSync('shopCart');
+  if (!data) return [];
+  if (Array.isArray(data)) return data;
+  if (typeof data === 'string') {
+    try {
+      const parsed = JSON.parse(data);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
+    }
+  }
+  return [];
+};
+
+const cart = ref(getInitialCart());
+
+const globalCartTotal = computed(() => {
+  return cart.value.reduce((sum, item) => sum + (item.price * item.qty), 0);
+});
+
+const globalCartCount = computed(() => {
+  return cart.value.reduce((sum, item) => sum + item.qty, 0);
+});
 
 // --- Auth State ---
 export const useAuthStore = () => {
@@ -82,12 +104,14 @@ export const useProductStore = () => {
 // --- Cart State ---
 export const useCartStore = () => {
   const updateBadge = () => {
-    const count = cart.value.reduce((sum, item) => sum + item.qty, 0);
-    if (count > 0) {
-      uni.setTabBarBadge({ index: 2, text: String(count) }).catch(() => {});
-    } else {
-      uni.removeTabBarBadge({ index: 2 }).catch(() => {});
-    }
+    const count = globalCartCount.value;
+    setTimeout(() => {
+      if (count > 0) {
+        uni.setTabBarBadge({ index: 2, text: String(count) }).catch(() => {});
+      } else {
+        uni.removeTabBarBadge({ index: 2 }).catch(() => {});
+      }
+    }, 100);
   };
 
   const saveCart = () => {
@@ -141,14 +165,6 @@ export const useCartStore = () => {
     saveCart();
   };
 
-  const cartTotal = computed(() => {
-    return cart.value.reduce((sum, item) => sum + (item.price * item.qty), 0);
-  });
-
-  const cartCount = computed(() => {
-    return cart.value.reduce((sum, item) => sum + item.qty, 0);
-  });
-
   return {
     cart,
     addToCart,
@@ -156,7 +172,7 @@ export const useCartStore = () => {
     clearCart,
     saveCart,
     updateBadge,
-    cartTotal,
-    cartCount
+    cartTotal: globalCartTotal,
+    cartCount: globalCartCount
   };
 };

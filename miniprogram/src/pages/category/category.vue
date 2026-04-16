@@ -101,6 +101,7 @@ const currentCategory = ref('cat_devices');
 const currentSubCategory = ref(null);
 
 onShow(() => {
+  cartStore.updateBadge();
   if (productStore.activeCategory.value) {
     currentCategory.value = productStore.activeCategory.value;
     currentSubCategory.value = null;

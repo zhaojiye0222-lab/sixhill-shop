@@ -178,7 +178,7 @@
 <script setup>
 import { ref, computed, reactive } from 'vue';
 import { onShow } from '@dcloudio/uni-app';
-import { useAuthStore } from '../../store';
+import { useAuthStore, useCartStore } from '../../store';
 import { jsonRequest } from '../../utils/api';
 
 const authStore = useAuthStore();
@@ -221,6 +221,8 @@ const filteredOrders = computed(() => {
 });
 
 onShow(() => {
+  const cartStore = useCartStore();
+  cartStore.updateBadge();
   if (isLoggedIn.value) {
     fetchOrders();
   }

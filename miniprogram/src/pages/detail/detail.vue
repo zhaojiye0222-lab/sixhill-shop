@@ -264,7 +264,7 @@ const availableColors = computed(() => {
   return [];
 });
 
-const cartCount = computed(() => cartStore.cartCount.value);
+const cartCount = cartStore.cartCount;
 
 const goHome = () => {
   uni.switchTab({ url: '/pages/index/index' });
