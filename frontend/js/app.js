@@ -151,7 +151,8 @@ const app = createApp({
       // Address
       ...address,
       // Helpers
-      formatPrice, handleImageError
+      formatPrice, handleImageError,
+      getImageUrl: window.SixhillAPI.getImageUrl
     };
   }
 });

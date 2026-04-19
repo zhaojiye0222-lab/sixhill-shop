@@ -26,5 +26,31 @@ async function jsonRequest(url, method, body) {
   });
 }
 
+/**
+ * 修复图片 URL
+ */
+function getImageUrl(url) {
+  if (!url) return '';
+  if (typeof url === 'string' && (url.includes('192.168.') || url.includes('localhost') || url.includes('127.0.0.1'))) {
+    const match = url.match(/(\/uploads\/.*)$/);
+    if (match) {
+      return API_BASE.replace('/api', '') + '/api' + match[1];
+    }
+  }
+  if (typeof url === 'string' && (url.startsWith('http') || url.startsWith('data:'))) return url;
+  
+  let cleanUrl = url;
+  if (typeof url === 'string') {
+    cleanUrl = url.replace(/^\//, '');
+    if (cleanUrl.startsWith('api/')) {
+      return API_BASE.replace('/api', '') + '/' + cleanUrl;
+    }
+    if (cleanUrl.startsWith('uploads/')) {
+      return API_BASE + '/' + cleanUrl;
+    }
+  }
+  return API_BASE.replace('/api', '') + '/' + cleanUrl;
+}
+
 // 挂载到全局
-window.SixhillAPI = { API_BASE, authFetch, jsonRequest };
+window.SixhillAPI = { API_BASE, authFetch, jsonRequest, getImageUrl };

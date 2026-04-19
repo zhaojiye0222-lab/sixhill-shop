@@ -362,7 +362,7 @@
                   <tr v-for="product in products" :key="product.id" class="hover:bg-gray-50 transition-colors">
                     <td class="px-6 py-3">
                       <div class="w-10 h-10 bg-white border border-gray-200 rounded flex items-center justify-center overflow-hidden">
-                        <img v-if="product.images && product.images[0] && !product.images[0].includes('placeholder')" :src="product.images[0]" class="w-full h-full object-cover">
+                        <img v-if="product.images && product.images[0] && !product.images[0].includes('placeholder')" :src="getImageUrl(product.images[0])" class="w-full h-full object-cover">
                         <i v-else class="ph ph-package text-gray-300 text-xl"></i>
                       </div>
                     </td>
@@ -553,7 +553,7 @@
               <label class="block text-sm font-bold text-gray-700 mb-1">Product Images</label>
               <div class="flex flex-wrap gap-4 items-start">
                 <div v-for="(imgUrl, index) in productForm.images" :key="index" class="w-24 h-24 border border-gray-200 rounded-lg overflow-hidden bg-gray-50 flex-shrink-0 relative group">
-                  <img :src="imgUrl" class="w-full h-full object-cover" @error="$event.target.src='https://via.placeholder.com/150?text=Invalid+URL'">
+                  <img :src="getImageUrl(imgUrl)" class="w-full h-full object-cover" @error="$event.target.src='https://via.placeholder.com/150?text=Invalid+URL'">
                   <div @click="productForm.images.splice(index, 1)" class="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center cursor-pointer transition-colors">
                     <i class="ph ph-trash text-white text-xl"></i>
                   </div>
@@ -684,7 +684,7 @@
             .reduce((sum, order) => sum + Number(order.totalAmount || 0), 0);
           
           const totalProducts = products.value.length;
-          return { totalOrders, totalRevenue, totalProducts };
+          return { getImageUrl, totalOrders, totalRevenue, totalProducts };
         });
 
         const pendingOrdersCount = computed(() => {
@@ -699,11 +699,9 @@
           let result = [...orders.value].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
           if (orderFilter.value !== 'all') {
             if (orderFilter.value === 'pending_payment') {
-               // Pending 标签同时显示 pending_payment 和 processing 的订单
-               result = result.filter(o => o.status === 'pending_payment' || o.status === 'processing');
+               // Pending 标签同时显示 pending_payment �?processing 的订�?               result = result.filter(o => o.status === 'pending_payment' || o.status === 'processing');
             } else if (orderFilter.value === 'delivered') {
-               // Completed 标签同时显示 delivered 和 completed 的订单
-               result = result.filter(o => o.status === 'delivered' || o.status === 'completed');
+               // Completed 标签同时显示 delivered �?completed 的订�?               result = result.filter(o => o.status === 'delivered' || o.status === 'completed');
             } else {
                result = result.filter(o => o.status === orderFilter.value);
             }
@@ -712,6 +710,28 @@
         });
 
         // Helpers
+                const getImageUrl = (url) => {
+          if (!url) return '';
+          if (typeof url === 'string' && (url.includes('192.168.') || url.includes('localhost') || url.includes('127.0.0.1'))) {
+            const match = url.match(/(\/uploads\/.*)$/);
+            if (match) {
+              return API_BASE.replace('/api', '') + '/api' + match[1];
+            }
+          }
+          if (typeof url === 'string' && (url.startsWith('http') || url.startsWith('data:'))) return url;
+          
+          let cleanUrl = url;
+          if (typeof url === 'string') {
+            cleanUrl = url.replace(/^\//, '');
+            if (cleanUrl.startsWith('api/')) {
+              return API_BASE.replace('/api', '') + '/' + cleanUrl;
+            }
+            if (cleanUrl.startsWith('uploads/')) {
+              return API_BASE + '/' + cleanUrl;
+            }
+          }
+          return API_BASE.replace('/api', '') + '/' + cleanUrl;
+        };
         const formatPrice = (price) => {
           return Number(price).toLocaleString('id-ID');
         };
@@ -884,8 +904,7 @@
             
             if (!res.ok) throw new Error('Failed to delete order');
             
-            // 删除成功后立即移除 DOM 节点，更新缓存
-            orders.value = orders.value.filter(o => o.orderId !== orderId && o.id !== orderId);
+            // 删除成功后立即移�?DOM 节点，更新缓�?            orders.value = orders.value.filter(o => o.orderId !== orderId && o.id !== orderId);
             
             alert('Order deleted successfully');
           } catch (err) {
@@ -986,8 +1005,7 @@
 
             const data = await res.json();
             
-            // 使用 Vue 推荐的数组更新方式
-            productForm.value = {
+            // 使用 Vue 推荐的数组更新方�?            productForm.value = {
               ...productForm.value,
               images: [...(productForm.value.images || []), data.url]
             };
@@ -1148,7 +1166,7 @@
           }
         });
 
-        return {
+        return { getImageUrl,
           isAdminLoggedIn, currentUser, loginForm, isLoggingIn, loginError, handleLogin, doLogout,
           activeTab, orders, products, categories, orderFilter, stats, pendingOrdersCount, recentOrders, filteredOrders,
           formatPrice, getStatusLabel, getStatusClass, getProductName, getCategoryName,

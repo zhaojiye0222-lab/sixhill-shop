@@ -1,5 +1,6 @@
 {
-  "navigationBarTitleText": "Sixhill Shop",
+  "navigationBarTitleText": "Home",
   "navigationStyle": "custom",
+  "enablePullDownRefresh": true,
   "usingComponents": {}
 }

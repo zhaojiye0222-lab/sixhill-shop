@@ -115,7 +115,7 @@
           <div class="grid grid-cols-2 gap-3">
             <div v-for="(product, index) in featuredProducts" :key="index" class="bg-white rounded-lg p-3 shadow-sm" @click="viewProduct(product)">
               <div class="w-full h-32 bg-gray-100 rounded-md mb-2 flex items-center justify-center relative overflow-hidden img-wrapper">
-                <img v-if="product.images && product.images.length > 0 && !product.images[0].includes('placeholder')" :src="product.images[0]" class="w-full h-full object-cover" @error="handleImageError($event, product.name)">
+                <img v-if="product.images && product.images.length > 0 && !product.images[0].includes('placeholder')" :src="getImageUrl(product.images[0])" class="w-full h-full object-cover" @error="handleImageError($event, product.name)">
                 <i v-else class="ph ph-device-mobile text-4xl text-gray-400"></i>
                 <div v-if="product.tag" class="absolute top-0 left-0 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-tl-md rounded-br-md font-bold">
                   {{ product.tag }}
@@ -142,7 +142,7 @@
           <div class="grid grid-cols-2 gap-3">
             <div v-for="(catGroup, index) in sticksCategoryGroups" :key="index" class="bg-white rounded-lg p-3 shadow-sm cursor-pointer relative" @click="viewProduct(catGroup.products[0])">
               <div class="w-full h-32 bg-gray-100 rounded-md mb-2 flex items-center justify-center relative overflow-hidden img-wrapper">
-                <img v-if="catGroup.products[0] && catGroup.products[0].images && catGroup.products[0].images.length > 0 && !catGroup.products[0].images[0].includes('placeholder')" :src="catGroup.products[0].images[0]" class="w-full h-full object-cover" @error="handleImageError($event, catGroup.category.name)">
+                <img v-if="catGroup.products[0] && catGroup.products[0].images && catGroup.products[0].images.length > 0 && !catGroup.products[0].images[0].includes('placeholder')" :src="getImageUrl(catGroup.products[0].images[0])" class="w-full h-full object-cover" @error="handleImageError($event, catGroup.category.name)">
                 <i v-else class="ph ph-cigarettes text-4xl text-gray-400"></i>
               </div>
               <h4 class="text-sm font-semibold truncate">{{ catGroup.category.name === 'Other Sticks' ? 'Others' : catGroup.category.name }}</h4>
@@ -166,7 +166,7 @@
           <div class="grid grid-cols-1 gap-3">
             <div v-for="(product, index) in bundleProducts" :key="index" class="bg-white rounded-lg p-3 shadow-sm flex items-center cursor-pointer relative" @click="viewProduct(product)">
               <div class="w-24 h-24 bg-gray-100 rounded-md flex-shrink-0 flex items-center justify-center relative overflow-hidden mr-3 img-wrapper">
-                <img v-if="product.images && product.images.length > 0 && !product.images[0].includes('placeholder')" :src="product.images[0]" class="w-full h-full object-cover" @error="handleImageError($event, product.name)">
+                <img v-if="product.images && product.images.length > 0 && !product.images[0].includes('placeholder')" :src="getImageUrl(product.images[0])" class="w-full h-full object-cover" @error="handleImageError($event, product.name)">
                 <i v-else class="ph ph-package text-4xl text-gray-400"></i>
               </div>
               <div class="flex-1 flex flex-col justify-center">
@@ -232,7 +232,7 @@
               <div v-else class="grid grid-cols-2 gap-3">
                 <div v-for="(product, index) in categoryProducts" :key="index" class="flex flex-col cursor-pointer group relative bg-white rounded-xl border border-gray-100 shadow-sm hover:border-indigo-200 hover:shadow-md transition-all overflow-hidden" @click="viewProduct(product)">
                   <div class="w-full aspect-square bg-gray-50 flex items-center justify-center relative img-wrapper">
-                    <img v-if="product.images && product.images.length > 0 && !product.images[0].includes('placeholder')" :src="product.images[0]" class="w-full h-full object-cover mix-blend-multiply p-2 transition-transform group-hover:scale-105" @error="handleImageError($event, product.name)">
+                    <img v-if="product.images && product.images.length > 0 && !product.images[0].includes('placeholder')" :src="getImageUrl(product.images[0])" class="w-full h-full object-cover mix-blend-multiply p-2 transition-transform group-hover:scale-105" @error="handleImageError($event, product.name)">
                     <i v-else class="ph ph-package text-4xl text-gray-300"></i>
                     <!-- Tags if any -->
                     <div v-if="product.tag" class="absolute top-0 left-0 bg-red-500 text-white text-[9px] px-1.5 py-0.5 rounded-br-lg font-bold z-10">
@@ -285,7 +285,7 @@
               </button>
 
               <div class="w-20 h-20 bg-gray-50 rounded-xl mr-3 flex-shrink-0 flex items-center justify-center overflow-hidden border border-gray-100 img-wrapper">
-                <img v-if="item.images && item.images.length > 0 && !item.images[0].includes('placeholder')" :src="item.images[0]" class="w-full h-full object-cover" @error="handleImageError($event, item.name)">
+                <img v-if="item.images && item.images.length > 0 && !item.images[0].includes('placeholder')" :src="getImageUrl(item.images[0])" class="w-full h-full object-cover" @error="handleImageError($event, item.name)">
                 <i v-else class="ph ph-image text-3xl text-gray-300"></i>
               </div>
 
@@ -353,7 +353,7 @@
 
       <!-- Profile Tab -->
       <div v-show="activeTab === 'profile'" class="bg-gray-50 min-h-full">
-        <!-- 未登录状态 -->
+        <!-- 未登录状�?-->
         <div v-if="!userToken" class="flex flex-col items-center justify-center h-full pt-20 px-6">
           <i class="ph ph-user-circle text-6xl text-gray-300 mb-4"></i>
           <p class="text-gray-500 mb-8 text-center text-sm">Please login or register to view your profile and manage orders.</p>
@@ -375,7 +375,7 @@
           </div>
         </div>
 
-        <!-- 已登录状态 -->
+        <!-- 已登录状�?-->
         <div v-else>
           <div class="bg-indigo-600 p-6 text-white pb-12 rounded-b-3xl">
             <div class="flex items-center justify-between">
@@ -427,7 +427,7 @@
                   </span>
                 </div>
                 
-                <!-- 订单列表展示区 -->
+                <!-- 订单列表展示�?-->
                 <div v-if="showOrderHistory" class="space-y-3 mt-4 border-t pt-4">
                   <div class="flex justify-between items-center mb-2">
                     <span class="text-xs font-bold text-gray-500 uppercase">{{ orderStatusFilter === 'all' ? 'All Orders' : orderStatusFilter.replace('_', ' ') }}</span>
@@ -593,7 +593,7 @@
         </div>
         
         <div class="flex items-center space-x-4 mb-6">
-          <img v-if="selectedProductForVariant && selectedProductForVariant.images && selectedProductForVariant.images.length > 0" :src="selectedProductForVariant.images[0]" class="w-16 h-16 rounded-md object-cover bg-gray-50 border border-gray-200" @error="$event.target.src='https://via.placeholder.com/400x400?text=' + encodeURIComponent(selectedProductForVariant.name)">
+          <img v-if="selectedProductForVariant && selectedProductForVariant.images && selectedProductForVariant.images.length > 0" :src="getImageUrl(selectedProductForVariant.images[0])" class="w-16 h-16 rounded-md object-cover bg-gray-50 border border-gray-200" @error="$event.target.src='https://via.placeholder.com/400x400?text=' + encodeURIComponent(selectedProductForVariant.name)">
           <div class="w-16 h-16 bg-gray-100 rounded-md flex items-center justify-center" v-else>
             <i class="ph ph-package text-2xl text-gray-400"></i>
           </div>
@@ -628,7 +628,7 @@
                  :class="['border rounded-lg p-2 text-sm transition cursor-pointer flex items-center justify-between', 
                           selectedVariantFlavor && selectedVariantFlavor.id === flavor.id ? 'border-indigo-600 bg-indigo-50 shadow-sm' : 'border-gray-200 hover:bg-gray-50']">
               <div class="flex items-center space-x-2">
-                <img v-if="flavor.images && flavor.images.length > 0" :src="flavor.images[0]" class="w-8 h-8 rounded object-cover border border-gray-100" @error="$event.target.src='https://via.placeholder.com/400x400?text=' + encodeURIComponent(flavor.name)">
+                <img v-if="flavor.images && flavor.images.length > 0" :src="getImageUrl(flavor.images[0])" class="w-8 h-8 rounded object-cover border border-gray-100" @error="$event.target.src='https://via.placeholder.com/400x400?text=' + encodeURIComponent(flavor.name)">
                 <i v-else class="ph ph-cigarettes text-xl text-gray-400"></i>
                 <span class="font-medium text-gray-800">{{ flavor.name }}</span>
               </div>
@@ -648,7 +648,7 @@
           <div class="flex flex-col gap-2">
             <div v-for="flavor in availableFlavors" :key="flavor.id" class="flex justify-between items-center p-2 border border-gray-200 rounded-lg hover:border-indigo-300 transition bg-white">
               <div class="flex items-center space-x-2">
-                <img v-if="flavor.images && flavor.images[0]" :src="flavor.images[0]" class="w-8 h-8 rounded object-cover border border-gray-100" @error="$event.target.src='https://via.placeholder.com/400x400?text=' + encodeURIComponent(flavor.name)" />
+                <img v-if="flavor.images && flavor.images[0]" :src="getImageUrl(flavor.images[0])" class="w-8 h-8 rounded object-cover border border-gray-100" @error="$event.target.src='https://via.placeholder.com/400x400?text=' + encodeURIComponent(flavor.name)" />
                 <i v-else class="ph ph-cigarettes text-xl text-gray-400"></i>
                 <div class="text-xs font-medium text-gray-800 w-24 truncate" :title="flavor.name">{{ flavor.name }}</div>
               </div>
@@ -786,7 +786,7 @@
           <div v-else class="grid grid-cols-2 gap-3">
             <div v-for="product in searchResults" :key="product.id" class="bg-white rounded-xl shadow-sm overflow-hidden flex flex-col cursor-pointer hover:shadow-md transition-shadow" @click="viewProductAndCloseSearch(product)">
               <div class="h-32 bg-gray-100 flex items-center justify-center p-2 relative">
-                <img v-if="product.images && product.images.length > 0 && !product.images[0].includes('placeholder')" :src="product.images[0]" :alt="product.name" class="max-h-full max-w-full object-contain mix-blend-multiply" @error="handleImageError($event, product.name)">
+                <img v-if="product.images && product.images.length > 0 && !product.images[0].includes('placeholder')" :src="getImageUrl(product.images[0])" :alt="product.name" class="max-h-full max-w-full object-contain mix-blend-multiply" @error="handleImageError($event, product.name)">
                 <i v-else class="ph ph-package text-4xl text-gray-400"></i>
               </div>
               <div class="p-2.5 flex flex-col flex-1">
@@ -881,7 +881,7 @@
     </div>
     
   </div>
-  <!-- Application Logic - 模块化加载 -->
+  <!-- Application Logic - 模块化加�?-->
   <script src="/frontend/js/api.js"></script>
   <script src="/frontend/js/composables/useAuth.js"></script>
   <script src="/frontend/js/composables/useProducts.js"></script>
@@ -890,7 +890,7 @@
   <script src="/frontend/js/composables/useAddress.js"></script>
   <script src="/frontend/js/app.js"></script>
   <script>
-    // 旧内联代码已全部迁移到 frontend/js/ 目录
+    // 旧内联代码已全部迁移�?frontend/js/ 目录
   </script>
 </body>
 </html>
