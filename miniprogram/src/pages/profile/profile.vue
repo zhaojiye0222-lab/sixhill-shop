@@ -354,11 +354,11 @@ const uploadPaymentReceipt = (orderId) => {
             const data = JSON.parse(uploadFileRes.data);
             if (data.url) {
               // Link receipt to order
-              await jsonRequest(`/orders/${orderId}/payment`, 'POST', {
-                receiptUrl: data.url
-              });
-              uni.hideLoading();
-              uni.showToast({ title: 'Receipt uploaded!', icon: 'success' });
+            await jsonRequest(`/orders/${orderId}/payment`, 'POST', {
+              receiptUrl: data.url
+            });
+            uni.hideLoading();
+            uni.showToast({ title: 'Payment Successful!', icon: 'success', duration: 2000 });
               fetchOrders();
             } else {
               throw new Error('No URL returned');

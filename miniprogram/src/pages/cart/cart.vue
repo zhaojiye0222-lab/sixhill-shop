@@ -28,7 +28,7 @@
       >
         <!-- Remove Button -->
         <view class="absolute top-2 right-2 w-6 h-6 flex items-center justify-center bg-red-50 rounded-full z-10" @click="removeItem(item)">
-          <text class="text-red-500 text-xs font-bold">âœ?/text>
+          <text class="text-red-500 text-xs font-bold">ï¿½?/text>
         </view>
 
         <!-- Product Image -->
@@ -56,7 +56,7 @@
             <!-- Bundle Flavors -->
             <view v-if="item.bundleFlavors && item.bundleFlavors.length > 0" class="text-[10px] text-gray-500 mb-1">
               <text v-for="f in item.bundleFlavors" :key="f.id" class="block">
-                â€?{{ f.name }} x{{ f.qty }}
+                ï¿½?{{ f.name }} x{{ f.qty }}
               </text>
             </view>
           </view>
@@ -101,7 +101,7 @@
       <view class="bg-white rounded-t-3xl p-5 relative z-10 flex flex-col max-h-[90vh]">
         <!-- Close Button -->
         <view class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full z-20" @click="closeCheckout">
-          <text class="text-gray-500 font-bold">âœ?/text>
+          <text class="text-gray-500 font-bold">ï¿½?/text>
         </view>
 
         <text class="text-xl font-bold text-gray-900 mb-4">Confirm Order</text>
@@ -146,7 +146,7 @@
             <view v-else class="relative rounded-xl overflow-hidden border border-gray-200 bg-gray-50">
               <image :src="receiptPreview" mode="aspectFit" class="w-full h-40" />
               <view class="absolute top-2 right-2 bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center" @click="clearReceipt">
-                <text class="text-sm font-bold">âœ?/text>
+                <text class="text-sm font-bold">ï¿½?/text>
               </view>
             </view>
           </view>
@@ -171,7 +171,7 @@
               :disabled="isSubmitting"
               @click="submitOrder('now')"
             >
-              <text v-if="isSubmitting" class="mr-2">âŒ?/text>
+              <text v-if="isSubmitting" class="mr-2">ï¿½?/text>
               {{ isSubmitting ? 'Processing...' : 'Confirm & Pay' }}
             </button>
           </view>
@@ -362,7 +362,11 @@ const submitOrder = async (type = 'later') => {
 
     // 4. Success handling
     uni.hideLoading();
-    uni.showToast({ title: 'Order placed successfully!', icon: 'success' });
+    uni.showToast({
+      title: 'Payment Successful!',
+      icon: 'success',
+      duration: 2000
+    });
     
     // Clear cart and close modal
     cartStore.clearCart();

@@ -231,7 +231,7 @@ function useOrders(Vue, deps) {
           body: JSON.stringify({ receiptUrl })
         });
         if (res.ok) {
-          alert('Payment receipt uploaded successfully!');
+          alert('Payment Successful! We will verify your receipt and process your order shortly.');
           showCheckoutModal.value = false;
           fetchMyOrders();
         } else {
@@ -267,7 +267,7 @@ function useOrders(Vue, deps) {
       if (!paymentRes.ok) throw new Error('Order created, but failed to link receipt.');
 
       showCheckoutModal.value = false;
-      alert('Order placed and paid successfully!');
+      alert('Payment Successful! We will verify your receipt and process your order shortly.');
       cart.value = [];
       showOrderHistory.value = true;
       fetchMyOrders();

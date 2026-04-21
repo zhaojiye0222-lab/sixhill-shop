@@ -339,7 +339,7 @@
         const product = ref(null);
         const loading = ref(true);
         const error = ref(null);
-        // 为了跨页面共享购物车，我们使�?localStorage 简单实�?        const cart = ref(JSON.parse(localStorage.getItem('cart') || '[]'));
+        // 为了跨页面共享购物车，我们使�?localStorage 简单实�?        const cart = ref(JSON.parse(localStorage.getItem('cart') || '[]'));
         
         // 监听 cart 变化，保存到 localStorage
         watch(cart, (newCart) => {
@@ -419,7 +419,7 @@
         const fetchProduct = async (skuParam) => {
           try {
             loading.value = true;
-            // �?URL 参数获取 SKU �?ID
+            // �?URL 参数获取 SKU �?ID
             const urlParams = new URLSearchParams(window.location.search);
             const identifier = skuParam || urlParams.get('id') || urlParams.get('sku');
 
@@ -427,7 +427,7 @@
                throw new Error('No product specified');
             }
 
-            // 调用真实的本地接�?            console.log(`Fetching product details from ${API_BASE}/products/${identifier}...`);
+            // 调用真实的本地接�?            console.log(`Fetching product details from ${API_BASE}/products/${identifier}...`);
             const response = await fetch(`${API_BASE}/products/${identifier}`);
             if (!response.ok) throw new Error('Product not found');
             
@@ -440,12 +440,12 @@
               product.value.images = ['https://via.placeholder.com/400x400'];
             }
             
-            currentImageIndex.value = 0; // 重置轮播图索�?
+            currentImageIndex.value = 0; // 重置轮播图索�?
             // 解析颜色
             if (data.specs && data.specs.color) {
-              // 支持英文逗号和中文全角逗号分割，甚至支持空格加逗号的情�?              productColors.value = data.specs.color.split(/[,，]/).map(c => c.trim()).filter(c => c);
+              // 支持英文逗号和中文全角逗号分割，甚至支持空格加逗号的情�?              productColors.value = data.specs.color.split(/[,，]/).map(c => c.trim()).filter(c => c);
               if (productColors.value.length > 0) {
-                selectedColor.value = productColors.value[0]; // 默认选中第一个颜�?              }
+                selectedColor.value = productColors.value[0]; // 默认选中第一个颜�?              }
             } else {
               productColors.value = [];
               selectedColor.value = null;
@@ -462,11 +462,11 @@
         };
 
         const switchFlavor = async (identifier) => {
-          // 不刷新页面，仅更新数�?          await fetchProduct(identifier);
+          // 不刷新页面，仅更新数�?          await fetchProduct(identifier);
           
-          // 更新浏览�?URL，保持链接可分享，但不触发页面刷�?          const newUrl = new URL(window.location);
+          // 更新浏览�?URL，保持链接可分享，但不触发页面刷�?          const newUrl = new URL(window.location);
           newUrl.searchParams.set('id', identifier);
-          // 为了兼容也移�?sku 避免混淆
+          // 为了兼容也移�?sku 避免混淆
           newUrl.searchParams.delete('sku');
           window.history.pushState({}, '', newUrl);
         };
@@ -628,7 +628,7 @@
               throw new Error(orderData.error || 'Checkout failed');
             }
 
-            // 4. 提交支付截图关联到订�?            const paymentRes = await fetch(`${API_BASE}/orders/${orderData.orderId || orderData.id}/payment`, {
+            // 4. 提交支付截图关联到订�?            const paymentRes = await fetch(`${API_BASE}/orders/${orderData.orderId || orderData.id}/payment`, {
               method: 'POST',
               headers: { 
                 'Content-Type': 'application/json',
@@ -643,8 +643,9 @@
 
             submitting.value = false;
             showOrderModal.value = false;
-            alert(`Success! \nOrder ID: ${orderData.orderId || orderData.id}\nTotal: Rp ${formatPrice(orderData.totalAmount)}`);
+            alert(`Payment Successful! \nOrder ID: ${orderData.orderId || orderData.id}\nWe will verify your receipt and process your order shortly.`);
 
+            // 跳转回首页查看订单
             window.location.href = '/?tab=profile';
 
           } catch (err) {
@@ -694,7 +695,7 @@
             showOrderModal.value = false;
             alert('Order saved as Pending. You can pay later in your Profile.');
 
-            // 跳转回首页查看订�?            window.location.href = '/?tab=profile';
+            // 跳转回首页查看订�?            window.location.href = '/?tab=profile';
 
           } catch (err) {
             submitting.value = false;
@@ -737,7 +738,7 @@
           };
   
           const goToCart = () => {
-          // 由于购物车数据在首页维护，详情页跳转时可以直接跳回首页并打开购物�?          // 这里我们简单地返回首页，并�?URL 中带上参数让首页打开购物�?          window.location.href = '/?openCart=true';
+          // 由于购物车数据在首页维护，详情页跳转时可以直接跳回首页并打开购物�?          // 这里我们简单地返回首页，并�?URL 中带上参数让首页打开购物�?          window.location.href = '/?openCart=true';
         };
 
         const goBack = () => {
