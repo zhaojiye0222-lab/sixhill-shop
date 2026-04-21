@@ -699,9 +699,9 @@
           let result = [...orders.value].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
           if (orderFilter.value !== 'all') {
             if (orderFilter.value === 'pending_payment') {
-               // Pending 标签同时显示 pending_payment �?processing 的订�?               result = result.filter(o => o.status === 'pending_payment' || o.status === 'processing');
+               // Pending 标签同时显示 pending_payment �?processing 的订�?               result = result.filter(o => o.status === 'pending_payment' || o.status === 'processing');
             } else if (orderFilter.value === 'delivered') {
-               // Completed 标签同时显示 delivered �?completed 的订�?               result = result.filter(o => o.status === 'delivered' || o.status === 'completed');
+               // Completed 标签同时显示 delivered �?completed 的订�?               result = result.filter(o => o.status === 'delivered' || o.status === 'completed');
             } else {
                result = result.filter(o => o.status === orderFilter.value);
             }
@@ -904,7 +904,7 @@
             
             if (!res.ok) throw new Error('Failed to delete order');
             
-            // 删除成功后立即移�?DOM 节点，更新缓�?            orders.value = orders.value.filter(o => o.orderId !== orderId && o.id !== orderId);
+            // 删除成功后立即移�?DOM 节点，更新缓�?            orders.value = orders.value.filter(o => o.orderId !== orderId && o.id !== orderId);
             
             alert('Order deleted successfully');
           } catch (err) {
@@ -1005,7 +1005,7 @@
 
             const data = await res.json();
             
-            // 使用 Vue 推荐的数组更新方�?            productForm.value = {
+            // 使用 Vue 推荐的数组更新方�?            productForm.value = {
               ...productForm.value,
               images: [...(productForm.value.images || []), data.url]
             };

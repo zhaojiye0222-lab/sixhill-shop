@@ -353,7 +353,7 @@
 
       <!-- Profile Tab -->
       <div v-show="activeTab === 'profile'" class="bg-gray-50 min-h-full">
-        <!-- 未登录状�?-->
+        <!-- 未登录状�?-->
         <div v-if="!userToken" class="flex flex-col items-center justify-center h-full pt-20 px-6">
           <i class="ph ph-user-circle text-6xl text-gray-300 mb-4"></i>
           <p class="text-gray-500 mb-8 text-center text-sm">Please login or register to view your profile and manage orders.</p>
@@ -375,7 +375,7 @@
           </div>
         </div>
 
-        <!-- 已登录状�?-->
+        <!-- 已登录状�?-->
         <div v-else>
           <div class="bg-indigo-600 p-6 text-white pb-12 rounded-b-3xl">
             <div class="flex items-center justify-between">
@@ -427,7 +427,7 @@
                   </span>
                 </div>
                 
-                <!-- 订单列表展示�?-->
+                <!-- 订单列表展示�?-->
                 <div v-if="showOrderHistory" class="space-y-3 mt-4 border-t pt-4">
                   <div class="flex justify-between items-center mb-2">
                     <span class="text-xs font-bold text-gray-500 uppercase">{{ orderStatusFilter === 'all' ? 'All Orders' : orderStatusFilter.replace('_', ' ') }}</span>
@@ -515,7 +515,7 @@
                         <span v-else class="text-xs text-red-500 block mt-1 italic">Please set your shipping address</span>
                       </div>
                       <div v-else class="mt-2 space-y-2">
-                        <input v-model="tempAddress" type="text" placeholder="Enter your full address" class="w-full text-xs border border-gray-300 rounded p-2 focus:outline-none focus:border-indigo-500">
+                        <input id="profileAddressInput" v-model="tempAddress" type="text" placeholder="Enter your full address" class="w-full text-xs border border-gray-300 rounded p-2 focus:outline-none focus:border-indigo-500">
                         <div class="flex items-center space-x-2">
                           <button @click="getCurrentLocation" class="bg-blue-50 text-blue-600 text-[10px] px-2 py-1.5 rounded font-bold flex items-center hover:bg-blue-100">
                             <i class="ph ph-crosshair mr-1"></i> Get Current Location
@@ -706,7 +706,7 @@
               <p v-else class="text-xs text-red-500 italic">Please enter your shipping address</p>
             </div>
             <div v-else class="mt-2">
-              <textarea v-model="checkoutAddress" rows="2" class="w-full text-xs border border-indigo-200 rounded p-2 focus:outline-none focus:border-indigo-500" placeholder="Enter full shipping address..."></textarea>
+              <textarea id="checkoutAddressInput" v-model="checkoutAddress" rows="2" class="w-full text-xs border border-indigo-200 rounded p-2 focus:outline-none focus:border-indigo-500" placeholder="Enter full shipping address..."></textarea>
               <div class="flex justify-end mt-1">
                 <button @click="isEditingCheckoutAddress = false" class="bg-indigo-600 text-white text-[10px] px-3 py-1 rounded font-bold">Save</button>
               </div>
@@ -881,7 +881,11 @@
     </div>
     
   </div>
-  <!-- Application Logic - 模块化加�?-->
+  
+  <!-- Google Maps Places API (请替换 YOUR_GOOGLE_MAPS_API_KEY) -->
+  <!-- <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places&language=en"></script> -->
+
+  <!-- Application Logic - 模块化加?-->
   <script src="/frontend/js/api.js?v=2"></script>
   <script src="/frontend/js/composables/useAuth.js?v=2"></script>
   <script src="/frontend/js/composables/useProducts.js?v=2"></script>
@@ -890,7 +894,7 @@
   <script src="/frontend/js/composables/useAddress.js?v=2"></script>
   <script src="/frontend/js/app.js?v=2"></script>
   <script>
-    // 旧内联代码已全部迁移�?frontend/js/ 目录
+    // 旧内联代码已全部迁移�?frontend/js/ 目录
   </script>
 </body>
 </html>

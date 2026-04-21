@@ -38,6 +38,8 @@ const app = createApp({
       receiptPreview: cart.receiptPreview,
       receiptFile: cart.receiptFile,
       checkoutAddress: address.checkoutAddress,
+      checkoutLat: address.checkoutLat,
+      checkoutLng: address.checkoutLng,
       isEditingCheckoutAddress: address.isEditingCheckoutAddress,
       showOrderHistory,
       orderStatusFilter

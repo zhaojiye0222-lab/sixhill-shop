@@ -180,10 +180,17 @@ function useOrders(Vue, deps) {
       const orderItems = cart.value.map(item => ({
         productId: item.id, quantity: item.qty, color: item.selectedColor || null
       }));
+      
+      const { checkoutLat, checkoutLng } = deps;
+      let finalAddress = checkoutAddress.value;
+      if (checkoutLat && checkoutLng && checkoutLat.value && checkoutLng.value) {
+        finalAddress += ` (Lat: ${checkoutLat.value}, Lng: ${checkoutLng.value})`;
+      }
+
       const res = await fetch(`${API_BASE}/orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${userToken.value}` },
-        body: JSON.stringify({ items: orderItems, paymentMethod: 'bank_transfer', shippingAddress: checkoutAddress.value })
+        body: JSON.stringify({ items: orderItems, paymentMethod: 'bank_transfer', shippingAddress: finalAddress })
       });
       if (!res.ok) throw new Error('Checkout failed');
 
@@ -237,10 +244,17 @@ function useOrders(Vue, deps) {
       const orderItems = cart.value.map(item => ({
         productId: item.id, quantity: item.qty, color: item.selectedColor || null
       }));
+      
+      const { checkoutLat, checkoutLng } = deps;
+      let finalAddress = checkoutAddress.value;
+      if (checkoutLat && checkoutLng && checkoutLat.value && checkoutLng.value) {
+        finalAddress += ` (Lat: ${checkoutLat.value}, Lng: ${checkoutLng.value})`;
+      }
+
       const res = await fetch(`${API_BASE}/orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${userToken.value}` },
-        body: JSON.stringify({ items: orderItems, paymentMethod: 'bank_transfer', shippingAddress: checkoutAddress.value })
+        body: JSON.stringify({ items: orderItems, paymentMethod: 'bank_transfer', shippingAddress: finalAddress })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Checkout failed');
