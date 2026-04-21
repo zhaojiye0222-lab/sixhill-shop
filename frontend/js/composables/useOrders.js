@@ -273,7 +273,7 @@ function useOrders(Vue, deps) {
       fetchMyOrders();
       return 'go_profile';
     } catch (err) {
-      alert(err.message);
+      if (err.message && err.message.toLowerCase().includes('token')) { alert('Your session has expired. Please log in again.'); localStorage.removeItem('userToken'); localStorage.removeItem('currentUser'); window.location.href = '/?action=login'; } else { alert(err.message); }
     } finally {
       isCheckingOut.value = false;
     }
